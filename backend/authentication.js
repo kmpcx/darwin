@@ -1,68 +1,79 @@
+
 const express = require('express')
 const router = express.Router()
 const bodyParser = require('body-parser')
 const config = require('./config')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const DB = require('./db')
+const mysql = require('mysql')
 
-const db = new DB('sqlitedb')
+const DB = require('./dbSQL')
 
 router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.json())
 
 router.post('/register', function (req, res) {
-    db.insert([
+    let insertQuery = 'INSERT INTO User (Name,Mail,Username,Password,Language,IsAdmin,IsActive) VALUES (?,?,?,?,?,?,?)';
+    let query = mysql.format(insertQuery,[
         req.body.name,
         req.body.email,
-        bcrypt.hashSync(req.body.password, 8)
-    ],
-        function (err) {
-            if (err) return res.status(500).send('There was a problem registering the user.')
-            db.selectByEmail(req.body.email, (err, user) => {
-                if (err) return res.status(500).send('There was a problem getting user')
-                let token = jwt.sign({ id: user.id }, config.secret, {
-                    expiresIn: 86400 // expires in 24 hours
-                })
-                res.status(200).send({ auth: true, token: token, user: user })
-            })
-        })
-})
-
-router.post('/register-admin', function (req, res) {
-    db.insertAdmin([
         req.body.name,
-        req.body.email,
         bcrypt.hashSync(req.body.password, 8),
-        1
-    ],
-        function (err) {
-            if (err) return res.status(500).send('There was a problem registering the user.')
-            db.selectByEmail(req.body.email, (err, user) => {
-                if (err) return res.status(500).send('There was a problem getting user')
-                let token = jwt.sign({ id: user.id }, config.secret, {
+        'de',
+        false,
+        true
+    ]);
+
+    DB.handle_db(query, (result) => {
+        if (result.data.error){
+            return res.status(500).send('There was a problem registering the user.')
+        } else {
+            let selectQuery = 'SELECT * FROM User WHERE Mail = ?';
+            let query = mysql.format(selectQuery,[req.body.email]);
+            DB.handle_db(query, (result) => {
+                if (result.data.error) return res.status(500).send('There was a problem getting user')
+                let token = jwt.sign({ id: result.data[0]['UserId'] }, config.secret, {
                     expiresIn: 86400 // expires in 24 hours
                 })
-                res.status(200).send({ auth: true, token: token, user: user })
+                res.status(200).send({ auth: true, token: token, user: result.data[0] })
             })
-        })
-})
+        }
+    });
+});
+
+// router.post('/register-admin', function (req, res) {
+// })
 
 router.post('/login', (req, res) => {
-    db.selectByEmail(req.body.email, (err, user) => {
-        if (err) return res.status(500).send('Error on the server.')
-        if (!user) return res.status(404).send('No user found.')
-        let passwordIsValid = bcrypt.compareSync(req.body.password, user.user_pass)
-        if (!passwordIsValid) return res.status(401).send({ auth: false, token: null })
-        let token = jwt.sign({ id: user.id }, config.secret, {
-            expiresIn: 86400 // expires in 24 hours
-        })
-        res.status(200).send({ auth: true, token: token, user: user })
+    let selectQuery = 'SELECT * FROM User WHERE Mail = ?';
+    let query = mysql.format(selectQuery,[req.body.email]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]) return res.status(404).send('No user found.')
+            let passwordIsValid = bcrypt.compareSync(req.body.password, result.data[0]['Password'])
+            if (!passwordIsValid) return res.status(401).send({ auth: false, token: null })
+            let token = jwt.sign({ id: result.data[0]['UserId'] }, config.secret, {
+                expiresIn: 86400 // expires in 24 hours
+            })
+            res.status(200).send({ auth: true, token: token, user: result.data[0] })
+        }
     })
 })
 
 router.get('/ping', function (req, res) {
-    res.send("Pong")
+    res.send("Pong");
+    console.log('Ping');
+    // let selectQuery = 'SELECT * FROM User WHERE Mail = ?';
+    // let query = mysql.format(selectQuery,['peter@mail.com']);
+    // DB.handle_db(query, (result) => {
+    //     if (result.error){
+    //         return res.status(500).send('Error on the server.')
+    //     } else {
+    //         res.send(result.data[0]);
+    //     }
+    // })
 });
 
 module.exports = router;
