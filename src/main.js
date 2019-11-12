@@ -5,6 +5,12 @@ import store from './store'
 import Axios from 'axios'
 import router from './router'
 
+import Default from "./layouts/Default.vue";
+import NoSidebar from "./layouts/NoSidebar.vue";
+
+Vue.component("default-layout", Default);
+Vue.component("no-sidebar-layout", NoSidebar);
+
 Vue.config.productionTip = false
 
 Vue.prototype.$http = Axios

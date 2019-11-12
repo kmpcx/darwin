@@ -1,39 +1,30 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link><span v-if="isLoggedIn"> | <a @click="logout">Logout</a></span> | 
-      <router-link to="/login">Login</router-link>
-    </div>
-    <router-view/>
+    <component :is="layout">
+      <router-view/>
+    </component>
   </div>
 </template>
 
 <script>
-  export default {
-    computed : {
-      isLoggedIn : function(){ return this.$store.getters.isLoggedIn}
-    },
-    methods: {
-      logout: function () {
-        this.$store.dispatch('logout')
-        .then(() => {
-          this.$router.push('/login')
-        })
-      },
-    },
-   created: function () {
-    this.$http.interceptors.response.use(undefined, function (err) {
-      return new Promise(function (resolve, reject) {
-        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
-          this.$store.dispatch(logout)
-        }
-        throw err;
-      });
-    });
-  } 
+const default_layout = "default";
+export default {
+  computed: {
+    layout() {
+      return (this.$route.meta.layout || default_layout) + "-layout";
+    }
+  },
+  created() {
+    // nothing defined here (when this.$route.path is other than "/")
+    console.log(this.$route, this.$route.meta.layout);
+  },
+  updated() {
+    // something defined here whatever the this.$route.path
+    console.log(this.$route, this.$route.meta.layout);
   }
+};
 </script>
+
 
 <style lang="scss">
 #app {
@@ -44,15 +35,19 @@
   color: #2c3e50;
 }
 
+.navbar {
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
 #nav {
   padding: 30px;
 
   a {
     font-weight: bold;
-    color: #2c3e50;
+    color: #FFFFFF;
 
     &.router-link-exact-active {
-      color: #42b983;
+      color: #FFFFFF;
     }
   }
 }
