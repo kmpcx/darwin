@@ -9,7 +9,7 @@ const base =
     : "/";
 
 export default new Router({
-  mode: "history",
+  mode: 'history',
   base,
 
   routes: [
@@ -29,6 +29,11 @@ export default new Router({
       path: "/404",
       name: "404*",
       component: require("@/pages/404.vue").default // load sync home
+    },
+    {
+      path: "/test",
+      name: "test",
+      component: require("@/components/testAPI.vue").default
     }
   ]
 });

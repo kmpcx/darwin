@@ -20,46 +20,6 @@ function handle_db(query, callback){
    });
 };
 
-
-
-
-//   authSelectByEmail (email, callback) {
-//     return this.db.get(
-//       `SELECT * FROM user WHERE email = ?`,
-//       [email], function (err, row) {
-//         callback(err, row)
-//       })
-//   }
-
-//   authInsertAdmin (user, callback) {
-//     return this.db.run(
-//       'INSERT INTO user (name,email,user_pass,is_admin) VALUES (?,?,?,?)',
-//       user, (err) => {
-//         callback(err)
-//       })
-//   }
-
-//   authSelectAll (callback) {
-//     return this.db.all(`SELECT * FROM user`, function (err, rows) {
-//       callback(err, rows)
-//     })
-//   }
-
-//   authInsert (user, callback) {
-//     return this.db.run(
-//       'INSERT INTO user (name,email,user_pass) VALUES (?,?,?)',
-//       user, (err) => {
-//         callback(err)
-//       })
-//   }
-  
-//   // ---------------------- Working sector
-
-//   // ---------------------- Working steps
-
-//   // ---------------------- Orders
-// }
-
 module.exports = {
   handle_db,
 };

@@ -1,6 +1,9 @@
 'use strict'
 const express = require('express')
 const authentication = require('./authentication');
+const scope = require('./scope');
+const task = require('./task');
+const order = require('./order');
 
 const app = express()
 
@@ -13,6 +16,9 @@ const allowCrossDomain = function (req, res, next) {
 app.use(allowCrossDomain)
 
 app.use('/auth', authentication);
+app.use('/scope', scope);
+app.use('/task', task);
+app.use('/order', order);
 
 let port = process.env.PORT || 3000
 
