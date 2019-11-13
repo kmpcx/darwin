@@ -1,7 +1,22 @@
 <template>
-  <div class="section">
-    <h1>This is about us</h1>
+<div>
+  <v-stepper>
+    <v-stepper-header>
+      <v-stepper-step editable color="#283593" step="1">
+        <router-link to="/">Home</router-link>
+      </v-stepper-step>
 
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis voluptatum fugiat, quae, blanditiis optio odit nihil harum natus placeat voluptate ad consequatur enim accusantium nam temporibus illum. Nam, quo obcaecati.</p>
+      <v-divider></v-divider>
+
+      <v-stepper-step color="#283593" step="2">
+        <router-link to="/about-us">About</router-link>
+      </v-stepper-step>
+
+      <v-divider></v-divider>
+
+      <v-stepper-step editable color="#283593" step="3">Arbeitsschritt</v-stepper-step>
+    </v-stepper-header>
+  </v-stepper>
+  <h1>About</h1>
   </div>
 </template>
