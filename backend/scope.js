@@ -55,7 +55,7 @@ router.post('/get', (req, res) => {
 })
 
 router.post('/getAll', (req, res) => {
-    let selectQuery = 'SELECT * FROM Scope';
+    let query = 'SELECT * FROM Scope';
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
