@@ -31,7 +31,7 @@ router.post('/register', function (req, res) {
             let selectQuery = 'SELECT * FROM User WHERE Mail = ?';
             let query = mysql.format(selectQuery,[req.body.email]);
             DB.handle_db(query, (result) => {
-                if (result.error) return res.status(500).send('There was a problem getting user')
+                if (result.data.error) return res.status(500).send('There was a problem getting user')
                 let token = jwt.sign({ id: result.data[0]['UserId'] }, config.secret, {
                     expiresIn: 86400 // expires in 24 hours
                 })
@@ -62,7 +62,7 @@ router.post('/login', (req, res) => {
 
 router.get('/ping', function (req, res) {
     res.send("Pong");
-    console.log('Ping Auth');
+    console.log('Ping');
     // let selectQuery = 'SELECT * FROM User WHERE Mail = ?';
     // let query = mysql.format(selectQuery,['peter@mail.com']);
     // DB.handle_db(query, (result) => {
