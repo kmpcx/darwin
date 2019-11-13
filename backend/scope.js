@@ -12,14 +12,8 @@ router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.json())
 
 router.post('/create', function (req, res) {
-    let insertQuery = 'INSERT INTO Scope (Name,Description,ColorBackground,ColorText,Icon) VALUES (?,?,?,?,?)';
-    let query = mysql.format(insertQuery,[
-        req.body.name,
-        req.body.description,
-        req.body.colorBackground,
-        req.body.colorText,
-        req.body.icon,
-    ]);
+    let insertQuery = 'INSERT INTO Scope SET ?'
+    let query = mysql.format(insertQuery, req.body.scope);
 
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -31,20 +25,8 @@ router.post('/create', function (req, res) {
 });
 
 router.post('/edit', function (req, res) {
-    var data = {email: "e@example.com", status: 2} // consider some dummy data
-    var formattedQ = SqlString.format("UPDATE users SET ? WHERE id = 34", data);
-
-    // formattedQ would be:
-    // "UPDATE users SET `email` = 'e@example.com', `status` = 2 WHERE id = 34"
-
-    let insertQuery = 'INSERT INTO Scope (Name,Description,ColorBackground,ColorText,Icon) VALUES (?,?,?,?,?)';
-    let query = mysql.format(insertQuery,[
-        req.body.name,
-        req.body.description,
-        req.body.colorBackground,
-        req.body.colorText,
-        req.body.icon,
-    ]);
+    let updateQuery = 'UPDATE Scope SET ? WHERE ScopeId = ?';
+    let query = mysql.format(updateQuery, [req.body.scope, req.body.scopeId]);
 
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -104,32 +86,30 @@ router.post('/getTasks', (req, res) => {
 })
 
 router.get('/ping', function (req, res) {
-    res.send("Pong Scope");
-    // let insertQuery = 'INSERT INTO Scope (Name,Description,ColorBackground,ColorText,Icon) VALUES (?,?,?,?,?)';
-    // let query = mysql.format(insertQuery,[
-    //     'Scope C',
-    //     'Desc',
-    //     'black',
-    //     'white',
-    //     'check-bold',
-    // ]);
+    // res.send("Pong Scope");
+    // var data = {name: "Scope A", Description: 'Desc test 1'} // consider some dummy data
+    // var query = mysql.format("UPDATE Scope SET ? WHERE ScopeId = ?", [data, '1']);
 
-    // DB.handle_db(query, (result) => {
-    //     console.log(result)
-    //     if (result.data.error){
-    //         return res.send('There was a problem creating the Task.')
-    //     } else {
-    //         res.send(result.data)
-    //     }
-    // });
+    let data = {Name: 'Scope F'}
+    let insertQuery = 'INSERT INTO Scope SET ?'
+    let query = mysql.format(insertQuery, data);
+
+    DB.handle_db(query, (result) => {
+        console.log(result)
+        if (result.data.error){
+            return res.send('There was a problem creating the Task.')
+        } else {
+            res.send(result.data)
+        }
+    });
 });
 
 router.post('/test', (req, res) => {
     let a = req.body.name
     let b = req.body.description
 
-    a.toUpperCase()
-    b.toLowerCase()
+    a = a.toUpperCase()
+    b = b.toLowerCase()
 
     res.send({a, b})
 })

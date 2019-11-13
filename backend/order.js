@@ -12,53 +12,177 @@ const DB = require('./dbSQL')
 router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.json())
 
-router.post('/register', function (req, res) {
-    let insertQuery = 'INSERT INTO User (Name,Mail,Username,Password,Language,IsAdmin,IsActive) VALUES (?,?,?,?,?,?,?)';
-    let query = mysql.format(insertQuery,[
-        req.body.name,
-        req.body.email,
-        req.body.name,
-        bcrypt.hashSync(req.body.password, 8),
-        'de',
-        false,
-        true
-    ]);
+router.post('/create', function (req, res) {
+    let insertQuery = 'INSERT INTO Order SET ?'
+    let query = mysql.format(insertQuery, req.body.order);
 
     DB.handle_db(query, (result) => {
-        if (result.data.error){
-            return res.status(500).send('There was a problem registering the user.')
+        if (result.error){
+            return res.status(500).send('There was a problem creating the Order.')
         } else {
-            let selectQuery = 'SELECT * FROM User WHERE Mail = ?';
-            let query = mysql.format(selectQuery,[req.body.email]);
-            DB.handle_db(query, (result) => {
-                if (result.data.error) return res.status(500).send('There was a problem getting user')
-                let token = jwt.sign({ id: result.data[0]['UserId'] }, config.secret, {
-                    expiresIn: 86400 // expires in 24 hours
-                })
-                res.status(200).send({ auth: true, token: token, user: result.data[0] })
-            })
+            res.status(200).send(result.data)
+        }
+    });
+});
+
+router.post('/edit', function (req, res) {
+    let updateQuery = 'UPDATE Order SET ? WHERE OrderId = ?';
+    let query = mysql.format(updateQuery, [req.body.order, req.body.orderId]);
+
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('There was a problem creating the Order.')
+        } else {
+            res.status(200).send(result.data)
         }
     });
 });
 
 
-router.post('/login', (req, res) => {
-    let selectQuery = 'SELECT * FROM User WHERE Mail = ?';
-    let query = mysql.format(selectQuery,[req.body.email]);
+router.post('/get', (req, res) => {
+    let selectQuery = 'SELECT * FROM Order WHERE OrderId = ?';
+    let query = mysql.format(selectQuery,[req.body.orderId]);
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
         } else {
-            if (!result.data[0]) return res.status(404).send('No user found.')
-            let passwordIsValid = bcrypt.compareSync(req.body.password, result.data[0]['Password'])
-            if (!passwordIsValid) return res.status(401).send({ auth: false, token: null })
-            let token = jwt.sign({ id: result.data[0]['UserId'] }, config.secret, {
-                expiresIn: 86400 // expires in 24 hours
-            })
-            res.status(200).send({ auth: true, token: token, user: result.data[0] })
+            if (!result.data[0]){
+                return res.status(404).send('No Order found.')
+            } else {
+                res.status(200).send( result.data[0] )
+            }
         }
     })
 })
+
+router.post('/getAll', (req, res) => {
+    let selectQuery = 'SELECT * FROM Order';
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Orders found.')
+            } else {
+                res.status(200).send( result.data )
+            }
+        }
+    })
+})
+
+
+// ---------- Order Entry
+
+router.post('/createEntry', function (req, res) {
+    let insertQuery = 'INSERT INTO OrderEntry SET ?'
+    let query = mysql.format(insertQuery, req.body.orderEntry);
+
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('There was a problem creating the Order Entry.')
+        } else {
+            res.status(200).send(result.data)
+        }
+    });
+});
+
+router.post('/editEntry', function (req, res) {
+    let updateQuery = 'UPDATE OrderEntry SET ? WHERE OrderEntryId = ?';
+    let query = mysql.format(updateQuery, [req.body.orderEntry, req.body.orderEntryId]);
+
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('There was a problem creating the Order Entry.')
+        } else {
+            res.status(200).send(result.data)
+        }
+    });
+});
+
+
+router.post('/getEntry', (req, res) => {
+    let selectQuery = 'SELECT * FROM OrderEntry WHERE OrderEntryId = ?';
+    let query = mysql.format(selectQuery,[req.body.orderEntryId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Order Entry found.')
+            } else {
+                res.status(200).send( result.data[0] )
+            }
+        }
+    })
+})
+
+router.post('/getEntries', (req, res) => {
+    let selectQuery = 'SELECT * FROM OrderEntry WHERE OrderId = ?';
+    let query = mysql.format(selectQuery,[req.body.orderId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Order Entries found.')
+            } else {
+                res.status(200).send( result.data[0] )
+            }
+        }
+    })
+})
+
+
+// ---------- Task
+
+router.post('/getTaskAttributeEntries', (req, res) => {
+    let selectQuery = 'SELECT * FROM TaskAttributeEntry WHERE OrderEntryId = ?';
+    let query = mysql.format(selectQuery,[req.body.orderEntryId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Task Attribute Entries found.')
+            } else {
+                res.status(200).send( result.data )
+            }
+        }
+    })
+})
+
+// ---------- Task Mapping
+
+router.post('/createTaskMapping', function (req, res) {
+    let insertQuery = 'INSERT INTO OrderTask SET ?'
+    let query = mysql.format(insertQuery, req.body.orderTask);
+
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('There was a problem creating the Order Task mapping.')
+        } else {
+            res.status(200).send(result.data)
+        }
+    });
+});
+
+router.post('/getTaskMapping', function (req, res) {
+    let selectQuery = 'SELECT * FROM OrderTask WHERE OrderId = ?';
+    let query = mysql.format(selectQuery,[req.body.orderId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Order Entries found.')
+            } else {
+                res.status(200).send( result.data[0] )
+            }
+        }
+    })
+})
+
+// ---------- Test
 
 router.get('/ping', function (req, res) {
     res.send("Pong");

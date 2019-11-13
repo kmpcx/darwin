@@ -14,15 +14,8 @@ router.use(bodyParser.json())
 // Tasks
 
 router.post('/create', function (req, res) {
-    let insertQuery = 'INSERT INTO Task (Name,Description,ColorBackground,ColorText,Icon,ScopeId) VALUES (?,?,?,?,?,?)';
-    let query = mysql.format(insertQuery,[
-        req.body.name,
-        req.body.description,
-        req.body.colorBackground,
-        req.body.colorText,
-        req.body.icon,
-        req.body.scopeId,
-    ]);
+    let insertQuery = 'INSERT INTO Task SET ?'
+    let query = mysql.format(insertQuery, req.body.task);
 
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -33,16 +26,29 @@ router.post('/create', function (req, res) {
     });
 });
 
+router.post('/edit', function (req, res) {
+    let updateQuery = 'UPDATE Task SET ? WHERE TaskId = ?';
+    let query = mysql.format(updateQuery, [req.body.task, req.body.taskId]);
+
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('There was a updating creating the Task.')
+        } else {
+            res.status(200).send(result.data)
+        }
+    });
+});
+
 
 router.post('/get', (req, res) => {
-    let selectQuery = 'SELECT * FROM Scope WHERE ScopeId = ?';
-    let query = mysql.format(selectQuery,[req.body.scopeId]);
+    let selectQuery = 'SELECT * FROM Task WHERE TaskId = ?';
+    let query = mysql.format(selectQuery,[req.body.taskid]);
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
         } else {
             if (!result.data[0]){
-                return res.status(404).send('No Scope found.')
+                return res.status(404).send('No Task found.')
             } else {
                 res.status(200).send( result.data[0] )
             }
@@ -51,15 +57,15 @@ router.post('/get', (req, res) => {
 })
 
 router.post('/getAll', (req, res) => {
-    let selectQuery = 'SELECT * FROM Scope';
+    let selectQuery = 'SELECT * FROM Task';
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
         } else {
             if (!result.data[0]){
-                return res.status(404).send('No Scopes found.')
+                return res.status(404).send('No Tasks found.')
             } else {
-                res.status(200).send( result.data[0] )
+                res.status(200).send( result.data )
             }
         }
     })
@@ -68,17 +74,10 @@ router.post('/getAll', (req, res) => {
 
 // ---------- Task Attributes
 
+// Values: Name, Description, IsStart, IsEnd, Type, Values, TaskId
 router.post('/addAttribute', function (req, res) {
-    let insertQuery = 'INSERT INTO TaskAttribute (Name,Description,IsStart,IsEnd,Type,Values,TaskId) VALUES (?,?,?,?,?,?,?)';
-    let query = mysql.format(insertQuery,[
-        req.body.name,
-        req.body.description,
-        req.body.isStart,
-        req.body.isEnd,
-        req.body.type,
-        req.body.values,
-        req.body.taskId,
-    ]);
+    let insertQuery = 'INSERT INTO TaskAttribute SET ?'
+    let query = mysql.format(insertQuery, req.body.taskAttribute);
 
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -88,6 +87,102 @@ router.post('/addAttribute', function (req, res) {
         }
     });
 });
+
+router.post('/editAttribute', function (req, res) {
+    let updateQuery = 'UPDATE TaskAttribute SET ? WHERE TaskAttributeId = ?';
+    let query = mysql.format(updateQuery, [req.body.taskAttribute, req.body.taskAttributeId]);
+
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('There was a problem updating the Task Attribute.')
+        } else {
+            res.status(200).send(result.data)
+        }
+    });
+});
+
+router.post('/getAttribute', (req, res) => {
+    let selectQuery = 'SELECT * FROM TaskAttribute WHERE TaskAttributeId = ?';
+    let query = mysql.format(selectQuery,[req.body.taskAttributeId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Task Attribute found.')
+            } else {
+                res.status(200).send( result.data[0] )
+            }
+        }
+    })
+})
+
+router.post('/getAttributes', (req, res) => {
+    let selectQuery = 'SELECT * FROM TaskAttribute WHERE TaskId = ?';
+    let query = mysql.format(selectQuery,[req.body.taskId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Task Attribute found.')
+            } else {
+                res.status(200).send( result.data )
+            }
+        }
+    })
+})
+
+
+// ---------- Task Attribute Entries
+
+router.post('/addAttributeEntry', function (req, res) {
+    let insertQuery = 'INSERT INTO TaskAttributeEntry SET ?'
+    let query = mysql.format(insertQuery, req.body.taskAttributeEntry);
+
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('There was a problem creating the Task Attribute Entry.')
+        } else {
+            res.status(200).send(result.data)
+        }
+    });
+});
+
+router.post('/editAttribute', function (req, res) {
+    let updateQuery = 'UPDATE TaskAttributeEntry SET ? WHERE TaskAttributeEntryId = ?';
+    let query = mysql.format(updateQuery, [req.body.taskAttribute, req.body.taskAttributeEntryId]);
+
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('There was a problem updating the Task Attribute Entry.')
+        } else {
+            res.status(200).send(result.data)
+        }
+    });
+});
+
+router.post('/getAttribute', (req, res) => {
+    let selectQuery = 'SELECT * FROM TaskAttributeEntry WHERE TaskAttributeEntryId = ?';
+    let query = mysql.format(selectQuery,[req.body.taskAttributeEntryId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Task Attribute Entry found.')
+            } else {
+                res.status(200).send( result.data[0] )
+            }
+        }
+    })
+})
+
+
+
+
+// ---------- Test
+
 
 router.get('/ping', function (req, res) {
     res.send("Pong Task");
