@@ -17,18 +17,36 @@ export default new Router({
       path: "/",
       name: "home",
       meta: { layout: "no-sidebar" },
-      component: require("@/pages/Home.vue").default // load sync home
+      component: require("@/views/Home.vue").default // load sync home
     },
     {
-      path: "/about-us",
-      name: "about",
+      path: "/login",
+      name: "login",
       meta: { layout: "no-sidebar" },
-      component: () => import("@/pages/About.vue")
+      component: () => import("@/components/Login.vue")
+    },
+    {
+      path: "/selection",
+      name: "selection",
+      meta: { layout: "no-sidebar" },
+      component: require("@/views/Selection.vue").default
+    },
+    {
+      path: "/order",
+      name: "order",
+      meta: { layout: "no-sidebar" },
+      component: () => import("@/views/Order.vue")
+    },
+    {
+      path: "/process",
+      name: "process",
+      meta: { layout: "no-sidebar" },
+      component: () => import("@/views/Process.vue")
     },
     {
       path: "/404",
       name: "404*",
-      component: require("@/pages/404.vue").default // load sync home
+      component: require("@/views/404.vue").default // load sync home
     },
     {
       path: "/test",
