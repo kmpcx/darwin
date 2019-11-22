@@ -27,14 +27,13 @@
         <v-col cols="4">
           <v-card tile>
             <v-list dense>
-              <v-subheader>Active Orders</v-subheader>
-              <v-list-item-group v-model="item" color="primary">
-                <v-list-item v-for="(item, i) in items" :key="i">
+              <v-header>Active Orders</v-header>
+              <v-list-item-group v-model="item">
+                <v-list-item disabled v-for="(item, i) in items" :key="i">
                   <v-list-item-icon>
-                    <v-icon v-text="item.icon"></v-icon>
+                    <v-icon>mdi-file-outline</v-icon>
                   </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title v-text="item.text"></v-list-item-title>
+                  <v-list-item-content>{{item.BusinessId}} - {{item.Name}} ({{item.Customer}})
                   </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
@@ -46,10 +45,10 @@
             Selection
             <v-row>
               <v-col cols="8">
-                <v-card tile height="180">card 1</v-card>
+                <v-card tile height="180">Select Order</v-card>
               </v-col>
               <v-col cols="8">
-                <v-card tile height="180">card 2</v-card>
+                <v-card tile height="180">Pool Activities</v-card>
               </v-col>
             </v-row>
           </v-card>
@@ -61,3 +60,28 @@
     <v-btn to="/order">Continue</v-btn>
   </div>
 </template>
+
+<script>
+export default {
+  data: () => ({
+    items: []
+  }),
+
+  methods: {
+    getOrders() {
+      let self = this;
+      this.axios
+        .post("http://localhost:3000/order/getAll", {})
+        .then(function(response) {
+          self.items = response.data;
+        })
+        .catch(function(error) {
+          alert(error);
+        });
+    }
+  },
+  beforeMount() {
+    this.getOrders();
+  }
+};
+</script>

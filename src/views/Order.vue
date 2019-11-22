@@ -23,6 +23,6 @@
     </v-stepper>
     <h1>Order</h1>
     <v-btn to="/">Back</v-btn>
-    <v-btn to="/selection">Continue</v-btn>
+    <v-btn to="/selectionScope/1">Continue</v-btn>
   </div>
 </template>
