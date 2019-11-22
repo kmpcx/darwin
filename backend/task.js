@@ -186,7 +186,7 @@ router.post('/getByOrderAndScope', (req, res) => {
             return res.status(500).send('Error on the server.')
         } else {
             if (!result.data[0]){
-                return res.status(404).send('No Tasks found.')
+                return res.status(503).send('No Tasks found.')
             } else {
                 res.status(200).send( result.data )
             }

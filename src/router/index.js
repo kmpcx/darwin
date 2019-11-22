@@ -37,7 +37,7 @@ export default new Router({
       name: "selectionTask",
       meta: { layout: "no-sidebar" },
       component: require("@/views/SelectionTask.vue").default,
-      props: (route) => ({ scopeId: route.query.scopeId, orderId: route.query.orderId })
+      props: true
     },
     {
       path: "/order",

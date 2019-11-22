@@ -57,7 +57,7 @@ router.post('/get', (req, res) => {
 
 router.post('/getAll', (req, res) => {
     let selectQuery = 'SELECT * FROM Orders';
-    DB.handle_db(query, (result) => {
+    DB.handle_db(selectQuery, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
         } else {
