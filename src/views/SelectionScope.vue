@@ -34,7 +34,7 @@
       <v-container>
         <v-row dense>
           <v-col v-for="(item, i) in items" :key="i" cols="4">
-            <v-card :color="item.ColorBackground" dark max-height="180" to="/selectionTask/{{$route.params.orderId}}/{{item.ScopeId}}">
+            <v-card :color="item.ColorBackground" dark max-height="180">
               <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                   <v-icon size="120">{{item.Icon}}</v-icon>
