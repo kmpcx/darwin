@@ -22,6 +22,6 @@
       </v-stepper-header>
     </v-stepper>
     <h1>Process</h1>
-    <v-btn to="/selectionTask/123/123">Back</v-btn>
+    <v-btn to="/selectionTask/1/1">Back</v-btn>
   </div>
 </template>
