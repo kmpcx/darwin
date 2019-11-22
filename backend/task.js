@@ -185,24 +185,23 @@ router.post('/getAttribute', (req, res) => {
 
 
 router.get('/ping', function (req, res) {
-    res.send("Pong Task");
-    // let insertQuery = 'INSERT INTO Task (Name,Description,ColorBackground,ColorText,Icon,ScopeId) VALUES (?,?,?,?,?,?)';
-    // let query = mysql.format(insertQuery,[
-    //     'Scope A',
-    //     'Desc',
-    //     'white',
-    //     'black',
-    //     'check',
-    //     '1',
-    // ]);
+    // res.send("Pong Task");
+    let insertQuery = 'INSERT INTO Task (Name,Description,ColorBackground,Icon,ScopeId) VALUES (?,?,?,?,?)';
+    let query = mysql.format(insertQuery,[
+        'Task',
+        'Desc',
+        '#66BB6A',
+        'mdi-ninja',
+        '1',
+    ]);
 
-    // DB.handle_db(query, (result) => {
-    //     if (result.error){
-    //         return res.send('There was a problem creating the Task.')
-    //     } else {
-    //         res.send(result.data)
-    //     }
-    // });
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.send('There was a problem creating the Task.')
+        } else {
+            res.send(result.data)
+        }
+    });
 });
 
 module.exports = router;

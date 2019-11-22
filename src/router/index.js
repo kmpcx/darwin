@@ -29,7 +29,15 @@ export default new Router({
       path: "/selection",
       name: "selection",
       meta: { layout: "no-sidebar" },
-      component: require("@/views/Selection.vue").default
+      component: require("@/views/Selection.vue").default,
+      props: (route) => ({ orderId: route.query.orderId })
+    },
+    {
+      path: "/selectionTask/:orderId/:scopeId",
+      name: "selectionTask",
+      meta: { layout: "no-sidebar" },
+      component: require("@/views/SelectionTask.vue").default,
+      props: (route) => ({ scopeId: route.query.scopeId, orderId: route.query.orderId })
     },
     {
       path: "/order",
