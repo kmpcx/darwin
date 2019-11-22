@@ -85,23 +85,40 @@ router.post('/getTasks', (req, res) => {
     })
 })
 
+router.post('/getByOrder', (req, res) => {
+    let selectQuery = 'SELECT s.ScopeId, s.Name, s.ColorBackground, s.Icon FROM Scope s, Task t, OrderTask ot WHERE ot.OrderId = ? and ot.TaskId = t.TaskId and t.ScopeId = s.ScopeId GROUP BY s.ScopeId';
+    let query = mysql.format(selectQuery,[req.body.orderId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Tasks found.')
+            } else {
+                res.status(200).send( result.data )
+            }
+        }
+    })
+})
+
 router.get('/ping', function (req, res) {
     // res.send("Pong Scope");
     // var data = {name: "Scope A", Description: 'Desc test 1'} // consider some dummy data
     // var query = mysql.format("UPDATE Scope SET ? WHERE ScopeId = ?", [data, '1']);
 
-    let data = {Name: 'Scope F'}
-    let insertQuery = 'INSERT INTO Scope SET ?'
-    let query = mysql.format(insertQuery, data);
-
-    DB.handle_db(query, (result) => {
-        console.log(result)
-        if (result.data.error){
-            return res.send('There was a problem creating the Task.')
-        } else {
-            res.send(result.data)
-        }
-    });
+    // let selectQuery = 'SELECT s.ScopeId, s.Name, s.ColorBackground, s.Icon, t.Name FROM Scope s, Task t, OrderTask ot WHERE ot.OrderId = ? and ot.TaskId = t.TaskId and t.ScopeId = s.ScopeId GROUP BY s.ScopeId';
+    // // let query = mysql.format(selectQuery,1);
+    // DB.handle_db(selectQuery, (result) => {
+    //     if (result.error){
+    //         return res.status(500).send('Error on the server.')
+    //     } else {
+    //         if (!result.data[0]){
+    //             return res.send('No Tasks found.')
+    //         } else {
+    //             res.send( result.data )
+    //         }
+    //     }
+    // })
 });
 
 router.post('/test', (req, res) => {

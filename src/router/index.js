@@ -26,11 +26,11 @@ export default new Router({
       component: () => import("@/components/Login.vue")
     },
     {
-      path: "/selection",
-      name: "selection",
+      path: "/selectionScope/:orderId",
+      name: "selectionScope",
       meta: { layout: "no-sidebar" },
-      component: require("@/views/Selection.vue").default,
-      props: (route) => ({ orderId: route.query.orderId })
+      component: require("@/views/SelectionScope.vue").default,
+      props: true
     },
     {
       path: "/selectionTask/:orderId/:scopeId",

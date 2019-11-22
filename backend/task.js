@@ -178,6 +178,22 @@ router.post('/getAttribute', (req, res) => {
     })
 })
 
+router.post('/getByOrderAndScope', (req, res) => {
+    let selectQuery = 'SELECT t.Taskid, t.Name, t.ColorBackground, t.Icon FROM Scope s, Task t, OrderTask ot WHERE ot.OrderId = ? and ot.TaskId = t.TaskId and t.ScopeId = s.ScopeId and s.ScopeId = ?';
+    let query = mysql.format(selectQuery,[req.body.orderId, req.body.scopeId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Tasks found.')
+            } else {
+                res.status(200).send( result.data )
+            }
+        }
+    })
+})
+
 
 
 
@@ -185,23 +201,36 @@ router.post('/getAttribute', (req, res) => {
 
 
 router.get('/ping', function (req, res) {
-    // res.send("Pong Task");
-    let insertQuery = 'INSERT INTO Task (Name,Description,ColorBackground,Icon,ScopeId) VALUES (?,?,?,?,?)';
-    let query = mysql.format(insertQuery,[
-        'Task',
-        'Desc',
-        '#66BB6A',
-        'mdi-ninja',
-        '1',
-    ]);
+    res.send("Pong Task");
+    // let selectQuery = 'SELECT t.Taskid, t.Name, t.ColorBackground, t.Icon FROM Scope s, Task t, OrderTask ot WHERE ot.OrderId = ? and ot.TaskId = t.TaskId and t.ScopeId = s.ScopeId and s.ScopeId = ?';
+    // let query = mysql.format(selectQuery, [1, 1]);
+    // DB.handle_db(query, (result) => {
+    //     if (result.error){
+    //         return res.send('Error on the server.')
+    //     } else {
+    //         if (!result.data[0]){
+    //             return res.send('No Tasks found.')
+    //         } else {
+    //             res.send( result.data )
+    //         }
+    //     }
+    // })
+    // let insertQuery = 'INSERT INTO Task (Name,Description,ColorBackground,Icon,ScopeId) VALUES (?,?,?,?,?)';
+    // let query = mysql.format(insertQuery,[
+    //     'Task',
+    //     'Desc',
+    //     '#66BB6A',
+    //     'mdi-ninja',
+    //     '2',
+    // ]);
 
-    DB.handle_db(query, (result) => {
-        if (result.error){
-            return res.send('There was a problem creating the Task.')
-        } else {
-            res.send(result.data)
-        }
-    });
+    // DB.handle_db(query, (result) => {
+    //     if (result.error){
+    //         return res.send('There was a problem creating the Task.')
+    //     } else {
+    //         res.send(result.data)
+    //     }
+    // });
 });
 
 module.exports = router;

@@ -13,7 +13,7 @@ router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.json())
 
 router.post('/create', function (req, res) {
-    let insertQuery = 'INSERT INTO Order SET ?'
+    let insertQuery = 'INSERT INTO Orders SET ?'
     let query = mysql.format(insertQuery, req.body.order);
 
     DB.handle_db(query, (result) => {
@@ -26,7 +26,7 @@ router.post('/create', function (req, res) {
 });
 
 router.post('/edit', function (req, res) {
-    let updateQuery = 'UPDATE Order SET ? WHERE OrderId = ?';
+    let updateQuery = 'UPDATE Orders SET ? WHERE OrderId = ?';
     let query = mysql.format(updateQuery, [req.body.order, req.body.orderId]);
 
     DB.handle_db(query, (result) => {
@@ -40,7 +40,7 @@ router.post('/edit', function (req, res) {
 
 
 router.post('/get', (req, res) => {
-    let selectQuery = 'SELECT * FROM Order WHERE OrderId = ?';
+    let selectQuery = 'SELECT * FROM Orders WHERE OrderId = ?';
     let query = mysql.format(selectQuery,[req.body.orderId]);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -56,7 +56,7 @@ router.post('/get', (req, res) => {
 })
 
 router.post('/getAll', (req, res) => {
-    let selectQuery = 'SELECT * FROM Order';
+    let selectQuery = 'SELECT * FROM Orders';
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
@@ -186,16 +186,36 @@ router.post('/getTaskMapping', function (req, res) {
 
 router.get('/ping', function (req, res) {
     res.send("Pong");
-    console.log('Ping');
-    // let selectQuery = 'SELECT * FROM User WHERE Mail = ?';
-    // let query = mysql.format(selectQuery,['peter@mail.com']);
+    // let insertQuery = 'INSERT INTO Orders (BusinessId,ScanCode,Name,Customer,Note) VALUES (?,?,?,?,?)';
+    // let query = mysql.format(insertQuery,[
+    //     'B2',
+    //     '1338',
+    //     'Shirt',
+    //     'Telekom',
+    //     'DescNote',
+    // ]);
+
     // DB.handle_db(query, (result) => {
     //     if (result.error){
-    //         return res.status(500).send('Error on the server.')
+    //         return res.send('There was a problem creating the Order.')
     //     } else {
-    //         res.send(result.data[0]);
+    //         res.send(result.data)
     //     }
-    // })
+    // });
+    // let insertQuery = 'INSERT INTO OrderTask (Mandatory,TaskId,OrderId) VALUES (?,?,?)';
+    // let query = mysql.format(insertQuery,[
+    //     'false',
+    //     '5',
+    //     '1',
+    // ]);
+
+    // DB.handle_db(query, (result) => {
+    //     if (result.error){
+    //         return res.send('There was a problem creating the Order.')
+    //     } else {
+    //         res.send(result.data)
+    //     }
+    // });
 });
 
 module.exports = router;
