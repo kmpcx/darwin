@@ -38,14 +38,7 @@
         <v-col cols="6">
           <div>
             <v-card dark color="#009688" height="220">
-              <v-quagga
-                :onDetected="logIt"
-                :readerSize="{
-        width: 320,
-        height: 240
-      }"
-                :readerTypes="['ean_reader']"
-              ></v-quagga>
+              <qrcode-stream @decode="onDecode"></qrcode-stream>
               <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                   <v-icon size="160">mdi-qrcode</v-icon>
@@ -63,24 +56,11 @@
 </template>
 
 <script>
-import Vue from "vue";
-import VueQuagga from "vue-quaggajs";
-// register component 'v-quagga'
-Vue.use(VueQuagga);
 
 export default {
   data: () => ({
     items: []
   }),
-  qrData() {
-    return {
-      readerSize: {
-        width: 32,
-        height: 24
-      },
-      detecteds: []
-    };
-  },
 
   methods: {
     getOrders() {
@@ -94,9 +74,9 @@ export default {
           alert(error);
         });
     },
-    logIt(qrData) {
-      console.log("detected", qrData);
-    }
+    onDecode (decodedString) {
+      console.log("detected", decodedString);
+    },
   },
   beforeMount() {
     this.getOrders();
