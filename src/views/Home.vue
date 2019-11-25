@@ -24,39 +24,50 @@
 
     <div>
       <v-row>
-        <v-col cols="4">
-          <v-card tile>
-            <v-list dense>
-              <v-header>Active Orders</v-header>
-              <v-list-item-group v-model="item">
-                <v-list-item disabled v-for="(item, i) in items" :key="i">
-                  <v-list-item-icon>
-                    <v-icon>mdi-file-outline</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>{{item.BusinessId}} - {{item.Name}} ({{item.Customer}})
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list-item-group>
-            </v-list>
-          </v-card>
+        <v-col cols="6">
+          <div>
+            <v-card tile>
+              <v-list dense>
+                <v-header>Active Orders</v-header>
+                <v-list-item-group v-model="item">
+                  <v-list-item
+                    v-for="(item, i) in items"
+                    :key="i"
+                    :to="{ path: '/selectionScope/' + item.OrderId }"
+                  >
+                    <v-list-item-icon>
+                      <v-icon>mdi-file-outline</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>{{item.BusinessId}} - {{item.Name}} ({{item.Customer}})</v-list-item-content>
+                  </v-list-item>
+                </v-list-item-group>
+              </v-list>
+            </v-card>
+          </div>
         </v-col>
-        <v-col cols="8">
-          <v-card tile>
-            Selection
-            <v-row>
-              <v-col cols="8">
-                <v-card tile height="180">Select Order</v-card>
-              </v-col>
-              <v-col cols="8">
-                <v-card tile height="180">Pool Activities</v-card>
-              </v-col>
-            </v-row>
-          </v-card>
+        <v-col cols="6">
+          <div>
+            <v-card dark color="#009688" height="220">
+              <div class="d-flex flex-no-wrap justify-space-between">
+                <div>
+                  <v-icon size="160">mdi-qrcode</v-icon>
+                  <v-card-title class="headline">Order Selection</v-card-title>
+                </div>
+              </div>
+            </v-card>
+            <br>
+            <v-card dark color="#F44336" height="220">
+              <div class="d-flex flex-no-wrap justify-space-between">
+                <div>
+                  <v-icon size="160">mdi-broom</v-icon>
+                  <v-card-title class="headline">Pool Activities</v-card-title>
+                </div>
+              </div>
+            </v-card>
+          </div>
         </v-col>
       </v-row>
     </div>
-
-    <h1>Home</h1>
     <v-btn to="/order">Continue</v-btn>
   </div>
 </template>
