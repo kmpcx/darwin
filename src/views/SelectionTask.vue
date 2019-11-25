@@ -38,7 +38,7 @@
         </v-row>
       </v-container>
     </v-card>
-      <v-btn to="/selectionScope/1">Back</v-btn>
+      <v-btn :to="{ path: '/selectionScope/' + $route.params.orderId }">Back</v-btn>
     <v-btn to="/process">Continue</v-btn>
   </div>
 
