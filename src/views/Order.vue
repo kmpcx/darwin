@@ -23,16 +23,29 @@
     </v-stepper>
     <div>
       <v-row>
-        <v-col cols="8">
+        <v-col cols="6">
           <div>
             <v-card tile>
-              <v-select :items="items" item-text="BusinessId" item-value="BusinessId" label="Select Order"></v-select>
+              <v-select
+                :items="items"
+                item-text="BusinessId"
+                item-value="BusinessId"
+                label="Select Order"
+              ></v-select>
             </v-card>
           </div>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="6">
           <div>
             <v-card dark color="#009688" height="220">
+              <v-quagga
+                :onDetected="logIt"
+                :readerSize="{
+        width: 320,
+        height: 240
+      }"
+                :readerTypes="['ean_reader']"
+              ></v-quagga>
               <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                   <v-icon size="160">mdi-qrcode</v-icon>
@@ -50,10 +63,24 @@
 </template>
 
 <script>
+import Vue from "vue";
+import VueQuagga from "vue-quaggajs";
+// register component 'v-quagga'
+Vue.use(VueQuagga);
+
 export default {
   data: () => ({
     items: []
   }),
+  qrData() {
+    return {
+      readerSize: {
+        width: 32,
+        height: 24
+      },
+      detecteds: []
+    };
+  },
 
   methods: {
     getOrders() {
@@ -66,6 +93,9 @@ export default {
         .catch(function(error) {
           alert(error);
         });
+    },
+    logIt(qrData) {
+      console.log("detected", qrData);
     }
   },
   beforeMount() {

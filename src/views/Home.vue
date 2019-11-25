@@ -47,7 +47,7 @@
         </v-col>
         <v-col cols="6">
           <div>
-            <v-card dark color="#009688" height="220">
+            <v-card dark color="#009688" height="220" :to="{ path: '/order/'}">
               <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                   <v-icon size="160">mdi-qrcode</v-icon>
@@ -56,7 +56,7 @@
               </div>
             </v-card>
             <br>
-            <v-card dark color="#F44336" height="220">
+            <v-card dark color="#F44336" height="220" :to="{ path: '/selectionScope/1'}">
               <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                   <v-icon size="160">mdi-broom</v-icon>

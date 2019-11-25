@@ -3,7 +3,7 @@
     <div class="container">
       <div class="content has-text-centered">
         <p>
-          Footer proudly presented by <a href="https://kmpc.de">KMPC</a>
+          <a>A KMPC Innovations product.</a>
         </p>
       </div>
     </div>
