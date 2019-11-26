@@ -52,8 +52,8 @@
         </v-col>
       </v-row>
     </div>
-    <v-btn tile to="/">Back</v-btn>
-    <v-btn tile to="/selectionScope/1">Continue</v-btn>
+    <v-btn tile to="/">Zurück</v-btn>
+    <v-btn tile to="/selectionScope/1">Weiter</v-btn>
   </div>
 </template>
 

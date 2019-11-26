@@ -29,16 +29,16 @@
             <v-card tile height="220">
               <v-list dense>
                 <v-header>Meine aktiven Aufträge</v-header>
-                <v-list-item-group v-model="item">
+                <v-list-item-group v-model="activeOrder">
                   <v-list-item
-                    v-for="(item, i) in items"
+                    v-for="(activeOrder, i) in activeOrders"
                     :key="i"
-                    :to="{ path: '/selectionScope/' + item.OrderId }"
+                    :to="{ path: '/selectionScope/' + activeOrder.OrderId }"
                   >
                     <v-list-item-icon>
                       <v-icon>mdi-file-outline</v-icon>
                     </v-list-item-icon>
-                    <v-list-item-content>{{item.BusinessId}} - {{item.Name}} ({{item.Customer}})</v-list-item-content>
+                    <v-list-item-content>{{activeOrder.BusinessId}} - {{activeOrder.Name}} ({{activeOrder.Customer}})</v-list-item-content>
                   </v-list-item>
                 </v-list-item-group>
               </v-list>
@@ -47,16 +47,16 @@
             <v-card tile height="220">
               <v-list dense>
                 <v-header>Meine letzten Aufträge</v-header>
-                <v-list-item-group v-model="item">
+                <v-list-item-group v-model="recentOrders">
                   <v-list-item
-                    v-for="(item, i) in items"
+                    v-for="(recentOrder, i) in recentOrders"
                     :key="i"
-                    :to="{ path: '/selectionScope/' + item.OrderId }"
+                    :to="{ path: '/selectionScope/' + recentOrder.OrderId }"
                   >
                     <v-list-item-icon>
                       <v-icon>mdi-file-outline</v-icon>
                     </v-list-item-icon>
-                    <v-list-item-content>{{item.BusinessId}} - {{item.Name}} ({{item.Customer}})</v-list-item-content>
+                    <v-list-item-content>{{recentOrder.BusinessId}} - {{recentOrder.Name}} ({{recentOrder.Customer}})</v-list-item-content>
                   </v-list-item>
                 </v-list-item-group>
               </v-list>
@@ -93,16 +93,28 @@
 <script>
 export default {
   data: () => ({
-    items: []
+    activeOrders: [],
+    recentOrders: []
   }),
 
   methods: {
-    getOrders() {
+    getActiveOrders() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/getAll", {})
+        .post("http://localhost:3000/order/getActive", { userId: 1 })
         .then(function(response) {
-          self.items = response.data;
+          self.activeOrders = response.data;
+        })
+        .catch(function(error) {
+          alert(error);
+        });
+    },
+    getRecentOrders() {
+      let self = this;
+      this.axios
+        .post("http://localhost:3000/order/getRecent", { userId: 1 })
+        .then(function(response) {
+          self.recentOrders = response.data;
         })
         .catch(function(error) {
           alert(error);
@@ -110,7 +122,8 @@ export default {
     }
   },
   beforeMount() {
-    this.getOrders();
+    this.getActiveOrders();
+    this.getRecentOrders();
   }
 };
 </script>
