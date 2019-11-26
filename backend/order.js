@@ -70,6 +70,38 @@ router.post('/getAll', (req, res) => {
     })
 })
 
+router.post('/getActive', (req, res) => {
+    let selectQuery = 'SELECT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OderId FROM Orders o, OrderEntry oe WHERE o.OrderID = eo.OrderId AND oe.EndTime = NULL AND oe.UderId = ?' ;
+    let  query = mysql.format(selectQuery,[req.body.userId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Orders found.')
+            } else {
+                res.status(200).send( result.data )
+            }
+        }
+    })
+})
+
+router.post('/getRecent', (req, res) => {
+    let selectQuery = 'SELECT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OderId FROM Orders o, OrderEntry oe WHERE o.OrderID = eo.OrderId AND oe.UderId = ? ORDER BY StartTime LIMIT 5' ;
+    let  query = mysql.format(selectQuery,[req.body.userId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Orders found.')
+            } else {
+                res.status(200).send( result.data )
+            }
+        }
+    })
+})
+
 
 // ---------- Order Entry
 

@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <component :is="layout">
+      <span v-if="isLoggedIn"> <a @click="logout">Logout</a></span>
+      <span v-else> <router-link to="/login">Login</router-link></span>
       <router-view/>
     </component>
   </div>
@@ -12,10 +14,26 @@ export default {
   computed: {
     layout() {
       return (this.$route.meta.layout || default_layout) + "-layout";
-    }
+    },
+    isLoggedIn : function(){ return this.$store.getters.isLoggedIn}
+  },
+  methods: {
+      logout: function () {
+        this.$store.dispatch('logout')
+        .then(() => {
+        this.$router.push('/login')
+      })
+    },
   },
   created() {
-    // nothing defined here (when this.$route.path is other than "/")
+    this.$http.interceptors.response.use(undefined, function (err) {
+      return new Promise(function (resolve, reject) {
+        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+          this.$store.dispatch(logout)
+        }
+        throw err;
+      });
+    });
     console.log(this.$route, this.$route.meta.layout);
   },
   updated() {

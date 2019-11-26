@@ -23,7 +23,7 @@ export default new Router({
       path: "/login",
       name: "login",
       meta: { layout: "no-sidebar" },
-      component: () => import("@/components/Login.vue")
+      component: () => import("@/views/Login.vue")
     },
     {
       path: "/selectionScope/:orderId",
