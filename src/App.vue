@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <component :is="layout">
-      <span v-if="isLoggedIn"> <a @click="logout">Logout</a></span>
+      <span v-if="isLoggedIn"> <a @click="logout">Logout for UserId: {{getUserId}}</a></span>
       <span v-else> <router-link to="/login">Login</router-link></span>
       <router-view/>
     </component>
@@ -15,7 +15,9 @@ export default {
     layout() {
       return (this.$route.meta.layout || default_layout) + "-layout";
     },
-    isLoggedIn : function(){ return this.$store.getters.isLoggedIn}
+    isLoggedIn : function(){ return this.$store.getters.isLoggedIn},
+    authStatus : function(){ return this.$store.getters.authStatus},
+    getUserId : function(){ return this.$store.getters.getUserId}
   },
   methods: {
       logout: function () {

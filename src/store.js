@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import { stat } from 'fs'
 
 Vue.use(Vuex)
 
@@ -8,7 +9,7 @@ export default new Vuex.Store({
   state: {
     status: '',
     token: localStorage.getItem('token') || '',
-    user: {}
+    user: localStorage.getItem('user') || ''
   },
   mutations: {
     auth_request (state) {
@@ -23,8 +24,9 @@ export default new Vuex.Store({
       state.status = 'error'
     },
     logout (state) {
-      state.status = ''
-      state.token = ''
+      state.status = 'logout'
+      state.token = '',
+      state.user = ''
     }
   },
   actions: {
@@ -36,13 +38,15 @@ export default new Vuex.Store({
             const token = resp.data.token
             const user = resp.data.user
             localStorage.setItem('token', token)
+            localStorage.setItem('user', user.UserId)
             axios.defaults.headers.common.Authorization = token
-            commit('auth_success', token, user)
+            commit('auth_success', token, user.UserId)
             resolve(resp)
           })
           .catch(err => {
             commit('auth_error')
             localStorage.removeItem('token')
+            localStorage.removeItem('user')
             reject(err)
           })
       })
@@ -55,6 +59,7 @@ export default new Vuex.Store({
             const token = resp.data.token
             const user = resp.data.user
             localStorage.setItem('token', token)
+            localStorage.setItem('user', user.UserId)
             axios.defaults.headers.common.Authorization = token
             commit('auth_success', token, user)
             resolve(resp)
@@ -70,6 +75,7 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         commit('logout')
         localStorage.removeItem('token')
+        localStorage.removeItem('user')
         delete axios.defaults.headers.common.Authorization
         resolve()
       })
@@ -77,6 +83,7 @@ export default new Vuex.Store({
   },
   getters: {
     isLoggedIn: state => !!state.token,
-    authStatus: state => state.status
+    authStatus: state => state.status,
+    getUserId: state => state.user,
   }
 })
