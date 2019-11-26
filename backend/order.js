@@ -71,7 +71,7 @@ router.post('/getAll', (req, res) => {
 })
 
 router.post('/getActive', (req, res) => {
-    let selectQuery = 'SELECT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OderId FROM Orders o, OrderEntry oe WHERE o.OrderID = eo.OrderId AND oe.EndTime = NULL AND oe.UderId = ?' ;
+    let selectQuery = 'SELECT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OrderId FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.EndTime IS NULL AND oe.UserId = ?' ;
     let  query = mysql.format(selectQuery,[req.body.userId]);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -87,7 +87,7 @@ router.post('/getActive', (req, res) => {
 })
 
 router.post('/getRecent', (req, res) => {
-    let selectQuery = 'SELECT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OderId FROM Orders o, OrderEntry oe WHERE o.OrderID = eo.OrderId AND oe.UderId = ? ORDER BY StartTime LIMIT 5' ;
+    let selectQuery = 'SELECT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OrderId FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.UserId = ? AND oe.EndTime IS NOT NULL ORDER BY StartTime LIMIT 5' ;
     let  query = mysql.format(selectQuery,[req.body.userId]);
     DB.handle_db(query, (result) => {
         if (result.error){

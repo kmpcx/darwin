@@ -25,7 +25,7 @@
     <div>
       <v-quagga :onDetected="logIt" :readerSize="readerSize" :readerTypes="['ean_reader']"></v-quagga>
     </div>
-    <v-btn to="/selectionTask/1/1">Back</v-btn>
+    <v-btn to="/selectionTask/1/1">Zurück</v-btn>
   </div>
 </template>
 

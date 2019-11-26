@@ -60,8 +60,8 @@
       </v-container>
     </v-card>
     <br />
-    <v-btn tile to="/order">Back</v-btn>
-    <v-btn tile to="/selectionTask/1/1">Continue</v-btn>
+    <v-btn tile to="/order">Zurück</v-btn>
+    <v-btn tile to="/selectionTask/1/1">Weiter</v-btn>
   </div>
 </template>
 

@@ -54,8 +54,8 @@
       </v-container>
     </v-card>
     <br />
-    <v-btn tile :to="{ path: '/selectionScope/' + $route.params.orderId }">Back</v-btn>
-    <v-btn tile to="/process">Continue</v-btn>
+    <v-btn tile :to="{ path: '/selectionScope/' + $route.params.orderId }">Zurück</v-btn>
+    <v-btn tile to="/process">Weiter</v-btn>
   </div>
 </template>
 
