@@ -1,36 +1,57 @@
 <template>
   <div>
-     <v-stepper value="3">
+    <v-stepper value="3">
       <v-stepper-header>
-        <v-stepper-step color="#283593" step="1" complete>Home</v-stepper-step>
+        <v-stepper-step color="#283593" step="1" complete>Start</v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step color="#283593" step="2" complete>Order</v-stepper-step>
+        <v-stepper-step color="#283593" step="2" complete>Auftrag</v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step color="#283593" step="3">Scope</v-stepper-step>
+        <v-stepper-step color="#283593" step="3">Arbeitsbereich</v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step color="#283593" step="4">Task</v-stepper-step>
+        <v-stepper-step color="#283593" step="4">Aktivität</v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step color="#283593" step="5">Process</v-stepper-step>
+        <v-stepper-step color="#283593" step="5">Prozess</v-stepper-step>
       </v-stepper-header>
     </v-stepper>
-    <h1>Selection in Order: {{$route.params.orderId}}</h1>
-    <v-card max-width="100%" class="mx-auto">
+    <br />
+    <v-card tile>
+      <v-card-title class="headline">Auswahl des Arbeitsbereichs für Auftrag: {{order.BusinessId}}</v-card-title>
+
+      <v-card-subtitle class="order-info">
+        <v-row>
+          <v-col cols="4">
+            Name: {{order.Name}}
+            <br />
+            Kunde: {{order.Customer}}
+          </v-col>
+          <v-col cols="8">Notiz: {{order.Note}}</v-col>
+        </v-row>
+      </v-card-subtitle>
+    </v-card>
+    <br />
+    <v-card tile max-width="100%" class="mx-auto">
       <v-container>
         <v-row dense>
           <v-col v-for="(item, i) in items" :key="i" cols="4">
-            <v-card :color="item.ColorBackground" dark max-height="180" :to="{ path: '/selectionTask/' + $route.params.orderId + '/' + item.ScopeId }">
+            <v-card
+              tile
+              :color="item.ColorBackground"
+              dark
+              max-height="150"
+              :to="{ path: '/selectionTask/' + $route.params.orderId + '/' + item.ScopeId }"
+            >
               <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
-                  <v-icon size="120">{{item.Icon}}</v-icon>
-                  <v-card-title class="headline" v-text="item.Name" ></v-card-title>
+                  <v-icon size="100">{{item.Icon}}</v-icon>
+                  <v-card-title class="headline" v-text="item.Name"></v-card-title>
                 </div>
               </div>
             </v-card>
@@ -38,8 +59,9 @@
         </v-row>
       </v-container>
     </v-card>
-      <v-btn to="/order">Back</v-btn>
-    <v-btn to="/selectionTask/1/1">Continue</v-btn>
+    <br />
+    <v-btn tile to="/order">Back</v-btn>
+    <v-btn tile to="/selectionTask/1/1">Continue</v-btn>
   </div>
 </template>
 
@@ -47,18 +69,21 @@
 export default {
   props: {
     orderId: {
-      type: String,
+      type: String
     }
   },
   data: () => ({
-    items: []
+    items: [],
+    order: {}
   }),
 
   methods: {
     getScopes() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/scope/getByOrder", {orderId: this.orderId})
+        .post("http://localhost:3000/scope/getByOrder", {
+          orderId: this.orderId
+        })
         .then(function(response) {
           self.items = response.data;
         })
@@ -66,12 +91,32 @@ export default {
           alert(error);
         });
     },
+
+    getOrder() {
+      let self = this;
+      this.axios
+        .post("http://localhost:3000/order/get", { orderId: this.orderId })
+        .then(function(response) {
+          self.order = response.data;
+        })
+        .catch(function(error) {
+          alert(error);
+        });
+    },
+
     clickBox(scopeId) {
-      console.log(scopeId)
+      console.log(scopeId);
     }
   },
   beforeMount() {
     this.getScopes();
-  },
+    this.getOrder();
+  }
 };
 </script>
+
+<style scoped>
+.order-info {
+  text-align: left;
+}
+</style>
