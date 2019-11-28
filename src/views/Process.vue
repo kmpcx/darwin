@@ -22,36 +22,18 @@
       </v-stepper-header>
     </v-stepper>
     <h1>Process</h1>
-    <div>
-      <v-quagga :onDetected="logIt" :readerSize="readerSize" :readerTypes="['ean_reader']"></v-quagga>
-    </div>
+
     <v-btn to="/selectionTask/1/1">Zurück</v-btn>
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
-import VueQuagga from 'vue-quaggajs';
 
-// register component 'v-quagga'
-Vue.use(VueQuagga);
 
 export default {
-  name: 'VueBarcodeTest',
   data () {
     return {
-      readerSize: {
-        width: 600,
-        height: 400
-      },
-      detecteds: []
     }
-  },
-  methods: {
-    logIt (data) {
-      console.log('detected', data)
-    }
-
   }
 }
 </script>

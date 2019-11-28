@@ -4,6 +4,7 @@ const authentication = require('./authentication');
 const scope = require('./scope');
 const task = require('./task');
 const order = require('./order');
+const moment = require('vue-moment');
 
 const app = express()
 

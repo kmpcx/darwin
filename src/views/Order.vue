@@ -78,6 +78,7 @@ export default {
     },
     onDecode (decodedString) {
       console.log("detected", decodedString);
+      this.$router.push('/selectionScope/' + decodedString)
     },
   },
   beforeMount() {
