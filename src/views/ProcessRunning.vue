@@ -96,9 +96,24 @@
           </v-btn>
            <br>
           <br>
-          <v-btn tile width="120" height="70" round dark large color="#8BC34A" :to="{ path: '/processStopped/' + $route.params.orderId + '/2/2'  }">
-            <v-icon dark>mdi-stop</v-icon> Fertig
+          <v-dialog v-model="dialog" persistent max-width="450" max-height="250">
+            <template v-slot:activator="{ on }">
+              <v-btn tile width="120" height="70" round dark large color="#8BC34A" v-on="on">
+            <v-icon dark>mdi-check</v-icon>Fertig
           </v-btn>
+            </template>
+            <v-card>
+              <v-card-title class="headline">Aktivität fertigstellen</v-card-title>
+              <v-card-text>Ist die laufende Aktivität fertiggestellt?</v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" text @click="dialog = false">
+                  <v-icon dark>mdi-check</v-icon>Fertigstellen</v-btn>
+                
+                <v-btn color="green darken-1" text @click="dialog = false"><v-icon dark>mdi-close-circle</v-icon>Abbrechen</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-col>
       </v-row>
     </div>
@@ -130,7 +145,8 @@ export default {
     colors: ["S/W", "1 Farbe", "2 Farben", "3 Farben", "Mehr als 3 Farben"],
     releaseFile: ["Fertig vorhanden", "Neu optimiert"],
     logoSize: ["3 x 10 cm", "28 x 5 cm"],
-    order: {}
+    order: {},
+    dialog: false
   }),
 
   methods: {

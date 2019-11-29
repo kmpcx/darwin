@@ -105,16 +105,16 @@
           <v-dialog v-model="dialog" persistent max-width="450" max-height="250">
             <template v-slot:activator="{ on }">
               <v-btn tile width="120" height="70" round dark large color="#F44336" v-on="on">
-            <v-icon dark>mdi-cancel</v-icon>Abbruch
+            <v-icon dark>mdi-close-circle</v-icon>Abbruch
           </v-btn>
             </template>
             <v-card>
               <v-card-title class="headline">Aktivität abbrechen</v-card-title>
-              <v-card-text>Sind Sie sicher, dass Sie die laufende Aktivität abbrechen wollen?</v-card-text>
+              <v-card-text>Soll die laufende Aktivität abgebrochen oder fortgesetzt werden?</v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="green darken-1" text @click="dialog = false">Aktivität fortsetzen</v-btn>
-                <v-btn color="green darken-1" text @click="dialog = false">Aktivität abbrechen</v-btn>
+                <v-btn color="green darken-1" text @click="dialog = false"><v-icon dark>mdi-check</v-icon>Fortsetzen</v-btn>
+                <v-btn color="green darken-1" text @click="dialog = false"><v-icon dark>mdi-close-circle</v-icon>Abbrechen</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
