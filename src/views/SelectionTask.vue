@@ -23,7 +23,7 @@
     </v-stepper>
     <br />
     <v-card tile>
-      <v-card-title class="headline">Auswahl des Arbeitsbereichs für Auftrag: {{order.BusinessId}}</v-card-title>
+      <v-card-title class="headline">Auswahl der Aktivität für Auftrag: {{order.BusinessId}}</v-card-title>
 
       <v-card-subtitle class="order-info">
         <v-row>
@@ -41,7 +41,8 @@
       <v-container>
         <v-row dense>
           <v-col v-for="(item, i) in items" :key="i" cols="4">
-            <v-card tile :color="item.ColorBackground" dark max-height="150">
+            <v-card tile :color="item.ColorBackground" dark max-height="150"
+            :to="{ path: '/process/' + $route.params.orderId + '/' + '2'+ '/' + item.Taskid}">
               <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                   <v-icon size="100">{{item.Icon}}</v-icon>
@@ -54,8 +55,15 @@
       </v-container>
     </v-card>
     <br />
-    <v-btn tile :to="{ path: '/selectionScope/' + $route.params.orderId }">Zurück</v-btn>
-    <v-btn tile to="/process">Weiter</v-btn>
+      <v-row>
+    <v-col class="btn-outter-left" cols="6">
+      <v-btn tile :to="{ path: '/selectionScope/' + $route.params.orderId }"><v-icon dark>mdi-arrow-left-thick</v-icon></v-btn>
+    </v-col>
+
+    <v-col class="btn-outter-right" cols="6">
+      <v-btn tile :to="{ path: '/process/' + $route.params.orderId + '/2/2'  }"><v-icon dark>mdi-arrow-right-thick</v-icon></v-btn>
+    </v-col>
+  </v-row>
   </div>
 </template>
 
@@ -75,6 +83,7 @@ export default {
   }),
 
   methods: {
+    // No scopeId is returned in getByOrderAndScope
     getScopes() {
       let self = this;
       this.axios
@@ -83,6 +92,7 @@ export default {
           scopeId: this.scopeId
         })
         .then(function(response) {
+           //alert(scopeId);
           self.items = response.data;
         })
         .catch(function(error) {
@@ -111,5 +121,21 @@ export default {
 <style scoped>
 .order-info {
   text-align: left;
+}
+
+.btn-outter-left {
+  height: 50px;
+  position: absolute;
+  text-align: left;
+  bottom: 5%;
+  left: 5%;
+}
+
+.btn-outter-right {
+  height: 50px;
+  position: absolute;
+  text-align: right;
+  bottom: 5%;
+  right: 5%;
 }
 </style>

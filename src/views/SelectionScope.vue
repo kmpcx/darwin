@@ -60,8 +60,17 @@
       </v-container>
     </v-card>
     <br />
-    <v-btn tile to="/order">Zurück</v-btn>
-    <v-btn tile to="/selectionTask/1/1">Weiter</v-btn>
+
+  <v-row>
+    <v-col class="btn-outter-left" cols="6">
+      <v-btn tile to="/order"><v-icon dark>mdi-arrow-left-thick</v-icon></v-btn>
+    </v-col>
+
+    <v-col class="btn-outter-right" cols="6">
+      <v-btn tile :to="{ path: '/selectionTask/' + $route.params.orderId + '/1'}"><v-icon dark>mdi-arrow-right-thick</v-icon></v-btn>
+    </v-col>
+  </v-row>
+
   </div>
 </template>
 
@@ -118,5 +127,21 @@ export default {
 <style scoped>
 .order-info {
   text-align: left;
+}
+
+.btn-outter-left {
+  height: 50px;
+  position: absolute;
+  text-align: left;
+  bottom: 5%;
+  left: 5%;
+}
+
+.btn-outter-right {
+  height: 50px;
+  position: absolute;
+  text-align: right;
+  bottom: 5%;
+  right: 5%;
 }
 </style>

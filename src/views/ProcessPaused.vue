@@ -18,7 +18,7 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step color="#283593" step="5">Prozess</v-stepper-step>
+        <v-stepper-step color="#BDBDBD" step="5">Prozess</v-stepper-step>
       </v-stepper-header>
     </v-stepper>
     <br />
@@ -86,11 +86,14 @@
         </v-col>
         <v-col cols="6">
           <br>
-          <v-btn tile width="120" height="70" round dark large color="#8BC34A" :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }">
+          <v-btn tile width="120" height="70" round dark large color="#4CAF50" :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }">
             <v-icon dark>mdi-play</v-icon> Start
           </v-btn>
           <br>
-         
+          <br>
+          <v-btn tile width="120" height="70" round dark large color="#F44336" :to="{ path: '/processStopped/' + $route.params.orderId + '/2/2'  }">
+            <v-icon dark>mdi-stop</v-icon> Stop
+          </v-btn>
         </v-col>
       </v-row>
     </div>
@@ -98,16 +101,12 @@
     <br />
     <v-row>
       <v-col class="btn-outter-left" cols="6">
-        <v-btn tile :to="{ path: '/selectionTask/1/' + $route.params.orderId }">
+        <v-btn tile :to="{ path: '/process/' + $route.params.orderId + '/2/2'  }">
           <v-icon dark>mdi-arrow-left-thick</v-icon>
         </v-btn>
       </v-col>
-      <v-col class="btn-outter-right" cols="6">
-      <v-btn tile :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }"><v-icon dark>mdi-arrow-right-thick</v-icon></v-btn>
-    </v-col>
+      <v-col class="btn-outter-right" cols="6"></v-col>
     </v-row>
-
-
   </div>
 </template>
 

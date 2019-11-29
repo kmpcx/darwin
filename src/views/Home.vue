@@ -86,7 +86,6 @@
         </v-col>
       </v-row>
     </div>
-    <v-btn to="/order">Weiter</v-btn>
   </div>
 </template>
 
@@ -127,3 +126,21 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.btn-outter-left {
+  height: 50px;
+  position: absolute;
+  text-align: left;
+  bottom: 5%;
+  left: 5%;
+}
+
+.btn-outter-right {
+  height: 50px;
+  position: absolute;
+  text-align: right;
+  bottom: 5%;
+  right: 5%;
+}
+</style>

@@ -44,7 +44,7 @@
               <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                   <v-icon size="160">mdi-qrcode</v-icon>
-                  <v-card-title class="headline">Scan Order</v-card-title>
+                  <v-card-title class="headline"></v-card-title>
                 </div>
               </div>
             </v-card>
@@ -52,8 +52,15 @@
         </v-col>
       </v-row>
     </div>
-    <v-btn tile to="/">Zurück</v-btn>
-    <v-btn tile to="/selectionScope/1">Weiter</v-btn>
+  <v-row>
+    <v-col class="btn-outter-left" cols="6">
+      <v-btn tile to="/"><v-icon dark>mdi-arrow-left-thick</v-icon></v-btn>
+    </v-col>
+
+    <v-col class="btn-outter-right" cols="6">
+      <v-btn tile to="/selectionScope/1"><v-icon dark>mdi-arrow-right-thick</v-icon></v-btn>
+    </v-col>
+  </v-row>
   </div>
 </template>
 
@@ -86,3 +93,21 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.btn-outter-left {
+  height: 50px;
+  position: absolute;
+  text-align: left;
+  bottom: 5%;
+  left: 5%;
+}
+
+.btn-outter-right {
+  height: 50px;
+  position: absolute;
+  text-align: right;
+  bottom: 5%;
+  right: 5%;
+}
+</style>

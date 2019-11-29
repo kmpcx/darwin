@@ -18,7 +18,7 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step color="#283593" step="5">Prozess</v-stepper-step>
+        <v-stepper-step color="#F44336" step="5">Prozess</v-stepper-step>
       </v-stepper-header>
     </v-stepper>
     <br />
@@ -85,12 +85,39 @@
           </div>
         </v-col>
         <v-col cols="6">
-          <br>
-          <v-btn tile width="120" height="70" round dark large color="#8BC34A" :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }">
-            <v-icon dark>mdi-play</v-icon> Start
+          <br />
+          <v-btn
+            tile
+            width="120"
+            height="70"
+            round
+            dark
+            large
+            color="#8BC34A"
+            :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }"
+          >
+            <v-icon dark>mdi-play</v-icon>Start
           </v-btn>
-          <br>
-         
+          <br />
+          <br />
+          
+
+          <v-dialog v-model="dialog" persistent max-width="450" max-height="250">
+            <template v-slot:activator="{ on }">
+              <v-btn tile width="120" height="70" round dark large color="#F44336" v-on="on">
+            <v-icon dark>mdi-cancel</v-icon>Abbruch
+          </v-btn>
+            </template>
+            <v-card>
+              <v-card-title class="headline">Aktivität abbrechen</v-card-title>
+              <v-card-text>Sind Sie sicher, dass Sie die laufende Aktivität abbrechen wollen?</v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" text @click="dialog = false">Aktivität fortsetzen</v-btn>
+                <v-btn color="green darken-1" text @click="dialog = false">Aktivität abbrechen</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-col>
       </v-row>
     </div>
@@ -98,16 +125,12 @@
     <br />
     <v-row>
       <v-col class="btn-outter-left" cols="6">
-        <v-btn tile :to="{ path: '/selectionTask/1/' + $route.params.orderId }">
+        <v-btn tile :to="{ path: '/process/' + $route.params.orderId + '/2/2'  }">
           <v-icon dark>mdi-arrow-left-thick</v-icon>
         </v-btn>
       </v-col>
-      <v-col class="btn-outter-right" cols="6">
-      <v-btn tile :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }"><v-icon dark>mdi-arrow-right-thick</v-icon></v-btn>
-    </v-col>
+      <v-col class="btn-outter-right" cols="6"></v-col>
     </v-row>
-
-
   </div>
 </template>
 
@@ -126,7 +149,8 @@ export default {
     colors: ["S/W", "1 Farbe", "2 Farben", "3 Farben", "Mehr als 3 Farben"],
     releaseFile: ["Fertig vorhanden", "Neu optimiert"],
     logoSize: ["3 x 10 cm", "28 x 5 cm"],
-    order: {}
+    order: {},
+    dialog: false
   }),
 
   methods: {

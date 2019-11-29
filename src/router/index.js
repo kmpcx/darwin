@@ -46,10 +46,28 @@ export default new Router({
       component: () => import("@/views/Order.vue")
     },
     {
-      path: "/process",
+      path: "/process/:orderId/:scopeId/:taskId",
       name: "process",
       meta: { layout: "no-sidebar" },
       component: () => import("@/views/Process.vue")
+    },
+    {
+      path: "/processRunning/:orderId/:scopeId/:taskId",
+      name: "processRunning",
+      meta: { layout: "no-sidebar" },
+      component: () => import("@/views/ProcessRunning.vue")
+    },
+    {
+      path: "/processPaused/:orderId/:scopeId/:taskId",
+      name: "processPaused",
+      meta: { layout: "no-sidebar" },
+      component: () => import("@/views/ProcessPaused.vue")
+    },
+    {
+      path: "/processStopped/:orderId/:scopeId/:taskId",
+      name: "processStopped",
+      meta: { layout: "no-sidebar" },
+      component: () => import("@/views/ProcessStopped.vue")
     },
     {
       path: "/404",

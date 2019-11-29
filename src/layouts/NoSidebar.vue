@@ -12,7 +12,7 @@ export default {
 <template>
   <div>
     <nav-bar />
-    <div class="container">
+    <div class="my-container">
       <slot />
     </div>
     <footer-bar />
@@ -21,7 +21,10 @@ export default {
 
 <style scoped>
 .my-container {
-    display: flex;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 5%;
+    height: 600px;
     width: 90%;
     align-items: center;
     justify-content: center;

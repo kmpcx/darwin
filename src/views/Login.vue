@@ -10,14 +10,12 @@
     <br />
     <v-card tile>
       <v-card-title class="headline">Login</v-card-title>
-
-      <v-card-subtitle class="order-info">
         <v-row>
           <v-col cols="12">
             <v-form @submit.prevent="login">
               <v-container>
                 <v-row>
-                  <v-col cols="12" md="4">
+                  <v-col cols="12" md="5">
                     <v-text-field v-model="email" label="E-mail" required type="email"></v-text-field>
                   </v-col>
                   <v-col cols="12" md="4">
@@ -29,7 +27,7 @@
                       placeholder="Passwort"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" md="4">
+                  <v-col cols="12" md="3">
                     <button type="submit">Login</button>
                   </v-col>
                 </v-row>
@@ -37,7 +35,6 @@
             </v-form>
           </v-col>
         </v-row>
-      </v-card-subtitle>
     </v-card>
     <br />
   </div>
@@ -63,3 +60,17 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.btn-outter-left {
+  position: relative;
+  padding-right: 350px;
+  padding-top: 200px;
+}
+
+.btn-outter-right {
+  position: relative;
+  padding-left: 350px;
+  padding-top: 200px;
+}
+</style>
