@@ -10,7 +10,7 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step color="#283593" step="3" complete>Arbeitsbereich</v-stepper-step>
+        <v-stepper-step color="#283593" step="3" complete>Veredelungsart</v-stepper-step>
 
         <v-divider></v-divider>
 
@@ -38,79 +38,100 @@
         </v-row>
       </v-card-subtitle>
     </v-card>
-    <br />
-
     <div>
-      <v-row dense>
-        <v-col cols="6">
+      <v-row>
+        <v-col cols="8">
           <div>
-            <v-card tile height="50">
-              <v-select
-                solo
-                flat
-                :items="colors"
-                item-text="text"
-                item-value="value"
-                label="Anzahl Farben"
-              ></v-select>
+            <br>
+            <v-card tile>
+              <v-card-title class="headline">Start-Parameter</v-card-title>
+
+              <v-card-subtitle class="order-info">
+                <v-radio-group row readonly label="Anzahl Farben: ">
+                  <v-radio label="S/W" value="sw"></v-radio>
+                  <v-radio label="1" value="1"></v-radio>
+                  <v-radio label="2" value="2"></v-radio>
+                  <v-radio label="3" value="3"></v-radio>
+                  <v-radio label=">3" value="3+"></v-radio>
+                </v-radio-group>
+                <v-radio-group row readonly label="Status Freigabe: ">
+                  <v-radio label="Fertig vorhanden" value="fertig"></v-radio>
+                  <v-radio label="Neu optimiert" value="neu"></v-radio>
+                </v-radio-group>
+                <v-radio-group row readonly label="Größe Logo: ">
+                  <v-radio label="3 x 10 cm" value="3x10"></v-radio>
+                  <v-radio label="28 x 5 cm" value="28x5"></v-radio>
+                </v-radio-group>
+              </v-card-subtitle>
             </v-card>
-
-            <br />
-
-            <v-card tile height="50">
-              <v-select
-                solo
-                flat
-                :items="releaseFile"
-                item-text="text"
-                item-value="value"
-                label="Status Freigabe"
-              ></v-select>
-            </v-card>
-
-            <br />
-
-            <v-card tile height="50">
-              <v-select
-                solo
-                flat
-                :items="logoSize"
-                item-text="text"
-                item-value="value"
-                label="Größe Logo"
-              ></v-select>
-            </v-card>
-
             <br />
           </div>
         </v-col>
-        <v-col cols="6">
-          <br>
-          <v-btn tile width="120" height="70" round dark large color="#BDBDBD" :to="{ path: '/processPaused/' + $route.params.orderId + '/2/2'  }">
-            <v-icon dark>mdi-pause</v-icon> Pause
+        <v-col cols="4">
+          <br />
+          <v-btn
+            tile
+            width="120"
+            height="70"
+            dark
+            large
+            color="#BDBDBD"
+            :to="{ path: '/processPaused/' + $route.params.orderId + '/2/2'  }"
+          >
+            <v-icon dark>mdi-pause</v-icon>Pause
           </v-btn>
-          <br>
-          <br>
-          <v-btn tile width="120" height="70" round dark large color="#F44336" :to="{ path: '/processStopped/' + $route.params.orderId + '/2/2'  }">
-            <v-icon dark>mdi-stop</v-icon> Stop
-          </v-btn>
-           <br>
-          <br>
-          <v-dialog v-model="dialog" persistent max-width="450" max-height="250">
+          <br />
+          <br />
+
+          <v-dialog v-model="stopDialog" persistent max-width="450" max-height="250">
             <template v-slot:activator="{ on }">
-              <v-btn tile width="120" height="70" round dark large color="#8BC34A" v-on="on">
-            <v-icon dark>mdi-check</v-icon>Fertig
-          </v-btn>
+              <v-btn tile width="120" height="70" dark large color="#F44336" v-on="on">
+                <v-icon dark>mdi-stop</v-icon>Stop
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title class="headline">Aktivität abbrechen</v-card-title>
+              <v-card-text>Aus welchem Grund soll die Aktivität abgebrochen werden?</v-card-text>
+              <v-btn tile block large :to="{ path: '/processStopped/' + $route.params.orderId + '/2/2'  }">
+                <v-icon dark>mdi-border-none-variant</v-icon>Material leer
+              </v-btn>
+              <br>
+              <v-btn tile block large :to="{ path: '/processStopped/' + $route.params.orderId + '/2/2'  }">
+                <v-icon dark>mdi-hotel</v-icon>Krankheit
+              </v-btn>
+              <br>
+              <v-btn tile block large :to="{ path: '/processStopped/' + $route.params.orderId + '/2/2'  }">
+                <v-icon dark>mdi-weather-night</v-icon>Feierabend
+              </v-btn>
+              <br>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" text @click="stopDialog = false">
+                  <v-icon dark>mdi-close-circle</v-icon>Abbrechen
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <br />
+          <br />
+          <v-dialog v-model="completeDialog" persistent max-width="450" max-height="250">
+            <template v-slot:activator="{ on }">
+              <v-btn tile width="120" height="70" dark large color="#8BC34A" v-on="on">
+                <v-icon dark>mdi-check</v-icon>Fertig
+              </v-btn>
             </template>
             <v-card>
               <v-card-title class="headline">Aktivität fertigstellen</v-card-title>
               <v-card-text>Ist die laufende Aktivität fertiggestellt?</v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="green darken-1" text @click="dialog = false">
-                  <v-icon dark>mdi-check</v-icon>Fertigstellen</v-btn>
-                
-                <v-btn color="green darken-1" text @click="dialog = false"><v-icon dark>mdi-close-circle</v-icon>Abbrechen</v-btn>
+                <v-btn color="green darken-1" text @click="completeDialog = false">
+                  <v-icon dark>mdi-check</v-icon>Fertigstellen
+                </v-btn>
+
+                <v-btn color="green darken-1" text @click="completeDialog = false">
+                  <v-icon dark>mdi-close-circle</v-icon>Abbrechen
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -146,7 +167,8 @@ export default {
     releaseFile: ["Fertig vorhanden", "Neu optimiert"],
     logoSize: ["3 x 10 cm", "28 x 5 cm"],
     order: {},
-    dialog: false
+    completeDialog: false,
+    stopDialog: false
   }),
 
   methods: {

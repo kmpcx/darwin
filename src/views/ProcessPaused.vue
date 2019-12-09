@@ -10,7 +10,7 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step color="#283593" step="3" complete>Arbeitsbereich</v-stepper-step>
+        <v-stepper-step color="#283593" step="3" complete>Veredelungsart</v-stepper-step>
 
         <v-divider></v-divider>
 
@@ -41,58 +41,57 @@
     <br />
 
     <div>
-      <v-row dense>
-        <v-col cols="6">
+      <v-row>
+        <v-col cols="8">
           <div>
-            <v-card tile height="50">
-              <v-select
-                solo
-                flat
-                :items="colors"
-                item-text="text"
-                item-value="value"
-                label="Anzahl Farben"
-              ></v-select>
+            <v-card tile>
+              <v-card-title class="headline">Start-Parameter</v-card-title>
+
+              <v-card-subtitle class="order-info">
+                <v-radio-group row readonly label="Anzahl Farben: ">
+                  <v-radio label="S/W" value="sw"></v-radio>
+                  <v-radio label="1" value="1"></v-radio>
+                  <v-radio label="2" value="2"></v-radio>
+                  <v-radio label="3" value="3"></v-radio>
+                  <v-radio label=">3" value="3+"></v-radio>
+                </v-radio-group>
+                <v-radio-group row readonly label="Status Freigabe: ">
+                  <v-radio label="Fertig vorhanden" value="fertig"></v-radio>
+                  <v-radio label="Neu optimiert" value="neu"></v-radio>
+                </v-radio-group>
+                <v-radio-group row readonly label="Größe Logo: ">
+                  <v-radio label="3 x 10 cm" value="3x10"></v-radio>
+                  <v-radio label="28 x 5 cm" value="28x5"></v-radio>
+                </v-radio-group>
+              </v-card-subtitle>
             </v-card>
-
-            <br />
-
-            <v-card tile height="50">
-              <v-select
-                solo
-                flat
-                :items="releaseFile"
-                item-text="text"
-                item-value="value"
-                label="Status Freigabe"
-              ></v-select>
-            </v-card>
-
-            <br />
-
-            <v-card tile height="50">
-              <v-select
-                solo
-                flat
-                :items="logoSize"
-                item-text="text"
-                item-value="value"
-                label="Größe Logo"
-              ></v-select>
-            </v-card>
-
-            <br />
+            
           </div>
         </v-col>
-        <v-col cols="6">
-          <br>
-          <v-btn tile width="120" height="70" round dark large color="#4CAF50" :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }">
-            <v-icon dark>mdi-play</v-icon> Start
+        <v-col cols="4">
+          <v-btn
+            tile
+            width="120"
+            height="70"
+            dark
+            large
+            color="#4CAF50"
+            :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }"
+          >
+            <v-icon dark>mdi-play</v-icon>Start
           </v-btn>
-          <br>
-          <br>
-          <v-btn tile width="120" height="70" round dark large color="#F44336" :to="{ path: '/processStopped/' + $route.params.orderId + '/2/2'  }">
-            <v-icon dark>mdi-stop</v-icon> Stop
+          <br />
+          <br />
+          <v-btn
+            tile
+            width="120"
+            height="70"
+            dark
+            large
+            color="#F44336"
+            :to="{ path: '/processStopped/' + $route.params.orderId + '/2/2'  }"
+          >
+            <v-icon dark>mdi-stop</v-icon>Stop
           </v-btn>
         </v-col>
       </v-row>

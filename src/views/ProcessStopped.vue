@@ -10,7 +10,7 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step color="#283593" step="3" complete>Arbeitsbereich</v-stepper-step>
+        <v-stepper-step color="#283593" step="3" complete>Veredelungsart</v-stepper-step>
 
         <v-divider></v-divider>
 
@@ -41,83 +41,50 @@
     <br />
 
     <div>
-      <v-row dense>
-        <v-col cols="6">
+      <v-row>
+        <v-col cols="8">
           <div>
-            <v-card tile height="50">
-              <v-select
-                solo
-                flat
-                :items="colors"
-                item-text="text"
-                item-value="value"
-                label="Anzahl Farben"
-              ></v-select>
+            <v-card tile>
+              <v-row>
+                <v-col cols="6">
+                  <v-card-title class="headline">Start-Parameter</v-card-title>
+
+                  <v-card-subtitle class="order-info">
+                    <p>Anzahl Farben: 3</p>
+                    <p>Status Freigabe: Fertig vorhanden</p>
+                    <p>Größe Logo: 3 x 10 cm</p>
+                  </v-card-subtitle>
+                </v-col>
+
+                <v-col cols="6">
+                  <v-card-title class="headline">End-Parameter</v-card-title>
+
+                  <v-card-subtitle class="order-info">
+                    <p>Menge: 500</p>
+                    <p>Ausschuss: 5</p>
+                  </v-card-subtitle>
+                </v-col>
+              </v-row>
+
+              <v-card-title class="headline">Auftrag beendet / abgebrochen</v-card-title>
+
+              <v-card-subtitle class="order-info">
+                <v-row>
+                  <v-col cols="6">
+                    Zeitpunkt: 01.01.2020 13:37
+                    <br />Grund: Material fehlt
+                  </v-col>
+                  <v-col cols="6">Notiz: Faden ist gerissen und keiner mehr verfügbar.</v-col>
+                </v-row>
+              </v-card-subtitle>
             </v-card>
-
-            <br />
-
-            <v-card tile height="50">
-              <v-select
-                solo
-                flat
-                :items="releaseFile"
-                item-text="text"
-                item-value="value"
-                label="Status Freigabe"
-              ></v-select>
-            </v-card>
-
-            <br />
-
-            <v-card tile height="50">
-              <v-select
-                solo
-                flat
-                :items="logoSize"
-                item-text="text"
-                item-value="value"
-                label="Größe Logo"
-              ></v-select>
-            </v-card>
-
             <br />
           </div>
         </v-col>
-        <v-col cols="6">
-          <br />
-          <v-btn
-            tile
-            width="120"
-            height="70"
-            round
-            dark
-            large
-            color="#8BC34A"
-            :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }"
-          >
-            <v-icon dark>mdi-play</v-icon>Start
+        <v-col cols="4">
+          <v-btn tile width="120" height="70" dark large color="#8BC34A" :to="{ path: '/'  }">
+            <v-icon dark>mdi-restart</v-icon>Zum Start
           </v-btn>
-          <br />
-          <br />
-          
-
-          <v-dialog v-model="dialog" persistent max-width="450" max-height="250">
-            <template v-slot:activator="{ on }">
-              <v-btn tile width="120" height="70" round dark large color="#F44336" v-on="on">
-            <v-icon dark>mdi-close-circle</v-icon>Abbruch
-          </v-btn>
-            </template>
-            <v-card>
-              <v-card-title class="headline">Aktivität abbrechen</v-card-title>
-              <v-card-text>Soll die laufende Aktivität abgebrochen oder fortgesetzt werden?</v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="green darken-1" text @click="dialog = false"><v-icon dark>mdi-check</v-icon>Fortsetzen</v-btn>
-                <v-btn color="green darken-1" text @click="dialog = false"><v-icon dark>mdi-close-circle</v-icon>Abbrechen</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
         </v-col>
       </v-row>
     </div>

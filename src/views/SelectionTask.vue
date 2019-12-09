@@ -10,7 +10,7 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step color="#283593" step="3" complete>Arbeitsbereich</v-stepper-step>
+        <v-stepper-step color="#283593" step="3" complete>Veredelungsart</v-stepper-step>
 
         <v-divider></v-divider>
 

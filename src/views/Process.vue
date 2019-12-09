@@ -10,7 +10,7 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step color="#283593" step="3" complete>Arbeitsbereich</v-stepper-step>
+        <v-stepper-step color="#283593" step="3" complete>Veredelungsart</v-stepper-step>
 
         <v-divider></v-divider>
 
@@ -43,6 +43,7 @@
       <v-row>
         <v-col cols="8">
           <div>
+            <br>
             <v-card tile>
               <v-card-title class="headline">Start-Parameter</v-card-title>
 
@@ -54,7 +55,7 @@
                   <v-radio label="3" value="3"></v-radio>
                   <v-radio label=">3" value="3+"></v-radio>
                 </v-radio-group>
-                <v-radio-group row  label="Status Freigabe: ">
+                <v-radio-group row label="Status Freigabe: ">
                   <v-radio label="Fertig vorhanden" value="fertig"></v-radio>
                   <v-radio label="Neu optimiert" value="neu"></v-radio>
                 </v-radio-group>
