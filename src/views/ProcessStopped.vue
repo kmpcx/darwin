@@ -71,10 +71,14 @@
               <v-card-subtitle class="order-info">
                 <v-row>
                   <v-col cols="6">
-                    Zeitpunkt: 01.01.2020 13:37
-                    <br />Grund: Material fehlt
+                    <p>Start: 01.01.2020 13:00</p>
+                    <p>Stop: 01.01.2020 13:37</p>
+                    <p>Laufzeit: 00:37 h</p>
                   </v-col>
-                  <v-col cols="6">Notiz: Faden ist gerissen und keiner mehr verfügbar.</v-col>
+                  <v-col cols="6">
+                    <p>Grund: Material fehlt</p>
+                    <p>Notiz: Faden ist gerissen und keiner mehr verfügbar.</p>
+                  </v-col>
                 </v-row>
               </v-card-subtitle>
             </v-card>

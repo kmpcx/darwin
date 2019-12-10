@@ -38,37 +38,38 @@
         </v-row>
       </v-card-subtitle>
     </v-card>
+    <br>
     <div>
       <v-row>
-        <v-col cols="8">
+         <v-col cols="8">
           <div>
-            <br>
             <v-card tile>
-              <v-card-title class="headline">Start-Parameter</v-card-title>
+              <v-row>
+                <v-col cols="6">
+                  <v-card-title class="headline">Start-Parameter</v-card-title>
 
-              <v-card-subtitle class="order-info">
-                <v-radio-group row readonly label="Anzahl Farben: ">
-                  <v-radio label="S/W" value="sw"></v-radio>
-                  <v-radio label="1" value="1"></v-radio>
-                  <v-radio label="2" value="2"></v-radio>
-                  <v-radio label="3" value="3"></v-radio>
-                  <v-radio label=">3" value="3+"></v-radio>
-                </v-radio-group>
-                <v-radio-group row readonly label="Status Freigabe: ">
-                  <v-radio label="Fertig vorhanden" value="fertig"></v-radio>
-                  <v-radio label="Neu optimiert" value="neu"></v-radio>
-                </v-radio-group>
-                <v-radio-group row readonly label="Größe Logo: ">
-                  <v-radio label="3 x 10 cm" value="3x10"></v-radio>
-                  <v-radio label="28 x 5 cm" value="28x5"></v-radio>
-                </v-radio-group>
-              </v-card-subtitle>
+                  <v-card-subtitle class="order-info">
+                    <p>Anzahl Farben: 3</p>
+                    <p>Status Freigabe: Fertig vorhanden</p>
+                    <p>Größe Logo: 3 x 10 cm</p>
+                  </v-card-subtitle>
+                </v-col>
+
+                <v-col cols="6">
+                  <v-card-title class="headline">Statusinformationen</v-card-title>
+
+                  <v-card-subtitle class="order-info">
+                    <p>Status: in Bearbeitung</p>
+                    <p>Start: 01.01.2020 13:37</p>
+                    <p>Laufzeit: 00:18 h</p>
+                  </v-card-subtitle>
+                </v-col>
+              </v-row>
             </v-card>
             <br />
           </div>
         </v-col>
         <v-col cols="4">
-          <br />
           <v-btn
             tile
             width="120"
