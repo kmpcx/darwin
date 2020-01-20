@@ -23,9 +23,7 @@
     </v-stepper>
     <br />
     <v-card tile>
-      <v-card-title
-        class="headline"
-      >Prozessdaten zur laufenden Aktivität für Auftrag: {{order.BusinessId}}</v-card-title>
+      <v-card-title class="headline">Informationen zum Auftrag: {{order.BusinessId}}</v-card-title>
 
       <v-card-subtitle class="order-info">
         <v-row>
@@ -33,8 +31,13 @@
             Name: {{order.Name}}
             <br />
             Kunde: {{order.Customer}}
+            <br />
+            Gesamtlaufzeit: 05:32 h
           </v-col>
-          <v-col cols="8">Notiz: {{order.Note}}</v-col>
+          <v-col cols="8">
+            Notiz: {{order.Note}}
+            <br />
+            Abgeschlossene Aktivitäten: Patchen / Patchen / Nähen</v-col>
         </v-row>
       </v-card-subtitle>
     </v-card>
@@ -92,17 +95,17 @@
             height="70"
             dark
             large
-            color="#4CAF50"
+            color="#8BC34A"
             :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }"
           >
-            <v-icon dark>mdi-play</v-icon>Start
+            <v-icon dark>mdi-play</v-icon>Weiter
           </v-btn>
 
           <br>
           <br>
 
-          <v-btn tile width="120" height="70" dark large color="#8BC34A" :to="{ path: '/'  }">
-            <v-icon dark>mdi-restart</v-icon>Startmenü
+          <v-btn tile width="120" height="70" dark large color="#BDBDBD" :to="{ path: '/'  }">
+            <v-icon dark>mdi-home-export-outline</v-icon>
           </v-btn>
         </v-col>
       </v-row>

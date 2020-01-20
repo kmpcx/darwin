@@ -23,7 +23,7 @@ export default {
 .my-container {
     margin-left: 5%;
     margin-right: 5%;
-    margin-top: 5%;
+    margin-top: 2%;
     height: 600px;
     width: 90%;
     align-items: center;
