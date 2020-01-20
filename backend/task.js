@@ -118,16 +118,21 @@ router.post('/getAttribute', (req, res) => {
 })
 
 router.post('/getAttributes', (req, res) => {
-    let selectQuery = 'SELECT * FROM TaskAttribute WHERE TaskId = ?';
-    let query = mysql.format(selectQuery,[req.body.taskId]);
+    let selectQuery = 'SELECT * FROM TaskAttribute WHERE TaskId = ? and isStart = ? and isEnd = ?';
+    let query = mysql.format(selectQuery,[req.body.taskId, req.body.isStart, req.body.isEnd]);
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
         } else {
             if (!result.data[0]){
-                return res.status(404).send('No Task Attribute found.')
+                res.status(200).send({})
             } else {
-                res.status(200).send( result.data )
+                let parameters = []
+                result.data.forEach(element => {
+                    let parameter = {name: element.Name, type: element.Type, values: JSON.parse(element.Values)}
+                    parameters.push(parameter)
+                });
+                res.status(200).send( parameters )
             }
         }
     })
@@ -149,7 +154,7 @@ router.post('/addAttributeEntry', function (req, res) {
     });
 });
 
-router.post('/editAttribute', function (req, res) {
+router.post('/editAttributeEntry', function (req, res) {
     let updateQuery = 'UPDATE TaskAttributeEntry SET ? WHERE TaskAttributeEntryId = ?';
     let query = mysql.format(updateQuery, [req.body.taskAttribute, req.body.taskAttributeEntryId]);
 
@@ -162,7 +167,7 @@ router.post('/editAttribute', function (req, res) {
     });
 });
 
-router.post('/getAttribute', (req, res) => {
+router.post('/getAttributeEntry', (req, res) => {
     let selectQuery = 'SELECT * FROM TaskAttributeEntry WHERE TaskAttributeEntryId = ?';
     let query = mysql.format(selectQuery,[req.body.taskAttributeEntryId]);
     DB.handle_db(query, (result) => {

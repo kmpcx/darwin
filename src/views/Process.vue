@@ -46,22 +46,9 @@
             <br>
             <v-card tile>
               <v-card-title class="headline">Start-Parameter</v-card-title>
-
-              <v-card-subtitle class="order-info">
-                <v-radio-group row label="Anzahl Farben: ">
-                  <v-radio label="S/W" value="sw"></v-radio>
-                  <v-radio label="1" value="1"></v-radio>
-                  <v-radio label="2" value="2"></v-radio>
-                  <v-radio label="3" value="3"></v-radio>
-                  <v-radio label=">3" value="3+"></v-radio>
-                </v-radio-group>
-                <v-radio-group row label="Status Freigabe: ">
-                  <v-radio label="Fertig vorhanden" value="fertig"></v-radio>
-                  <v-radio label="Neu optimiert" value="neu"></v-radio>
-                </v-radio-group>
-                <v-radio-group row label="Größe Logo: ">
-                  <v-radio label="3 x 10 cm" value="3x10"></v-radio>
-                  <v-radio label="28 x 5 cm" value="28x5"></v-radio>
+              <v-card-subtitle v-for="(item, i) in parameters" :key="i" class="order-info">
+                <v-radio-group row> {{item.name}}
+                  <v-radio v-for="(value, j) in item.values" :key="j" :label="value.name" :value="value.value"></v-radio>
                 </v-radio-group>
               </v-card-subtitle>
             </v-card>
@@ -110,10 +97,14 @@ export default {
     },
     scopeId: {
       type: String
+    },
+    taskId: {
+      type: String
     }
   },
   data: () => ({
     items: [],
+    parameters: [],
     colors: ["S/W", "1 Farbe", "2 Farben", "3 Farben", "Mehr als 3 Farben"],
     releaseFile: ["Fertig vorhanden", "Neu optimiert"],
     logoSize: ["3 x 10 cm", "28 x 5 cm"],
@@ -121,35 +112,34 @@ export default {
   }),
 
   methods: {
-    getScopes() {
-      let self = this;
-      this.axios
-        .post("http://localhost:3000/task/getByOrderAndScope", {
-          orderId: this.orderId,
-          scopeId: this.scopeId
-        })
-        .then(function(response) {
-          self.items = response.data;
-        })
-        .catch(function(error) {
-          //alert(error);
-        });
-    },
     getOrder() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/get", { orderId: 2 })
+        .post("http://localhost:3000/order/get", { orderId: this.orderId })
         .then(function(response) {
           self.order = response.data;
         })
         .catch(function(error) {
-          alert("OrderId: " + orderId);
+          alert("Error: " + error);
+        });
+    },
+    getParameters() {
+    let self = this;
+    this.axios
+        .post("http://localhost:3000/task/getAttributes", { taskId: this.taskId , isStart: true, isEnd: false})
+        .then(function(response) {
+          self.parameters = response.data;
+        })
+        .catch(function(error) {
+          if(error.response.status !== 404){
+            alert("Error: " + error);
+          }         
         });
     }
   },
   beforeMount() {
-    this.getScopes();
     this.getOrder();
+    this.getParameters();
   }
 };
 </script>

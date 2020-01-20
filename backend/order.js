@@ -102,6 +102,22 @@ router.post('/getRecent', (req, res) => {
     })
 })
 
+router.post('/getOrderStatus', (req, res) => {
+    let selectQuery = 'SELECT * FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.EndTime IS NULL AND oe.UserId = ?' ;
+    let  query = mysql.format(selectQuery,[req.body.userId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Orders found.')
+            } else {
+                res.status(200).send( result.data )
+            }
+        }
+    })
+})
+
 
 // ---------- Order Entry
 

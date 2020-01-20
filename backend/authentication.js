@@ -63,15 +63,19 @@ router.post('/login', (req, res) => {
 router.get('/ping', function (req, res) {
     res.send("Pong");
     console.log('Ping Auth');
-    // let selectQuery = 'SELECT * FROM User WHERE Mail = ?';
-    // let query = mysql.format(selectQuery,['peter@mail.com']);
+    // let insertQuery = 'INSERT INTO User (Name,Mail,Username,Password,Language,IsAdmin,IsActive) VALUES (?,?,?,?,?,?,?)';
+    // let query = mysql.format(insertQuery,[
+    //     'Test',
+    //     'mail@kmpc.de',
+    //     'Test',
+    //     bcrypt.hashSync('password', 8),
+    //     'de',
+    //     true,
+    //     true
+    // ]);
     // DB.handle_db(query, (result) => {
-    //     if (result.error){
-    //         return res.status(500).send('Error on the server.')
-    //     } else {
-    //         res.send(result.data[0]);
-    //     }
-    // })
+    //     res.send("Pong");
+    // });
 });
 
 module.exports = router;
