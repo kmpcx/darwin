@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div id="app">
     <v-system-bar color="red lighten-2">
       <v-icon>mdi-arrow-collapse-all</v-icon>
       <span>DARWIN</span>
       <v-spacer></v-spacer>
-      <span>{{ new Date() | moment("hh:mm DD.MM.YYYY") }}</span>
+      <span v-if="isLoggedIn"> <a @click="logout">Logout for UserId: {{getUserId}}</a></span>
     </v-system-bar>
   </div>
 

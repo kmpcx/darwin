@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <component :is="layout">
-      <span v-if="isLoggedIn"> <a @click="logout">Logout for UserId: {{getUserId}}</a></span>
-      <span v-else> <router-link to="/login"></router-link></span>
+      <!-- <span v-if="isLoggedIn"> <a @click="logout">Logout for UserId: {{getUserId}}</a></span>
+      <span v-else> <router-link to="/login"></router-link></span> -->
       <router-view/>
     </component>
   </div>
