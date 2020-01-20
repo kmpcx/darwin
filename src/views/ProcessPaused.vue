@@ -82,7 +82,7 @@
           </v-btn>
           <br />
           <br />
-          <v-btn
+          <!-- <v-btn
             tile
             width="120"
             height="70"
@@ -92,7 +92,7 @@
             :to="{ path: '/processStopped/' + $route.params.orderId + '/2/2'  }"
           >
             <v-icon dark>mdi-stop</v-icon>Stop
-          </v-btn>
+          </v-btn> -->
         </v-col>
       </v-row>
     </div>

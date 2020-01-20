@@ -70,7 +70,7 @@
           </div>
         </v-col>
         <v-col cols="4">
-          <v-btn
+          <!-- <v-btn
             tile
             width="120"
             height="70"
@@ -80,14 +80,11 @@
             :to="{ path: '/processPaused/' + $route.params.orderId + '/2/2'  }"
           >
             <v-icon dark>mdi-pause</v-icon>Pause
-          </v-btn>
-          <br />
-          <br />
-
+          </v-btn> -->
           <v-dialog v-model="stopDialog" persistent max-width="450" max-height="250">
             <template v-slot:activator="{ on }">
               <v-btn tile width="120" height="70" dark large color="#F44336" v-on="on">
-                <v-icon dark>mdi-stop</v-icon>Stop
+                <v-icon dark>mdi-stop</v-icon>Pause
               </v-btn>
             </template>
             <v-card>
@@ -126,7 +123,7 @@
               <v-card-text>Ist die laufende Aktivität fertiggestellt?</v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="green darken-1" text @click="completeDialog = false">
+                <v-btn color="green darken-1" text :to="{ path: '/processStopped/' + $route.params.orderId + '/2/2'  }">
                   <v-icon dark>mdi-check</v-icon>Fertigstellen
                 </v-btn>
 

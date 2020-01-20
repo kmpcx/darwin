@@ -86,8 +86,23 @@
           </div>
         </v-col>
         <v-col cols="4">
+          <v-btn
+            tile
+            width="120"
+            height="70"
+            dark
+            large
+            color="#4CAF50"
+            :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }"
+          >
+            <v-icon dark>mdi-play</v-icon>Start
+          </v-btn>
+
+          <br>
+          <br>
+
           <v-btn tile width="120" height="70" dark large color="#8BC34A" :to="{ path: '/'  }">
-            <v-icon dark>mdi-restart</v-icon>Zum Start
+            <v-icon dark>mdi-restart</v-icon>Startmenü
           </v-btn>
         </v-col>
       </v-row>
