@@ -41,20 +41,27 @@
         </v-row>
       </v-card-subtitle>
     </v-card>
-
+    
+    <!-- <form id="app" @submit="checkForm" action="http://localhost:3000/order/startTask" method="post"> -->
     <div>
       <v-row>
         <v-col cols="8">
           <div>
             <br>
-            <v-card tile>
-              <v-card-title class="headline">Start-Parameter</v-card-title>
-              <v-card-subtitle v-for="(item, i) in parameters" :key="i" class="order-info">
-                <v-radio-group row> {{item.name}}
-                  <v-radio v-for="(value, j) in item.values" :key="j" :label="value.name" :value="value.value"></v-radio>
-                </v-radio-group>
-              </v-card-subtitle>
-            </v-card>
+              <v-card tile>
+                <v-card-title class="headline">Start-Parameter</v-card-title>
+                <p v-if="errors.length">
+                  <b>Fehler:</b>
+                  {{errors[0]}}
+                </p>
+                <p>
+                  <v-card-subtitle v-for="(item, i) in parameters" :key="i" class="order-info">
+                    <v-radio-group v-model="form.parameters[i]" row> {{item.name}}
+                      <v-radio v-for="(value, j) in item.values" :key="j" :label="value.name" :value="value.value"></v-radio>
+                    </v-radio-group>
+                  </v-card-subtitle>
+                </p>
+              </v-card>
             <br />
           </div>
         </v-col>
@@ -67,15 +74,15 @@
             dark
             large
             color="#8BC34A"
-            :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }"
+            @click="submit"
           >
+          <!-- :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }" -->
             <v-icon dark>mdi-play</v-icon>Start
           </v-btn>
           <br />
         </v-col>
       </v-row>
     </div>
-
     <br />
     <v-row>
       <v-col class="btn-outter-left" cols="6">
@@ -108,7 +115,9 @@ export default {
   data: () => ({
     items: [],
     parameters: [],
-    order: {}
+    order: {},
+    errors: [],
+    form: {parameters: []},
   }),
 
   methods: {
@@ -135,6 +144,23 @@ export default {
             alert("Error: " + error);
           }         
         });
+    },
+    submit: function () {
+      this.errors = [];
+      if (this.form.parameters.length === this.parameters.length) {
+        let self = this;
+        this.axios
+          .post("http://localhost:3000/order/startTask",
+          {taskId: this.taskId , orderId: this.orderId, parameters: this.parameters, form: this.form, userId: this.$store.getters.getUserId})
+          .then(function(response) {
+            alert(response);
+          })
+          .catch(function(error) {
+            alert("Error: " + error);         
+          });
+      } else {
+        this.errors.push('Bitte prüfen sie die Start-Parameter.');
+      }
     }
   },
   beforeMount() {

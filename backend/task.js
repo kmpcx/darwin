@@ -129,7 +129,7 @@ router.post('/getAttributes', (req, res) => {
             } else {
                 let parameters = []
                 result.data.forEach(element => {
-                    let parameter = {name: element.Name, type: element.Type, values: JSON.parse(element.Values)}
+                    let parameter = {id: element.TaskAttributeId,name: element.Name, type: element.Type, values: JSON.parse(element.Values)}
                     parameters.push(parameter)
                 });
                 res.status(200).send( parameters )

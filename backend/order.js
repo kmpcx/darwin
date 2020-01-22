@@ -180,6 +180,34 @@ router.post('/getEntries', (req, res) => {
     })
 })
 
+router.post('/startTask', function (req, res) {
+    let time = new Date().toJSON().slice(0, 19).replace('T', ' ');
+    let insertQuery = 'INSERT INTO OrderEntry (StartTime, Note, UserId, OrderId) VALUES (?, ?, ?, ?)'
+    let query = mysql.format(insertQuery, [time, null, req.body.userId, req.body.orderId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('There was a problem creating the Order Entry.')
+        } else {
+            res.status(200).send(result.data)
+            let insertQuery = '(?, ?, ?, ?),'
+            let query = 'INSERT INTO TaskAttributeEntry (TaskAttributeId, OrderEntryId, Timestamp, InputValue) VALUES';
+            req.body.parameters.forEach((val, key, arr) => {
+                var queryTmp = mysql.format(insertQuery, [val.id, result.data.insertId, time, req.body.form.parameters[key]]);
+                query = query.concat(queryTmp)
+                if (Object.is(arr.length - 1, key)) {
+                    console.log(query)
+                    query = query.substring(0, query.length - 1);
+                    DB.handle_db(query, (result) => {
+                        if (result.error){
+                            console.log('There was a problem creating Order Entry.')
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
 
 // ---------- Task
 
