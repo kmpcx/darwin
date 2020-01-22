@@ -28,8 +28,8 @@
           <div>
             <v-card tile height="220">
               <v-list dense>
-                <v-header>Meine aktiven Aufträge</v-header>
-                <v-list-item-group v-model="activeOrder">
+                <div>Meine aktiven Aufträge</div>
+                <v-list-item-group>
                   <v-list-item
                     v-for="(activeOrder, i) in activeOrders"
                     :key="i"
@@ -46,7 +46,7 @@
             <br />
             <v-card tile height="220">
               <v-list dense>
-                <v-header>Meine letzten Aufträge</v-header>
+                <div>Meine letzten Aufträge</div>
                 <v-list-item-group v-model="recentOrders">
                   <v-list-item
                     v-for="(recentOrder, i) in recentOrders"

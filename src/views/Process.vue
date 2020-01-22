@@ -108,9 +108,6 @@ export default {
   data: () => ({
     items: [],
     parameters: [],
-    colors: ["S/W", "1 Farbe", "2 Farben", "3 Farben", "Mehr als 3 Farben"],
-    releaseFile: ["Fertig vorhanden", "Neu optimiert"],
-    logoSize: ["3 x 10 cm", "28 x 5 cm"],
     order: {}
   }),
 
