@@ -1,14 +1,25 @@
 <template>
   <div id="app">
-    <v-system-bar color="red lighten-2">
-      <v-icon>mdi-arrow-collapse-all</v-icon>
-      <span>DARWIN</span>
-      <v-spacer></v-spacer>
-      <span v-if="isLoggedIn"> <a @click="logout">Logout for UserId: {{getUserId}}</a></span>
-      <span v-else> <router-link to="/login"></router-link></span>
-    </v-system-bar>
-  </div>
+    <v-app-bar color="deep-purple accent-4" dense dark>
+      <v-toolbar-title>DARWIN</v-toolbar-title>
 
+      <v-spacer></v-spacer>
+
+      <v-menu left bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+            <v-icon>mdi-account-circle</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item>
+            <v-list-item-title><a @click="logout">Logout</a></v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-app-bar>
+  </div>
 </template>
 
 <script>
