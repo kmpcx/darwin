@@ -88,9 +88,9 @@ export default {
         });
     },
     onDecode (decodedString) {
-      alert("detected", decodedString)
+      // alert("detected", decodedString)
       console.log("detected", decodedString);
-      // this.$router.push('/selectionScope/' + decodedString)
+      this.$router.push('/selectionScope/' + decodedString)
     },
   },
   beforeMount() {
