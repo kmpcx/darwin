@@ -76,7 +76,6 @@
             color="#8BC34A"
             @click="submit"
           >
-          <!-- :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }" -->
             <v-icon dark>mdi-play</v-icon>Start
           </v-btn>
           <br />
@@ -146,6 +145,7 @@ export default {
         });
     },
     submit: function () {
+      let self = this;
       this.errors = [];
       if (this.form.parameters.length === this.parameters.length) {
         let self = this;
@@ -153,7 +153,9 @@ export default {
           .post("http://localhost:3000/order/startTask",
           {taskId: this.taskId , orderId: this.orderId, parameters: this.parameters, form: this.form, userId: this.$store.getters.getUserId})
           .then(function(response) {
-            alert(response);
+            // this.$route.router.go('/processRunning/' + this.orderId + '/' + this.scopeId + '/' + this.taskId)
+            // return false;
+            this.$router.push('/selectionScope/1')
           })
           .catch(function(error) {
             alert("Error: " + error);         

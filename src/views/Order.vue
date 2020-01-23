@@ -40,7 +40,10 @@
         <v-col cols="7">
           <div>
             <v-card tile dark color="#283593" height="320">
-              <qrcode-stream @decode="onDecode"></qrcode-stream>
+              
+              <StreamBarcodeReader
+                @decode="onDecode"
+              ></StreamBarcodeReader>
               <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                   <v-icon size="160">mdi-qrcode</v-icon>
@@ -65,8 +68,9 @@
 </template>
 
 <script>
-
+import { StreamBarcodeReader } from "vue-barcode-reader";
 export default {
+  components: {StreamBarcodeReader},
   data: () => ({
     items: []
   }),
@@ -84,8 +88,9 @@ export default {
         });
     },
     onDecode (decodedString) {
+      alert("detected", decodedString)
       console.log("detected", decodedString);
-      this.$router.push('/selectionScope/' + decodedString)
+      // this.$router.push('/selectionScope/' + decodedString)
     },
   },
   beforeMount() {
