@@ -210,6 +210,37 @@ router.post('/startTask', function (req, res) {
     });
 });
 
+router.post('/stopTask', function (req, res) {
+    let time = new Date().toJSON().slice(0, 19).replace('T', ' ');
+    let updateQuery = 'UPDATE OrderEntry SET EndTime = ?, Note = ? WHERE OrderEntryId = ?';
+    let query = mysql.format(updateQuery, [time, req.body.note, req.body.orderEntryId]);
+    console.log(query)
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('There was a problem updating the Order Entry.')
+        } else {
+            res.status(200).send(result.data)
+            let insertQuery = '(?, ?, ?, ?),'
+            let query = 'INSERT INTO TaskAttributeEntry (TaskAttributeId, OrderEntryId, Timestamp, InputValue) VALUES';
+            if(req.body.parameters.length >= 0){
+                req.body.parameters.forEach((val, key, arr) => {
+                    var queryTmp = mysql.format(insertQuery, [val.id, req.body.orderEntryId, time, req.body.form.parameters[key]]);
+                    query = query.concat(queryTmp)
+                    if (Object.is(arr.length - 1, key)) {
+                        console.log(query)
+                        query = query.substring(0, query.length - 1);
+                        DB.handle_db(query, (result) => {
+                            if (result.error){
+                                console.log('There was a problem updating Order Entry.')
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+});
+
 
 // ---------- Task
 

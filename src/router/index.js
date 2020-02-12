@@ -53,7 +53,7 @@ export default new Router({
       props: true
     },
     {
-      path: "/processRunning/:orderId/:scopeId/:taskId",
+      path: "/processRunning/:orderId/:scopeId/:taskId/:orderEntryId",
       name: "processRunning",
       meta: { layout: "no-sidebar" },
       component: () => import("@/views/ProcessRunning.vue"),

@@ -91,7 +91,7 @@
         </v-btn>
       </v-col>
       <v-col class="btn-outter-right" cols="6">
-        <v-btn tile :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }">
+        <v-btn tile :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2/0'  }">
           <v-icon dark>mdi-arrow-right-thick</v-icon>
         </v-btn>
       </v-col>
@@ -153,9 +153,7 @@ export default {
           .post("http://localhost:3000/order/startTask",
           {taskId: this.taskId , orderId: this.orderId, parameters: this.parameters, form: this.form, userId: this.$store.getters.getUserId})
           .then(function(response) {
-            // this.$route.router.go('/processRunning/' + this.orderId + '/' + this.scopeId + '/' + this.taskId)
-            // return false;
-            self.$router.push('/processRunning/' + self.orderId + '/' + self.scopeId + '/' + self.taskId)
+            self.$router.push('/processRunning/' + self.orderId + '/' + self.scopeId + '/' + self.taskId + '/' + response.data.insertId)
           })
           .catch(function(error) {
             alert("Error: " + error);         

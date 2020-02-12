@@ -63,7 +63,7 @@
 
                   <v-card-subtitle class="order-info">
                     <p>Status: in Bearbeitung</p>
-                    <p>Start: 01.01.2020 13:37</p>
+                    <p>Start: {{orderEntry.StartTime}}</p>
                     <p>Laufzeit: 00:18 h</p>
                   </v-card-subtitle>
                 </v-col>
@@ -111,6 +111,32 @@
                   <v-icon dark>mdi-close-circle</v-icon>Abbrechen
                 </v-btn>
               </v-card-actions>
+              <v-card tile>
+                <v-card-title class="headline">Stop-Parameter</v-card-title>
+                <p v-if="errors.length">
+                  <b>Fehler:</b>
+                  {{errors[0]}}
+                </p>
+                <p>
+                  <v-card-subtitle v-for="(item, i) in parameters" :key="i" class="order-info">
+                    <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row> {{item.name}}
+                      <v-radio v-for="(value, j) in item.values" :key="j" :label="value.name" :value="value.value"></v-radio>
+                    </v-radio-group>
+                    <v-text-field v-else-if="item.type === 'int'" v-model="form.parameters[i]" :label="item.name" hide-details single-line type="number"/>
+                  </v-card-subtitle>
+                </p>
+                <v-btn
+                  tile
+                  width="120"
+                  height="70"
+                  dark
+                  large
+                  color="#F44336"
+                  @click="submit"
+                >
+                  <v-icon dark>mdi-stop</v-icon>Stop
+                </v-btn>
+              </v-card>
             </v-card>
           </v-dialog>
           <br />
@@ -163,39 +189,45 @@ export default {
     },
     taskId: {
       type: String
+    },
+    orderEntryId: {
+      type: String
     }
   },
   data: () => ({
     parameters: [],
+    errors: [],
+    form: {parameters: []},
     order: {},
+    orderEntry: {},
     completeDialog: false,
     stopDialog: false
   }),
 
   methods: {
-    getScopes() {
-      let self = this;
-      this.axios
-        .post("http://localhost:3000/task/getByOrderAndScope", {
-          orderId: this.orderId,
-          scopeId: this.scopeId
-        })
-        .then(function(response) {
-          self.items = response.data;
-        })
-        .catch(function(error) {
-          //alert(error);
-        });
-    },
     getOrder() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/get", { orderId: 2 })
+        .post("http://localhost:3000/order/get", { orderId: this.orderId })
         .then(function(response) {
           self.order = response.data;
         })
         .catch(function(error) {
           alert("OrderId: " + orderId);
+        });
+    },
+    getOrderEntry() {
+      let self = this;
+      this.axios
+        .post("http://localhost:3000/order/getEntry", { orderEntryId: this.orderEntryId })
+        .then(function(response) {
+          self.orderEntry = response.data;
+          if(response.data.EndTime){
+            alert('Achtung, Eintrag bereits abgeschlossen!')
+          }
+        })
+        .catch(function(error) {
+          alert("Error: " + error);
         });
     },
     getParameters() {
@@ -210,11 +242,29 @@ export default {
             alert("Error: " + error);
           }         
         });
+    },
+    submit: function () {
+      let self = this;
+      this.errors = [];
+      if (this.form.parameters.length === this.parameters.length || !this.parameters.length) {
+        this.axios
+          .post("http://localhost:3000/order/stopTask",
+          { orderEntryId: this.orderEntryId, parameters: this.parameters, form: this.form, note: 'break'})
+          .then(function(response) {
+            self.$router.push('/processStopped/' + self.orderId + '/' + self.scopeId + '/' + self.taskId)
+          })
+          .catch(function(error) {
+            alert("Error: " + error);         
+          });
+      } else {
+        this.errors.push('Bitte prüfen sie die Stop-Parameter.');
+      }
     }
   },
   beforeMount() {
-    this.getScopes();
     this.getOrder();
+    this.getParameters();
+    this.getOrderEntry();
   }
 };
 </script>
