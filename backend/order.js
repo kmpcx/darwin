@@ -191,19 +191,21 @@ router.post('/startTask', function (req, res) {
             res.status(200).send(result.data)
             let insertQuery = '(?, ?, ?, ?),'
             let query = 'INSERT INTO TaskAttributeEntry (TaskAttributeId, OrderEntryId, Timestamp, InputValue) VALUES';
-            req.body.parameters.forEach((val, key, arr) => {
-                var queryTmp = mysql.format(insertQuery, [val.id, result.data.insertId, time, req.body.form.parameters[key]]);
-                query = query.concat(queryTmp)
-                if (Object.is(arr.length - 1, key)) {
-                    console.log(query)
-                    query = query.substring(0, query.length - 1);
-                    DB.handle_db(query, (result) => {
-                        if (result.error){
-                            console.log('There was a problem creating Order Entry.')
-                        }
-                    });
-                }
-            });
+            if(req.body.parameters.length >= 0){
+                req.body.parameters.forEach((val, key, arr) => {
+                    var queryTmp = mysql.format(insertQuery, [val.id, result.data.insertId, time, req.body.form.parameters[key]]);
+                    query = query.concat(queryTmp)
+                    if (Object.is(arr.length - 1, key)) {
+                        console.log(query)
+                        query = query.substring(0, query.length - 1);
+                        DB.handle_db(query, (result) => {
+                            if (result.error){
+                                console.log('There was a problem creating Order Entry.')
+                            }
+                        });
+                    }
+                });
+            }
         }
     });
 });
