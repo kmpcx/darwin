@@ -160,13 +160,13 @@ export default {
     },
     scopeId: {
       type: String
+    },
+    taskId: {
+      type: String
     }
   },
   data: () => ({
-    items: [],
-    colors: ["S/W", "1 Farbe", "2 Farben", "3 Farben", "Mehr als 3 Farben"],
-    releaseFile: ["Fertig vorhanden", "Neu optimiert"],
-    logoSize: ["3 x 10 cm", "28 x 5 cm"],
+    parameters: [],
     order: {},
     completeDialog: false,
     stopDialog: false
@@ -196,6 +196,19 @@ export default {
         })
         .catch(function(error) {
           alert("OrderId: " + orderId);
+        });
+    },
+    getParameters() {
+      let self = this;
+      this.axios
+        .post("http://localhost:3000/task/getAttributes", { taskId: this.taskId, time: 'isEnd'})
+        .then(function(response) {
+          self.parameters = response.data;
+        })
+        .catch(function(error) {
+          if(error.response.status !== 404){
+            alert("Error: " + error);
+          }         
         });
     }
   },

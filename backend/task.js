@@ -118,8 +118,8 @@ router.post('/getAttribute', (req, res) => {
 })
 
 router.post('/getAttributes', (req, res) => {
-    let selectQuery = 'SELECT * FROM TaskAttribute WHERE TaskId = ? and isStart = ? and isEnd = ?';
-    let query = mysql.format(selectQuery,[req.body.taskId, req.body.isStart, req.body.isEnd]);
+    let selectQuery = "SELECT * FROM TaskAttribute WHERE TaskId = ? and ?? = '1'";
+    let query = mysql.format(selectQuery,[req.body.taskId, req.body.time]);
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
@@ -129,7 +129,10 @@ router.post('/getAttributes', (req, res) => {
             } else {
                 let parameters = []
                 result.data.forEach(element => {
-                    let parameter = {id: element.TaskAttributeId,name: element.Name, type: element.Type, values: JSON.parse(element.Values)}
+                    let parameter = {id: element.TaskAttributeId,name: element.Name, type: element.Type}
+                    if(element.Values){
+                        parameter.values = JSON.parse(element.Values);
+                    }
                     parameters.push(parameter)
                 });
                 res.status(200).send( parameters )

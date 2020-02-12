@@ -56,9 +56,10 @@
                 </p>
                 <p>
                   <v-card-subtitle v-for="(item, i) in parameters" :key="i" class="order-info">
-                    <v-radio-group v-model="form.parameters[i]" row> {{item.name}}
+                    <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row> {{item.name}}
                       <v-radio v-for="(value, j) in item.values" :key="j" :label="value.name" :value="value.value"></v-radio>
                     </v-radio-group>
+                    <v-text-field v-else-if="item.type === 'int'" v-model="form.parameters[i]" :label="item.name" hide-details single-line type="number"/>
                   </v-card-subtitle>
                 </p>
               </v-card>
@@ -132,9 +133,9 @@ export default {
         });
     },
     getParameters() {
-    let self = this;
-    this.axios
-        .post("http://localhost:3000/task/getAttributes", { taskId: this.taskId , isStart: true, isEnd: false})
+      let self = this;
+      this.axios
+        .post("http://localhost:3000/task/getAttributes", { taskId: this.taskId , time: 'isStart'})
         .then(function(response) {
           self.parameters = response.data;
         })
