@@ -28,17 +28,17 @@
           <div>
             <v-card tile height="220">
               <v-list dense>
-                <div>Meine aktiven Aufträge</div>
+                <div>Meine laufenden Aktivitäten</div>
                 <v-list-item-group>
                   <v-list-item
                     v-for="(activeOrder, i) in activeOrders"
                     :key="i"
-                    :to="{ path: '/selectionScope/' + activeOrder.OrderId }"
+                    :to="{ path: '/processRunning/' + activeOrder.OrderId + '/0/' + activeOrder.TaskId + '/' + activeOrder.OrderEntryId }"
                   >
                     <v-list-item-icon>
                       <v-icon>mdi-file-outline</v-icon>
                     </v-list-item-icon>
-                    <v-list-item-content>{{activeOrder.BusinessId}} - {{activeOrder.Name}} ({{activeOrder.Customer}})</v-list-item-content>
+                    <v-list-item-content>{{activeOrder.Name}} ({{activeOrder.Customer}}) - {{activeOrder.ScopeName}} {{activeOrder.TaskName}}</v-list-item-content>
                   </v-list-item>
                 </v-list-item-group>
               </v-list>
@@ -100,18 +100,18 @@ export default {
     getActiveOrders() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/getActive", { userId: 1 })
+        .post("http://localhost:3000/order/getActiveTasks", { userId: this.$store.getters.getUserId })
         .then(function(response) {
           self.activeOrders = response.data;
         })
         .catch(function(error) {
-          alert(error);
+          console.log(error);
         });
     },
     getRecentOrders() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/getRecent", { userId: 1 })
+        .post("http://localhost:3000/order/getRecent", { userId: this.$store.getters.getUserId })
         .then(function(response) {
           self.recentOrders = response.data;
         })

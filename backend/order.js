@@ -70,8 +70,8 @@ router.post('/getAll', (req, res) => {
     })
 })
 
-router.post('/getActive', (req, res) => {
-    let selectQuery = 'SELECT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OrderId FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.EndTime IS NULL AND oe.UserId = ?' ;
+router.post('/getActiveTasks', (req, res) => {
+    let selectQuery = 'SELECT o.Name, o.Note, o.Customer, t.Name as TaskName, s.Name as ScopeName, o.OrderId, oe.TaskId, oe.OrderEntryId FROM Orders o, OrderEntry oe, Task t, Scope s WHERE o.OrderID = oe.OrderId AND oe.TaskId = t.TaskId AND t.ScopeId = s.ScopeId AND oe.EndTime IS NULL AND oe.UserId = ?' ;
     let  query = mysql.format(selectQuery,[req.body.userId]);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -80,6 +80,7 @@ router.post('/getActive', (req, res) => {
             if (!result.data[0]){
                 return res.status(404).send('No Orders found.')
             } else {
+                console.log(result.data)
                 res.status(200).send( result.data )
             }
         }
@@ -87,7 +88,7 @@ router.post('/getActive', (req, res) => {
 })
 
 router.post('/getRecent', (req, res) => {
-    let selectQuery = 'SELECT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OrderId FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.UserId = ? AND oe.EndTime IS NOT NULL ORDER BY StartTime LIMIT 5' ;
+    let selectQuery = 'SELECT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OrderId FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.UserId = ? ORDER BY StartTime LIMIT 5' ;
     let  query = mysql.format(selectQuery,[req.body.userId]);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -182,8 +183,8 @@ router.post('/getEntries', (req, res) => {
 
 router.post('/startTask', function (req, res) {
     let time = new Date().toJSON().slice(0, 19).replace('T', ' ');
-    let insertQuery = 'INSERT INTO OrderEntry (StartTime, Note, UserId, OrderId) VALUES (?, ?, ?, ?)'
-    let query = mysql.format(insertQuery, [time, null, req.body.userId, req.body.orderId]);
+    let insertQuery = 'INSERT INTO OrderEntry (StartTime, Note, UserId, OrderId, TaskId) VALUES (?, ?, ?, ?, ?)'
+    let query = mysql.format(insertQuery, [time, null, req.body.userId, req.body.orderId, req.body.taskId]);
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('There was a problem creating the Order Entry.')
