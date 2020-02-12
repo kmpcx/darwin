@@ -80,7 +80,7 @@ router.post('/getActiveTasks', (req, res) => {
             if (!result.data[0]){
                 return res.status(404).send('No Orders found.')
             } else {
-                console.log(result.data)
+                // console.log(result.data)
                 res.status(200).send( result.data )
             }
         }
