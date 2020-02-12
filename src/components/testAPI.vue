@@ -43,7 +43,7 @@
                 let currentObj = this;
                 this.axios.post('http://localhost:3000/scope/test', {
                     name: this.name,
-                    description: this.description
+                    description: this.$store.getters.getUsername
                 })
                 .then(function (response) {
                     currentObj.output = response.data;

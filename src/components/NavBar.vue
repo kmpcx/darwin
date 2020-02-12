@@ -8,6 +8,7 @@
       <v-menu left bottom>
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on">
+            {{username}}
             <v-icon>mdi-account-circle</v-icon>
           </v-btn>
         </template>
@@ -43,11 +44,15 @@ export default {
         .then(() => {
         this.$router.push('/login')
       })
-    },
+    }
+  },
+  beforeMount() {
+      this.username = this.$store.getters.getUsername
   },
   data() {
     return {
-      open: false
+      open: false,
+      username: 'Te'
     };
   }
 };

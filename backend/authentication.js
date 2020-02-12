@@ -60,6 +60,18 @@ router.post('/login', (req, res) => {
     })
 })
 
+router.post('/info', (req, res) => {
+    let selectQuery = 'SELECT BusinessId, Name, Username, Language FROM User WHERE UserId = ?';
+    let query = mysql.format(selectQuery,[req.body.userId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            res.status(200).send(result.data)
+        }
+    })
+})
+
 router.get('/ping', function (req, res) {
     res.send("Pong");
     console.log('Ping Auth');

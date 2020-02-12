@@ -105,7 +105,9 @@ export default {
           self.activeOrders = response.data;
         })
         .catch(function(error) {
-          console.log(error);
+          if(error.response.status !== 404){
+            console.log(error);
+          }
         });
     },
     getRecentOrders() {
@@ -116,7 +118,7 @@ export default {
           self.recentOrders = response.data;
         })
         .catch(function(error) {
-          alert(error);
+          console.log(error);
         });
     }
   },

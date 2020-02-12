@@ -17,7 +17,8 @@ export default {
     },
     isLoggedIn : function(){ return this.$store.getters.isLoggedIn},
     authStatus : function(){ return this.$store.getters.authStatus},
-    getUserId : function(){ return this.$store.getters.getUserId}
+    getUserId : function(){ return this.$store.getters.getUserId},
+    getUsername : function(){ return this.$store.getters.getUsername}
   },
   methods: {
       logout: function () {
