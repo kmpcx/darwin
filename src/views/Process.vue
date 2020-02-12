@@ -148,14 +148,13 @@ export default {
       let self = this;
       this.errors = [];
       if (this.form.parameters.length === this.parameters.length) {
-        let self = this;
         this.axios
           .post("http://localhost:3000/order/startTask",
           {taskId: this.taskId , orderId: this.orderId, parameters: this.parameters, form: this.form, userId: this.$store.getters.getUserId})
           .then(function(response) {
             // this.$route.router.go('/processRunning/' + this.orderId + '/' + this.scopeId + '/' + this.taskId)
             // return false;
-            this.$router.push('/selectionScope/1')
+            self.$router.push('/processRunning/' + self.orderId + '/' + self.scopeId + '/' + self.taskId)
           })
           .catch(function(error) {
             alert("Error: " + error);         
