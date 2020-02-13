@@ -41,8 +41,6 @@
         </v-row>
       </v-card-subtitle>
     </v-card>
-    
-    <!-- <form id="app" @submit="checkForm" action="http://localhost:3000/order/startTask" method="post"> -->
     <div>
       <v-row>
         <v-col cols="8">
@@ -124,7 +122,7 @@ export default {
     getOrder() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/get", { orderId: this.orderId })
+        .post(process.env.VUE_APP_API + "/order/get", { orderId: this.orderId })
         .then(function(response) {
           self.order = response.data;
         })
@@ -135,7 +133,7 @@ export default {
     getParameters() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/task/getAttributes", { taskId: this.taskId , time: 'isStart'})
+        .post(process.env.VUE_APP_API + "/task/getAttributes", { taskId: this.taskId , time: 'isStart'})
         .then(function(response) {
           self.parameters = response.data;
         })
@@ -150,7 +148,7 @@ export default {
       this.errors = [];
       if (this.form.parameters.length === this.parameters.length || !this.parameters.length) {
         this.axios
-          .post("http://localhost:3000/order/startTask",
+          .post(process.env.VUE_APP_API + "/order/startTask",
           {taskId: this.taskId , orderId: this.orderId, parameters: this.parameters, form: this.form, userId: this.$store.getters.getUserId})
           .then(function(response) {
             self.$router.push('/processRunning/' + self.orderId + '/' + self.scopeId + '/' + self.taskId + '/' + response.data.insertId)

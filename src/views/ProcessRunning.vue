@@ -208,7 +208,7 @@ export default {
     getOrder() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/get", { orderId: this.orderId })
+        .post(process.env.VUE_APP_API + "/order/get", { orderId: this.orderId })
         .then(function(response) {
           self.order = response.data;
         })
@@ -219,7 +219,7 @@ export default {
     getOrderEntry() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/getEntry", { orderEntryId: this.orderEntryId })
+        .post(process.env.VUE_APP_API + "/order/getEntry", { orderEntryId: this.orderEntryId })
         .then(function(response) {
           self.orderEntry = response.data;
           if(response.data.EndTime){
@@ -233,7 +233,7 @@ export default {
     getParameters() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/task/getAttributes", { taskId: this.taskId, time: 'isEnd'})
+        .post(process.env.VUE_APP_API + "/task/getAttributes", { taskId: this.taskId, time: 'isEnd'})
         .then(function(response) {
           self.parameters = response.data;
         })
@@ -248,7 +248,7 @@ export default {
       this.errors = [];
       if (this.form.parameters.length === this.parameters.length || !this.parameters.length) {
         this.axios
-          .post("http://localhost:3000/order/stopTask",
+          .post(process.env.VUE_APP_API + "/order/stopTask",
           { orderEntryId: this.orderEntryId, parameters: this.parameters, form: this.form, note: 'break'})
           .then(function(response) {
             self.$router.push('/processStopped/' + self.orderId + '/' + self.scopeId + '/' + self.taskId)

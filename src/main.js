@@ -12,6 +12,8 @@ import NoSidebar from "./layouts/NoSidebar.vue";
 Vue.component("default-layout", Default);
 Vue.component("no-sidebar-layout", NoSidebar);
 
+// console.log(process.env.VUE_API)
+
 Vue.use(VueAxios, Axios)
 
 Vue.config.productionTip = false

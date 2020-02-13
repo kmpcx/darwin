@@ -134,43 +134,23 @@ export default {
     }
   },
   data: () => ({
-    items: [],
-    colors: ["S/W", "1 Farbe", "2 Farben", "3 Farben", "Mehr als 3 Farben"],
-    releaseFile: ["Fertig vorhanden", "Neu optimiert"],
-    logoSize: ["3 x 10 cm", "28 x 5 cm"],
     order: {},
-    dialog: false
   }),
 
   methods: {
-    getScopes() {
-      let self = this;
-      this.axios
-        .post("http://localhost:3000/task/getByOrderAndScope", {
-          orderId: this.orderId,
-          scopeId: this.scopeId
-        })
-        .then(function(response) {
-          self.items = response.data;
-        })
-        .catch(function(error) {
-          //alert(error);
-        });
-    },
     getOrder() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/get", { orderId: 2 })
+        .post(process.env.VUE_APP_API + "/order/get", { orderId: this.orderId })
         .then(function(response) {
           self.order = response.data;
         })
         .catch(function(error) {
-          alert("OrderId: " + orderId);
+          alert("Error: " + error);
         });
     }
   },
   beforeMount() {
-    this.getScopes();
     this.getOrder();
   }
 };

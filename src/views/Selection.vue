@@ -53,7 +53,7 @@ export default {
     getScopes() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/scope/getAll", {})
+        .post(process.env.VUE_APP_API + "/scope/getAll", {})
         .then(function(response) {
           self.items = response.data;
         })

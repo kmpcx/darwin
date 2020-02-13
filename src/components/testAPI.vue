@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Vue Axios Post - ItSolutionStuff.com</div>
+                    <div class="card-header">{{name}}</div>
     
                     <div class="card-body">
                         <form @submit="formSubmit">
@@ -41,7 +41,7 @@
             formSubmit(e) {
                 e.preventDefault();
                 let currentObj = this;
-                this.axios.post('http://localhost:3000/scope/test', {
+                this.axios.post( process.env.VUE_APP_API + '/scope/test', {
                     name: this.name,
                     description: this.$store.getters.getUsername
                 })

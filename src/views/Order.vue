@@ -79,7 +79,7 @@ export default {
     getOrders() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/getAll", {})
+        .post(process.env.VUE_APP_API + "/order/getAll", {})
         .then(function(response) {
           self.items = response.data;
         })

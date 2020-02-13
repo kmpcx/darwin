@@ -81,7 +81,7 @@ export default new Router({
     {
       path: "/test",
       name: "test",
-      component: require("@/components/testAPI.vue").default
+      component: require("@/components/testAPI.vue").default,
     }
   ]
 });

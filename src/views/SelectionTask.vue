@@ -92,7 +92,7 @@ export default {
     getScopes() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/task/getByOrderAndScope", {
+        .post(process.env.VUE_APP_API + "/task/getByOrderAndScope", {
           orderId: this.orderId,
           scopeId: this.scopeId
         })
@@ -107,7 +107,7 @@ export default {
         getOrder() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/get", { orderId: this.orderId })
+        .post(process.env.VUE_APP_API + "/order/get", { orderId: this.orderId })
         .then(function(response) {
           self.order = response.data;
         })

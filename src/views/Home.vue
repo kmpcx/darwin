@@ -100,7 +100,7 @@ export default {
     getActiveOrders() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/getActiveTasks", { userId: this.$store.getters.getUserId })
+        .post(process.env.VUE_APP_API + "/order/getActiveTasks", { userId: this.$store.getters.getUserId })
         .then(function(response) {
           self.activeOrders = response.data;
         })
@@ -113,7 +113,7 @@ export default {
     getRecentOrders() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/getRecent", { userId: this.$store.getters.getUserId })
+        .post(process.env.VUE_APP_API + "/order/getRecent", { userId: this.$store.getters.getUserId })
         .then(function(response) {
           self.recentOrders = response.data;
         })

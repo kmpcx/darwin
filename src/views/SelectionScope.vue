@@ -95,7 +95,7 @@ export default {
     getScopes() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/scope/getByOrder", {
+        .post(process.env.VUE_APP_API + "/scope/getByOrder", {
           orderId: this.orderId
         })
         .then(function(response) {
@@ -109,7 +109,7 @@ export default {
     getOrder() {
       let self = this;
       this.axios
-        .post("http://localhost:3000/order/get", { orderId: this.orderId })
+        .post(process.env.VUE_APP_API + "/order/get", { orderId: this.orderId })
         .then(function(response) {
           self.order = response.data;
         })
