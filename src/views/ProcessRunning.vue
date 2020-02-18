@@ -63,8 +63,14 @@
 
                   <v-card-subtitle class="order-info">
                     <p>Status: in Bearbeitung</p>
-                    <p>Start: {{orderEntry.StartTime}}</p>
-                    <p>Laufzeit: 00:18 h</p>
+                    <p>Start: {{startDate}}</p>
+                    <p>
+                      Laufzeit: <time-since :date="startDate">
+                      <template slot-scope="int">
+                        {{int.days}}T {{int.hours}}S {{int.minutes}}M {{int.seconds}}s
+                      </template>
+                      </time-since>
+                    </p>
                   </v-card-subtitle>
                 </v-col>
               </v-row>
@@ -201,9 +207,11 @@ export default {
     order: {},
     orderEntry: {},
     completeDialog: false,
-    stopDialog: false
+    stopDialog: false,
+    startDate: new Date()
   }),
-
+  computed: {
+  },
   methods: {
     getOrder() {
       let self = this;
@@ -222,6 +230,7 @@ export default {
         .post(process.env.VUE_APP_API + "/order/getEntry", { orderEntryId: this.orderEntryId })
         .then(function(response) {
           self.orderEntry = response.data;
+          self.startDate = new Date(response.data.StartTime)
           if(response.data.EndTime){
             alert('Achtung, Eintrag bereits abgeschlossen!')
           }

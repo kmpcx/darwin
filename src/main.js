@@ -8,9 +8,11 @@ import router from './router'
 
 import Default from "./layouts/Default.vue";
 import NoSidebar from "./layouts/NoSidebar.vue";
+import TimeSince from "./components/TimeSince.vue";
 
 Vue.component("default-layout", Default);
 Vue.component("no-sidebar-layout", NoSidebar);
+Vue.component("time-since", TimeSince)
 
 // console.log(process.env.VUE_API)
 
