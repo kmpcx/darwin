@@ -48,10 +48,10 @@
           <v-col v-for="(item, i) in items" :key="i" cols="4">
             <v-card tile :color="item.ColorBackground" dark max-height="150"
             :to="{ path: '/process/' + $route.params.orderId + '/' + '2'+ '/' + item.Taskid}">
-              <div class="d-flex flex-no-wrap justify-space-between">
+              <div>
                 <div>
                   <v-icon size="100">{{item.Icon}}</v-icon>
-                  <v-card-title class="headline" v-text="item.Name"></v-card-title>
+                  <v-card-title class="headline justify-center" v-text="item.Name"></v-card-title>
                 </div>
               </div>
             </v-card>

@@ -53,10 +53,10 @@
               max-height="150"
               :to="{ path: '/selectionTask/' + $route.params.orderId + '/' + item.ScopeId }"
             >
-              <div class="d-flex flex-no-wrap justify-space-between">
+              <div>
                 <div>
                   <v-icon size="100">{{item.Icon}}</v-icon>
-                  <v-card-title class="headline" v-text="item.Name"></v-card-title>
+                  <v-card-title class="headline justify-center" v-text="item.Name"></v-card-title>
                 </div>
               </div>
             </v-card>

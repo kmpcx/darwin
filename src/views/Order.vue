@@ -39,17 +39,10 @@
         </v-col>
         <v-col cols="7">
           <div>
-            <v-card tile dark color="#283593" height="320">
-              
+            <v-card tile height="320">
               <StreamBarcodeReader
                 @decode="onDecode"
               ></StreamBarcodeReader>
-              <div class="d-flex flex-no-wrap justify-space-between">
-                <div>
-                  <v-icon size="160">mdi-qrcode</v-icon>
-                  <v-card-title class="headline"></v-card-title>
-                </div>
-              </div>
             </v-card>
           </div>
         </v-col>
