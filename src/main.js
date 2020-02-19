@@ -10,11 +10,13 @@ import Default from "./layouts/Default.vue";
 import NoSidebar from "./layouts/NoSidebar.vue";
 import TimeSince from "./components/TimeSince.vue";
 import OrderInfo from "./components/OrderInfo.vue";
+import StepperBar from "./components/StepperBar.vue";
 
 Vue.component("default-layout", Default);
 Vue.component("no-sidebar-layout", NoSidebar);
 Vue.component("time-since", TimeSince);
 Vue.component("order-info", OrderInfo);
+Vue.component("stepper-bar", StepperBar);
 
 // console.log(process.env.VUE_API)
 

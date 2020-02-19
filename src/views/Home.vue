@@ -1,26 +1,7 @@
 <template>
   <div>
-    <v-stepper value="1">
-      <v-stepper-header>
-        <v-stepper-step color="#283593" step="1">Start</v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step color="#283593" step="2">Auftrag</v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step color="#283593" step="3">Veredelungsart</v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step color="#283593" step="4">Aktivität</v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step color="#283593" step="5">Prozess</v-stepper-step>
-      </v-stepper-header>
-    </v-stepper>
+    <stepper-bar stepperValue="1">
+      </stepper-bar>
 
     <div>
       <v-row>

@@ -1,26 +1,7 @@
 <template>
   <div>
-    <v-stepper value="3">
-      <v-stepper-header>
-        <v-stepper-step color="#283593" step="1" complete>Home</v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step color="#283593" step="2" complete>Order</v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step color="#283593" step="3">Scope</v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step color="#283593" step="4">Task</v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step color="#283593" step="5">Process</v-stepper-step>
-      </v-stepper-header>
-    </v-stepper>
+    <stepper-bar stepperValue="3">
+      </stepper-bar>
     <h1>Selection</h1>
     <v-card max-width="100%" class="mx-auto">
       <v-container>

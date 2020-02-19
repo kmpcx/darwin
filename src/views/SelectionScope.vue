@@ -1,26 +1,7 @@
 <template>
   <div>
-    <v-stepper value="3">
-      <v-stepper-header>
-        <v-stepper-step color="#283593" step="1" complete>Start</v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step color="#283593" step="2" complete>Auftrag</v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step color="#283593" step="3">Veredelungsart</v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step color="#283593" step="4">Aktivität</v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step color="#283593" step="5">Prozess</v-stepper-step>
-      </v-stepper-header>
-    </v-stepper>
+    <stepper-bar stepperValue="3">
+      </stepper-bar>
     <br />
       <order-info :orderId="orderId">
       </order-info>
@@ -72,7 +53,8 @@ export default {
   },
   data: () => ({
     items: [],
-    order: {}
+    order: {},
+    stepperValue: 3
   }),
 
   methods: {
