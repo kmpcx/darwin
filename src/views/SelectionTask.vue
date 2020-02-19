@@ -22,24 +22,8 @@
       </v-stepper-header>
     </v-stepper>
     <br />
-    <v-card tile>
-      <v-card-title class="headline">Informationen zum Auftrag: {{order.BusinessId}}</v-card-title>
-      <v-card-subtitle class="order-info">
-        <v-row>
-          <v-col cols="4">
-            Name: {{order.Name}}
-            <br />
-            Kunde: {{order.Customer}}
-            <br />
-            Gesamtlaufzeit: 05:32 h
-          </v-col>
-          <v-col cols="8">
-            Notiz: {{order.Note}}
-            <br />
-            Abgeschlossene Aktivitäten: Patchen / Patchen /</v-col>
-        </v-row>
-      </v-card-subtitle>
-    </v-card>
+      <order-info :orderId="orderId">
+      </order-info>
     <br />
     <v-card tile max-width="100%" class="mx-auto">
       <v-card-title class="headline">Auswahl der Aktivität</v-card-title>
