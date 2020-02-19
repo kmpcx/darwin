@@ -11,7 +11,7 @@
           <div>
             <br>
               <v-card tile>
-                <v-card-title class="headline">Start-Parameter</v-card-title>
+                <v-card-title class="headline">Start-Parameter für {{taskInfo.Name}} in {{taskInfo.ScopeName}}</v-card-title>
                 <p v-if="errors.length">
                   <b>Fehler:</b>
                   {{errors[0]}}
@@ -80,6 +80,7 @@ export default {
     order: {},
     errors: [],
     form: {parameters: []},
+    taskInfo: {}
   }),
 
   methods: {
@@ -100,6 +101,19 @@ export default {
         .post(process.env.VUE_APP_API + "/task/getAttributes", { taskId: this.taskId , time: 'isStart'})
         .then(function(response) {
           self.parameters = response.data;
+        })
+        .catch(function(error) {
+          if(error.response.status !== 404){
+            alert("Error: " + error);
+          }         
+        });
+    },
+    getTaskInfo() {
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/task/getInfo", { taskId: this.taskId})
+        .then(function(response) {
+          self.taskInfo = response.data;
         })
         .catch(function(error) {
           if(error.response.status !== 404){
@@ -128,6 +142,7 @@ export default {
   beforeMount() {
     this.getOrder();
     this.getParameters();
+    this.getTaskInfo();
   }
 };
 </script>

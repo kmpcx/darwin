@@ -7,7 +7,7 @@
       </order-info>
     <br />
     <v-card tile max-width="100%" class="mx-auto">
-      <v-card-title class="headline">Auswahl der Aktivität</v-card-title>
+      <v-card-title class="headline">Auswahl der Aktivität für {{scope.Name}}</v-card-title>
       <v-container>
         <v-row dense>
           <v-col v-for="(item, i) in items" :key="i" cols="4">
@@ -49,12 +49,13 @@ export default {
   },
   data: () => ({
     items: [],
-    order: {}
+    order: {},
+    scope: {}
   }),
 
   methods: {
     // No scopeId is returned in getByOrderAndScope
-    getScopes() {
+    getTasks() {
       let self = this;
       this.axios
         .post(process.env.VUE_APP_API + "/task/getByOrderAndScope", {
@@ -69,7 +70,7 @@ export default {
           alert(error);
         });
     },
-        getOrder() {
+      getOrder() {
       let self = this;
       this.axios
         .post(process.env.VUE_APP_API + "/order/get", { orderId: this.orderId })
@@ -80,10 +81,22 @@ export default {
           alert(error);
         });
     },
+    getScope() {
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/scope/get", { scopeId: this.scopeId })
+        .then(function(response) {
+          self.scope = response.data;
+        })
+        .catch(function(error) {
+          alert(error);
+        });
+    },
   },
   beforeMount() {
-    this.getScopes();
+    this.getTasks();
     this.getOrder();
+    this.getScope();
   }
 };
 </script>

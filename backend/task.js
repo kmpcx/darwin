@@ -42,7 +42,23 @@ router.post('/edit', function (req, res) {
 
 router.post('/get', (req, res) => {
     let selectQuery = 'SELECT * FROM Task WHERE TaskId = ?';
-    let query = mysql.format(selectQuery,[req.body.taskid]);
+    let query = mysql.format(selectQuery,[req.body.taskId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Task found.')
+            } else {
+                res.status(200).send( result.data[0] )
+            }
+        }
+    })
+})
+
+router.post('/getInfo', (req, res) => {
+    let selectQuery = 'SELECT t.Name, t.ColorBackground, t.Icon, s.Name as ScopeName FROM Scope s, Task t WHERE t.ScopeId = s.ScopeId and t.TaskId = ?';
+    let query = mysql.format(selectQuery,[req.body.taskId]);
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
