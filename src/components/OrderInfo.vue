@@ -9,7 +9,7 @@
             <br />
             Kunde: {{order.Customer}}
             <br />
-            Gesamtlaufzeit: 05:32 h
+            Gesamtlaufzeit bisher: {{new Date(orderDuration.duration).getDay()}}T {{new Date(orderDuration.duration).getHours()}}S {{new Date(orderDuration.duration).getMinutes()}}M {{new Date(orderDuration.duration).getSeconds()}}s
           </v-col>
           <v-col cols="8">
             Notiz: {{order.Note}}
@@ -24,7 +24,8 @@
 export default {
   data() {
     return {
-        order: {}
+        order: {},
+        orderDuration: {}
     };
   },
   props: {
@@ -34,6 +35,7 @@ export default {
   },
   mounted() {
       this.getOrder();
+      this.getOrderDuration();
   },
   destroyed() {
     
@@ -45,6 +47,18 @@ export default {
         .post(process.env.VUE_APP_API + "/order/get", { orderId: this.orderId })
         .then(function(response) {
           self.order = response.data;
+        })
+        .catch(function(error) {
+          alert("OrderId: " + orderId);
+        });
+    },
+    getOrderDuration() {
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/order/getOrderDuration", { orderId: this.orderId })
+        .then(function(response) {
+          console.log(response)
+          self.orderDuration = response.data;
         })
         .catch(function(error) {
           alert("OrderId: " + orderId);

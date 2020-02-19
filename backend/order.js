@@ -119,6 +119,34 @@ router.post('/getOrderStatus', (req, res) => {
     })
 })
 
+router.post('/getOrderDuration', (req, res) => {
+    let selectQuery = 'SELECT StartTime, EndTime FROM OrderEntry WHERE OrderId = ?' ;
+    let  query = mysql.format(selectQuery,[req.body.orderId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            let running = false;
+                let duration = 0;
+                if(result.data.length > 0){
+                    let groupLength = result.data.length;
+                    for(var i = 0; i < groupLength; i++){
+                        var tmp = result.data[i]
+                        if(!tmp.EndTime){
+                            running = true;
+                            tmp.EndTime = new Date();
+                        }
+                        duration += (tmp.EndTime.getTime() - tmp.StartTime.getTime());
+                        if((i + 1) == (groupLength)){
+                            res.status(200).send( {running, duration} )
+                        }
+                    }
+                } else {
+                    res.status(200).send( {running, duration: new Date (null, null, null)} )
+                }
+        }
+    })
+})
 
 // ---------- Order Entry
 
