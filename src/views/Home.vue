@@ -66,21 +66,25 @@
         <v-col cols="6">
           <div>
             <v-card tile color="blue darken-3" dark height="220" :to="{ path: '/order/'}">
+            <v-img class="white--text align-end" height="220" src="https://images.unsplash.com/photo-1495364037436-fed1ba81ad3e">
               <div>
                 <div>
                   <v-icon size="160">mdi-qrcode</v-icon>
                   <v-card-title class="headline justify-center">Auftragsauswahl</v-card-title>
                 </div>
               </div>
+            </v-img>
             </v-card>
             <br />
             <v-card tile dark color="deep-orange" height="220" :to="{ path: '/selectionScope/1'}">
+              <v-img class="white--text align-end" height="220" src="https://images.unsplash.com/photo-1529220502050-f15e570c634e">
               <div>
                 <div>
                   <v-icon size="160">mdi-broom</v-icon>
                   <v-card-title class="headline justify-center">Allgemeine Aktivitäten</v-card-title>
                 </div>
               </div>
+              </v-img>
             </v-card>
           </div>
         </v-col>
