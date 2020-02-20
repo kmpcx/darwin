@@ -109,6 +109,16 @@ const router = new Router({
       }
     },
     {
+      path: "/admin/user",
+      name: "userManagement",
+      meta: { layout: "no-sidebar" },
+      component: () => import("@/views/AdminUserManagement.vue"),
+      meta: { 
+        requiresAuth: true,
+        requiresAdmin: true
+      }
+    },
+    {
       path: "/404",
       name: "404*",
       component: require("@/views/404.vue").default

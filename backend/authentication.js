@@ -72,6 +72,48 @@ router.post('/info', (req, res) => {
     })
 })
 
+router.post('/getAll', (req, res) => {
+    let selectQuery = 'SELECT BusinessId, Name, Username, Language, IsAdmin, IsActive, UserId FROM User WHERE IsActive = 1';
+    let query = mysql.format(selectQuery);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            res.status(200).send(result.data)
+        }
+    })
+})
+
+router.post('/update', function (req, res) {
+    let updateQuery = 'UPDATE User SET ? WHERE UserId = ?';
+    if(req.body.user.password !== ''){
+        req.body.user.Password = bcrypt.hashSync(req.body.user.password, 8);
+    }
+    let query = mysql.format(updateQuery, [req.body.user, req.body.userId]);
+
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            console.log(result.error)
+            return res.status(500).send('There was a problem updating the user.')
+        } else {
+            res.status(200).send(result.data)
+        }
+    });
+});
+
+router.post('/remove', function (req, res) {
+    let updateQuery = 'UPDATE User SET IsActive = 0 WHERE UserId = ?';
+    let query = mysql.format(updateQuery, [req.body.userId]);
+
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('There was a problem deactivating the user.')
+        } else {
+            res.status(200).send(result.data)
+        }
+    });
+});
+
 router.get('/ping', function (req, res) {
     res.send("Pong");
     console.log('Ping Auth');
