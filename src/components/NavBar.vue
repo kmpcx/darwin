@@ -14,7 +14,7 @@
         </template>
 
         <v-list>
-          <v-list-item v-if="isAdmin >= 0" href="/admin">
+          <v-list-item v-if="isAdmin > 0" href="/admin">
             <v-list-item-title><a>Admin Bereich</a></v-list-item-title>
           </v-list-item>
           <v-list-item>
