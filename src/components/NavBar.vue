@@ -14,6 +14,9 @@
         </template>
 
         <v-list>
+          <v-list-item v-if="isAdmin >= 0" href="/admin">
+            <v-list-item-title><a>Admin Bereich</a></v-list-item-title>
+          </v-list-item>
           <v-list-item>
             <v-list-item-title><a @click="logout">Logout</a></v-list-item-title>
           </v-list-item>
@@ -48,11 +51,13 @@ export default {
   },
   beforeMount() {
       this.username = this.$store.getters.getUsername
+      this.isAdmin = this.$store.getters.getIsAdmin
   },
   data() {
     return {
       open: false,
-      username: 'Te'
+      username: '',
+      isAdmin: 0
     };
   }
 };

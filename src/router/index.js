@@ -102,7 +102,7 @@ const router = new Router({
       path: "/admin",
       name: "admin",
       meta: { layout: "no-sidebar" },
-      component: require("@/views/Admin.vue").default,
+      component: () => import("@/views/Admin.vue"),
       meta: { 
         requiresAuth: true,
         requiresAdmin: true
@@ -124,7 +124,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if(to.path !== "/login" && to.matched.some(record => record.meta.requiresAuth)) {
     if(to.matched.some(record => record.meta.requiresAdmin)) {
-      if (store.getters.isAdmin >= 1) {
+      if (store.getters.getIsAdmin >= 1) {
         next()
         return
       }
