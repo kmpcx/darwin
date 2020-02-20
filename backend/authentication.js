@@ -43,8 +43,8 @@ router.post('/register', function (req, res) {
 
 
 router.post('/login', (req, res) => {
-    let selectQuery = 'SELECT * FROM User WHERE Mail = ?';
-    let query = mysql.format(selectQuery,[req.body.email]);
+    let selectQuery = 'SELECT * FROM User WHERE Username = ? AND IsActive = 1';
+    let query = mysql.format(selectQuery,[req.body.username]);
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')

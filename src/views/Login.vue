@@ -16,7 +16,7 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" md="5">
-                    <v-text-field v-model="email" label="E-mail" required type="email"></v-text-field>
+                    <v-text-field v-model="username" label="Benutzername" required type="text"></v-text-field>
                   </v-col>
                   <v-col cols="12" md="4">
                     <v-text-field
@@ -44,16 +44,16 @@
 export default {
   data() {
     return {
-      email: "",
+      username: "",
       password: ""
     };
   },
   methods: {
     login: function() {
-      let email = this.email;
+      let username = this.username;
       let password = this.password;
       this.$store
-        .dispatch("login", { email, password })
+        .dispatch("login", { username, password })
         .then(() => this.$router.push("/"))
         .catch(err => console.log(err));
     }
