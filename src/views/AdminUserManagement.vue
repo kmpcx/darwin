@@ -20,10 +20,7 @@
     >
       <!-- <template v-slot:item.IsAdmin="{ item }">
         <v-simple-checkbox v-model="item.IsAdmin" disabled></v-simple-checkbox>
-      </template>
-      <template v-slot:item.IsActive="{ item }">
-        <v-simple-checkbox v-model="item.IsActive" disabled></v-simple-checkbox>
-      </template> -->
+      </template>' -->
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-spacer></v-spacer>
@@ -175,12 +172,26 @@ export default {
           alert("Benutzer konnte nicht bearbeitet werden.");
         });
       } else {
-        this.users.push(this.editedItem);
+        this.createUser(this.editedItem);
       }
       this.close();
     },
-    updateUser(userId, user) {
-      
+    createUser(user) {
+        console.log(user)
+        user.IsAdmin = 0;
+        user.IsActive = 1;
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/auth/create", {
+          user: user
+        })
+        .then(function(response) {
+          self.users.push(user);
+        })
+        .catch(function(error) {
+          console.log(error);
+          alert("Benutzer konnte nicht erstellt werden.");
+        });
     }
   },
   beforeMount() {

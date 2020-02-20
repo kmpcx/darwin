@@ -84,6 +84,20 @@ router.post('/getAll', (req, res) => {
     })
 })
 
+router.post('/create', function (req, res) {
+    let insertQuery = 'INSERT INTO User SET ?'
+    req.body.user.password = bcrypt.hashSync(req.body.user.password, 8);
+    let query = mysql.format(insertQuery, req.body.user);
+
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('There was a problem creating the User.')
+        } else {
+            res.status(200).send(result.data)
+        }
+    });
+});
+
 router.post('/update', function (req, res) {
     let updateQuery = 'UPDATE User SET ? WHERE UserId = ?';
     if(req.body.user.password !== ''){
