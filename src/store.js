@@ -11,16 +11,18 @@ export default new Vuex.Store({
     token: localStorage.getItem('token') || '',
     user: localStorage.getItem('user') || '',
     username: localStorage.getItem('username') || '',
+    isAdmin: localStorage.getItem('isAdmin') || '0',
   },
   mutations: {
     auth_request (state) {
       state.status = 'loading'
     },
-    auth_success (state, token, user, username) {
+    auth_success (state, token, user, username, isAdmin) {
       state.status = 'success',
       state.token = token,
       state.user = user,
-      state.username = username
+      state.username = username,
+      state.isAdmin = isAdmin
     },
     auth_error (state) {
       state.status = 'error'
@@ -29,7 +31,8 @@ export default new Vuex.Store({
       state.status = 'logout'
       state.token = '',
       state.user = '',
-      state.username = ''
+      state.username = '',
+      state.isAdmin = '0'
     }
   },
   actions: {
@@ -43,8 +46,9 @@ export default new Vuex.Store({
             localStorage.setItem('token', token)
             localStorage.setItem('user', user.UserId)
             localStorage.setItem('username', user.Username)
+            localStorage.setItem('isAdmin', user.IsAdmin)
             axios.defaults.headers.common.Authorization = token
-            commit('auth_success', token, user.UserId, user.Username)
+            commit('auth_success', token, user.UserId, user.Username, user.IsAdmin)
             resolve(resp)
           })
           .catch(err => {
@@ -52,6 +56,7 @@ export default new Vuex.Store({
             localStorage.removeItem('token')
             localStorage.removeItem('user')
             localStorage.removeItem('username')
+            localStorage.removeItem('isAdmin')
             reject(err)
           })
       })
@@ -66,6 +71,7 @@ export default new Vuex.Store({
             localStorage.setItem('token', token)
             localStorage.setItem('user', user.UserId)
             localStorage.setItem('username', user.Username)
+            localStorage.setItem('isAdmin', user.IsAdmin)
             axios.defaults.headers.common.Authorization = token
             commit('auth_success', token, user)
             resolve(resp)
@@ -83,6 +89,7 @@ export default new Vuex.Store({
         localStorage.removeItem('token')
         localStorage.removeItem('user')
         localStorage.removeItem('username')
+        localStorage.removeItem('isAdmin')
         delete axios.defaults.headers.common.Authorization
         resolve()
       })
@@ -92,6 +99,7 @@ export default new Vuex.Store({
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
     getUserId: state => state.user,
-    getUsername: state => state.username
+    getUsername: state => state.username,
+    getIsAdmin: state => state.isAdmin
   }
 })
