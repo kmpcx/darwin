@@ -136,7 +136,7 @@ router.post('/getOrderDuration', (req, res) => {
                             running = true;
                             tmp.EndTime = new Date();
                         }
-                        duration += (tmp.EndTime.getTime() - tmp.StartTime.getTime());
+                        duration += ((tmp.EndTime.getTime() - tmp.StartTime.getTime())/1000);
                         if((i + 1) == (groupLength)){
                             res.status(200).send( {running, duration} )
                         }
@@ -166,7 +166,7 @@ router.post('/createEntry', function (req, res) {
 router.post('/editEntry', function (req, res) {
     let updateQuery = 'UPDATE OrderEntry SET ? WHERE OrderEntryId = ?';
     let query = mysql.format(updateQuery, [req.body.orderEntry, req.body.orderEntryId]);
-
+    console.log(query);
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('There was a problem creating the Order Entry.')
@@ -188,6 +188,22 @@ router.post('/getEntry', (req, res) => {
                 return res.status(404).send('No Order Entry found.')
             } else {
                 res.status(200).send( result.data[0] )
+            }
+        }
+    })
+})
+
+router.post('/getEntries', (req, res) => {
+    let selectQuery = 'SELECT oe.OrderEntryId, oe.StartTime, oe.EndTime, oe.Note, t.Name as TaskName, s.Name as ScopeName, u.Name as Username FROM OrderEntry oe, Task t, Scope s, User u WHERE oe.OrderId = ? AND oe.TaskId = t.TaskId AND t.ScopeId = s.ScopeId AND oe.UserId = u.UserId';
+    let query = mysql.format(selectQuery,[req.body.orderId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data){
+                return res.status(404).send('No Order Entry found.')
+            } else {
+                res.status(200).send( result.data )
             }
         }
     })
