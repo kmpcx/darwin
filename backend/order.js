@@ -226,7 +226,9 @@ router.post('/getEntries', (req, res) => {
 })
 
 router.post('/startTask', function (req, res) {
-    let time = new Date().toJSON().slice(0, 19).replace('T', ' ');
+    // let time = new Date().toJSON().slice(0, 19).replace('T', ' ');
+    // let time = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    let time = new Date().toLocaleString();
     let insertQuery = 'INSERT INTO OrderEntry (StartTime, Note, UserId, OrderId, TaskId) VALUES (?, ?, ?, ?, ?)'
     let query = mysql.format(insertQuery, [time, null, req.body.userId, req.body.orderId, req.body.taskId]);
     DB.handle_db(query, (result) => {
@@ -256,7 +258,7 @@ router.post('/startTask', function (req, res) {
 });
 
 router.post('/stopTask', function (req, res) {
-    let time = new Date().toJSON().slice(0, 19).replace('T', ' ');
+    let time = new Date().toLocaleString();
     let updateQuery = 'UPDATE OrderEntry SET EndTime = ?, Note = ? WHERE OrderEntryId = ?';
     let query = mysql.format(updateQuery, [time, req.body.note, req.body.orderEntryId]);
     console.log(query)
