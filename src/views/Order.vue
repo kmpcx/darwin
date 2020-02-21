@@ -1,52 +1,89 @@
 <template>
   <div data-app>
-    <stepper-bar stepperValue="2">
-      </stepper-bar>
+    <stepper-bar stepperValue="2"></stepper-bar>
     <div>
       <v-row>
-        <v-col cols="5">
-          <div>
-            <v-card tile height="50">
-              <v-select solo flat
-                :items="items"
-                item-text="BusinessId"
-                item-value="BusinessId"
-                label="Auftrag auswählen..." 
-              ></v-select>
-            </v-card>
-              
-            
-          </div>
-        </v-col>
         <v-col cols="7">
           <div>
-            <v-card tile height="320">
-              <StreamBarcodeReader
-                @decode="onDecode"
-              ></StreamBarcodeReader>
+            <v-card>
+              <v-card-title>
+                Auftragsauswahl
+                <v-spacer></v-spacer>
+                <v-text-field
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  label="Suche"
+                  single-line
+                  hide-details
+                ></v-text-field>
+              </v-card-title>
+              <v-data-table
+                :headers="headers"
+                :items="items"
+                :items-per-page="itemsPerPage"
+                :search="search"
+                :page.sync="page"
+                hide-default-footer
+                @page-count="pageCount = $event"
+                @click:row="goToOrder"
+              ></v-data-table>
+              <v-pagination circle v-model="page" class="table-pagination" :length="pageCount" color="blue darken-3"></v-pagination>
             </v-card>
+          </div>
+        </v-col>
+        <v-col cols="5">
+          <div>
+            <StreamBarcodeReader @decode="onDecode"></StreamBarcodeReader>
           </div>
         </v-col>
       </v-row>
     </div>
-  <v-row>
-    <v-col class="btn-outter-left" cols="6">
-      <v-btn tile to="/"><v-icon dark>mdi-arrow-left-thick</v-icon></v-btn>
-    </v-col>
+    <v-row>
+      <v-col class="btn-outter-left" cols="6">
+        <v-btn tile to="/">
+          <v-icon dark>mdi-arrow-left-thick</v-icon>
+        </v-btn>
+      </v-col>
 
-    <v-col class="btn-outter-right" cols="6">
-      <v-btn tile to="/selectionScope/1"><v-icon dark>mdi-arrow-right-thick</v-icon></v-btn>
-    </v-col>
-  </v-row>
+      <v-col class="btn-outter-right" cols="6">
+        <v-btn tile to="/selectionScope/1">
+          <v-icon dark>mdi-arrow-right-thick</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
 import { StreamBarcodeReader } from "vue-barcode-reader";
 export default {
-  components: {StreamBarcodeReader},
+  components: { StreamBarcodeReader },
   data: () => ({
-    items: []
+    search: "",
+    page: 1,
+    pageCount: 0,
+    itemsPerPage: 6,
+    items: [],
+    headers: [
+      {
+        text: "Kunde",
+        align: "left",
+        sortable: true,
+        value: "Customer"
+      },
+      { 
+        text: "Nr.", 
+        align: "left", 
+        sortable: true,
+        value: "BusinessId" 
+      },
+      { 
+        text: "Auftrag", 
+        align: "left", 
+        sortable: true, 
+        value: "Name" 
+      }
+    ]
   }),
 
   methods: {
@@ -61,11 +98,14 @@ export default {
           alert(error);
         });
     },
-    onDecode (decodedString) {
+    goToOrder(item) {
+      this.$router.push("/selectionScope/" + item.OrderId);
+    },
+    onDecode(decodedString) {
       // alert("detected", decodedString)
       console.log("detected", decodedString);
-      this.$router.push('/selectionScope/' + decodedString)
-    },
+      this.$router.push("/selectionScope/" + decodedString);
+    }
   },
   beforeMount() {
     this.getOrders();
@@ -74,6 +114,14 @@ export default {
 </script>
 
 <style scoped>
+.table-title {
+  padding-top: 10px;
+}
+
+.table-pagination {
+  padding-bottom: 10px;
+}
+
 .btn-outter-left {
   height: 50px;
   position: absolute;
@@ -88,5 +136,9 @@ export default {
   text-align: right;
   bottom: 5%;
   right: 5%;
+}
+
+.v-data-footer__select {
+  display: none;
 }
 </style>
