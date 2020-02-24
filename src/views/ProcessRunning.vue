@@ -10,7 +10,9 @@
           <div>
             <v-card tile>
               <v-row>
-                <v-card-title class="headline">{{taskInfo.Name}} in {{taskInfo.ScopeName}}</v-card-title>
+                <v-col cols="12">
+                  <v-card-title class="headline">{{taskInfo.ScopeName}} - {{taskInfo.Name}}</v-card-title>
+                </v-col>
                 <v-col cols="6">
                   <v-card-title class="headline">Start-Parameter</v-card-title>
                   <v-card-subtitle
@@ -286,7 +288,7 @@ export default {
             orderEntryId: this.orderEntryId,
             parameters: this.parameters,
             form: this.form,
-            note: "break"
+            note: "Abgeschlossen"
           })
           .then(function(response) {
             self.$router.push(

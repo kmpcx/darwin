@@ -35,10 +35,10 @@
                   <v-col cols="12">
                     <p>Start: {{new Date(orderEntry.StartTime)}}</p>
                     <p>Ende: {{new Date(orderEntry.EndTime)}}</p>
-                    <p>Laufzeit: 00:37 h</p>
+                    <p>Laufzeit: {{getDuration(orderEntry)}}</p>
                   </v-col>
                   <v-col cols="12">
-                    <p>Notiz: Faden ist gerissen und keiner mehr verfügbar.</p>
+                    <p>Notiz: {{orderEntry.Note}}</p>
                   </v-col>
                 </v-row>
               </v-card-subtitle>
@@ -148,6 +148,34 @@ export default {
         .catch(function(error) {
           alert("Error: " + error);
         });
+    },
+    getDuration(item){
+      if(item.EndTime){
+        let startDate = new Date(item.StartTime);
+        let endDate = new Date(item.EndTime);
+        let delta = (endDate.getTime() - startDate.getTime()) / 1000;
+        return this.calculateTimeFromDuration(delta, false)
+      } else {
+        return '-'
+      }
+    },
+    calculateTimeFromDuration(delta, seconds){
+      let durationString = '';
+        let days = Math.floor(delta / 86400);
+        delta -= days * 86400;
+        if(days >= 1){
+          durationString += days + 'T '
+        }
+        let hours = hours = Math.floor(delta / 3600) % 24;
+        delta -= hours * 3600;
+        let minutes = Math.floor(delta / 60) % 60;
+        delta -= minutes * 60;
+        durationString += hours + 'S ' + minutes + 'M ';
+        if(seconds){
+          let seconds = Math.floor(delta % 60);
+          durationString += seconds + 's'
+        }
+        return durationString;
     },
   },
   beforeMount() {
