@@ -12,7 +12,7 @@
         <v-row dense>
           <v-col v-for="(item, i) in items" :key="i" cols="4">
             <v-card tile :color="item.ColorBackground" dark max-height="150"
-            :to="{ path: '/process/' + $route.params.orderId + '/' + '2'+ '/' + item.Taskid}">
+            :to="{ path: '/process/' + $route.params.orderId + '/' + '2'+ '/' + item.TaskId}">
               <div>
                 <div>
                   <v-icon size="100">{{item.Icon}}</v-icon>
