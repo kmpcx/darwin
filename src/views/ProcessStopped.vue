@@ -131,7 +131,9 @@ export default {
           self.orderEntryAttributes = response.data;
         })
         .catch(function(error) {
-          alert("Error: " + error);
+          if (error.response.status !== 404) {
+            alert("Error: " + error);
+          }
         });
     },
     getOrderEntry() {

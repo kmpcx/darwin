@@ -127,7 +127,7 @@ export default {
       if (this.form.parameters.length === this.parameters.length || !this.parameters.length) {
         this.axios
           .post(process.env.VUE_APP_API + "/order/startTask",
-          {taskId: this.taskId , orderId: this.orderId, parameters: this.parameters, form: this.form, userId: this.$store.getters.getUserId})
+          {taskId: this.taskId , orderId: this.order.OrderId, parameters: this.parameters, form: this.form, userId: this.$store.getters.getUserId})
           .then(function(response) {
             self.$router.push('/processRunning/' + self.orderId + '/' + self.scopeId + '/' + self.taskId + '/' + response.data.insertId)
           })
