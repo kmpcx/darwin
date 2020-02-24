@@ -3,7 +3,7 @@
     <stepper-bar stepperValue="5">
       </stepper-bar>
     <br />
-      <order-info :orderId="orderId">
+      <order-info :orderId="orderEntry.OrderId" :businessId="orderId">
       </order-info>
     <br />
 

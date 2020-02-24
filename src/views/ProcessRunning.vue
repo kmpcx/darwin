@@ -2,7 +2,8 @@
   <div data-app>
     <stepper-bar stepperValue="5"></stepper-bar>
     <br />
-    <order-info :orderId="orderId"></order-info>
+    <order-info :orderId="order.OrderId" :businessId="orderId">
+      </order-info>
     <br />
     <div>
       <v-row>
