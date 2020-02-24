@@ -42,5 +42,6 @@ function handle_db_sageDB(query, callback){
 
 module.exports = {
   handle_db,
+  handle_db_sageDB
 };
 

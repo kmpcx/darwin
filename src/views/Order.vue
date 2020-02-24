@@ -69,19 +69,19 @@ export default {
         text: "Kunde",
         align: "left",
         sortable: true,
-        value: "Customer"
+        value: "A0Name1"
       },
       { 
         text: "Nr.", 
         align: "left", 
         sortable: true,
-        value: "BusinessId" 
+        value: "BelID" 
       },
       { 
         text: "Auftrag", 
         align: "left", 
         sortable: true, 
-        value: "Name" 
+        value: "Belegnummer" 
       }
     ]
   }),
@@ -90,7 +90,7 @@ export default {
     getOrders() {
       let self = this;
       this.axios
-        .post(process.env.VUE_APP_API + "/order/getAll", {})
+        .post(process.env.VUE_APP_API + "/order/getAllSage", {})
         .then(function(response) {
           self.items = response.data;
         })
@@ -99,7 +99,7 @@ export default {
         });
     },
     goToOrder(item) {
-      this.$router.push("/selectionScope/" + item.OrderId);
+      this.$router.push("/selectionScope/" + item.BelID);
     },
     onDecode(decodedString) {
       // alert("detected", decodedString)

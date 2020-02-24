@@ -12,6 +12,32 @@ const DB = require('./dbSQL')
 router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.json())
 
+function getOrderFromSage(belID, res) {
+    let selectQuery = 'SELECT BelID, Mandant, Belegnummer, A0Name1, A0Matchcode FROM KHKVKBelege WHERE BelID = ?';
+    let query = mysql.format(selectQuery,[belID]);
+    DB.handle_db_sageDB(query, (result) => {
+        if (result.error){
+            res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+               res.status(404).send('No Order found.')
+            } else {
+                let data = result.data[0];
+                let insertQuery = 'INSERT INTO Orders SET BusinessId = ?, ScanCode = ?, Name = ?, Customer = ?, Note = "Created from Sage"'
+                let query = mysql.format(insertQuery, [data.BelID, data.BelID, data.A0Matchcode, data.A0Name1]);
+
+                DB.handle_db(query, (resultCreation) => {
+                    if (resultCreation.error){
+                        res.status(500).send('There was a problem creating the Order.')
+                    } else {
+                        res.status(201).send(resultCreation.data)
+                    }
+                });
+            }
+        }
+    });
+}
+
 router.post('/create', function (req, res) {
     let insertQuery = 'INSERT INTO Orders SET ?'
     let query = mysql.format(insertQuery, req.body.order);
@@ -40,14 +66,15 @@ router.post('/edit', function (req, res) {
 
 
 router.post('/get', (req, res) => {
-    let selectQuery = 'SELECT * FROM Orders WHERE OrderId = ?';
+    let selectQuery = 'SELECT * FROM Orders WHERE BusinessId = ?';
     let query = mysql.format(selectQuery,[req.body.orderId]);
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
         } else {
             if (!result.data[0]){
-                return res.status(404).send('No Order found.')
+                getOrderFromSage(req.body.orderId, res);
+                // return res.status(404).send('No Order found.')
             } else {
                 res.status(200).send( result.data[0] )
             }
@@ -58,6 +85,21 @@ router.post('/get', (req, res) => {
 router.post('/getAll', (req, res) => {
     let selectQuery = 'SELECT * FROM Orders';
     DB.handle_db(selectQuery, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Orders found.')
+            } else {
+                res.status(200).send( result.data )
+            }
+        }
+    })
+})
+
+router.post('/getAllSage', (req, res) => {
+    let selectQuery = 'SELECT BelID, Mandant, Belegnummer, A0Name1 FROM KHKVKBelege';
+    DB.handle_db_sageDB(selectQuery, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
         } else {
