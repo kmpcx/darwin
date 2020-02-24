@@ -203,8 +203,10 @@ router.post('/getAttributeEntry', (req, res) => {
 })
 
 router.post('/getByOrderAndScope', (req, res) => {
-    let selectQuery = 'SELECT t.Taskid, t.Name, t.ColorBackground, t.Icon FROM Scope s, Task t, OrderTask ot WHERE ot.OrderId = ? and ot.TaskId = t.TaskId and t.ScopeId = s.ScopeId and s.ScopeId = ?';
-    let query = mysql.format(selectQuery,[req.body.orderId, req.body.scopeId]);
+    // let selectQuery = 'SELECT t.Taskid, t.Name, t.ColorBackground, t.Icon FROM Scope s, Task t, OrderTask ot WHERE ot.OrderId = ? and ot.TaskId = t.TaskId and t.ScopeId = s.ScopeId and s.ScopeId = ?';
+    // let query = mysql.format(selectQuery,[req.body.orderId, req.body.scopeId]);
+    let selectQuery = 'SELECT * FROM Task WHERE ScopeId = ?';
+    let query = mysql.format(selectQuery,[req.body.scopeId]);
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
