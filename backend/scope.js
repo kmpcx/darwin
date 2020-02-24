@@ -86,8 +86,9 @@ router.post('/getTasks', (req, res) => {
 })
 
 router.post('/getByOrder', (req, res) => {
-    let selectQuery = 'SELECT s.ScopeId, s.Name, s.ColorBackground, s.Icon FROM Scope s, Task t, OrderTask ot WHERE ot.OrderId = ? and ot.TaskId = t.TaskId and t.ScopeId = s.ScopeId GROUP BY s.ScopeId';
-    let query = mysql.format(selectQuery,[req.body.orderId]);
+    // let selectQuery = 'SELECT s.ScopeId, s.Name, s.ColorBackground, s.Icon FROM Scope s, Task t, OrderTask ot WHERE ot.OrderId = ? and ot.TaskId = t.TaskId and t.ScopeId = s.ScopeId GROUP BY s.ScopeId';
+    // let query = mysql.format(selectQuery,[req.body.orderId]);
+    let query = 'SELECT * FROM Scope';
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
