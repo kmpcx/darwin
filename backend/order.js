@@ -191,7 +191,23 @@ router.post('/getEntry', (req, res) => {
             }
         }
     })
-})
+});
+
+router.post('/getEntryAttributes', (req, res) => {
+    let selectQuery = 'SELECT te.InputValue, te.Timestamp, te.TaskAttributeEntryId, te.TaskAttributeId, ta.IsStart, ta.IsEnd, ta.Type, te.InputValue, ta.Name FROM TaskAttributeEntry te, TaskAttribute ta WHERE te.OrderEntryId = ? AND te.TaskAttributeId = ta.TaskAttributeId';
+    let query = mysql.format(selectQuery,[req.body.orderEntryId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                return res.status(404).send('No Task Attribute Entry found.')
+            } else {
+                res.status(200).send( result.data )
+            }
+        }
+    })
+});
 
 router.post('/getEntries', (req, res) => {
     let selectQuery = 'SELECT oe.OrderEntryId, oe.StartTime, oe.EndTime, oe.Note, t.Name as TaskName, s.Name as ScopeName, u.Name as Username FROM OrderEntry oe, Task t, Scope s, User u WHERE oe.OrderId = ? AND oe.TaskId = t.TaskId AND t.ScopeId = s.ScopeId AND oe.UserId = u.UserId';
@@ -204,22 +220,6 @@ router.post('/getEntries', (req, res) => {
                 return res.status(404).send('No Order Entry found.')
             } else {
                 res.status(200).send( result.data )
-            }
-        }
-    })
-})
-
-router.post('/getEntries', (req, res) => {
-    let selectQuery = 'SELECT * FROM OrderEntry WHERE OrderId = ?';
-    let query = mysql.format(selectQuery,[req.body.orderId]);
-    DB.handle_db(query, (result) => {
-        if (result.error){
-            return res.status(500).send('Error on the server.')
-        } else {
-            if (!result.data[0]){
-                return res.status(404).send('No Order Entries found.')
-            } else {
-                res.status(200).send( result.data[0] )
             }
         }
     })

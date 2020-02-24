@@ -13,41 +13,37 @@
           <div>
             <v-card tile>
               <v-row>
+                <v-col cols="12">
+                  <v-card-title class="headline">{{taskInfo.ScopeName}} - {{taskInfo.Name}}</v-card-title>
+                </v-col>
                 <v-col cols="6">
-                  <v-card-title class="headline">Start-Parameter</v-card-title>
-
-                  <v-card-subtitle class="order-info">
-                    <p>Anzahl Farben: 3</p>
-                    <p>Status Freigabe: Fertig vorhanden</p>
-                    <p>Größe Logo: 3 x 10 cm</p>
+                  <v-card-title class="headline">Parameter</v-card-title>
+                  <v-card-subtitle
+                    v-for="(item, i) in orderEntryAttributes"
+                    :key="i"
+                    class="order-info"
+                  >
+                    <p>{{item.Name}}: {{item.InputValue}}</p>
                   </v-card-subtitle>
                 </v-col>
 
                 <v-col cols="6">
-                  <v-card-title class="headline">End-Parameter</v-card-title>
+                  <v-card-title class="headline">Tätigkeit beendet</v-card-title>
 
                   <v-card-subtitle class="order-info">
-                    <p>Menge: 500</p>
-                    <p>Ausschuss: 5</p>
-                  </v-card-subtitle>
-                </v-col>
-              </v-row>
-
-              <v-card-title class="headline">Auftrag beendet / abgebrochen</v-card-title>
-
-              <v-card-subtitle class="order-info">
                 <v-row>
-                  <v-col cols="6">
-                    <p>Start: 01.01.2020 13:00</p>
-                    <p>Stop: 01.01.2020 13:37</p>
+                  <v-col cols="12">
+                    <p>Start: {{new Date(orderEntry.StartTime)}}</p>
+                    <p>Ende: {{new Date(orderEntry.EndTime)}}</p>
                     <p>Laufzeit: 00:37 h</p>
                   </v-col>
-                  <v-col cols="6">
-                    <p>Grund: Material fehlt</p>
+                  <v-col cols="12">
                     <p>Notiz: Faden ist gerissen und keiner mehr verfügbar.</p>
                   </v-col>
                 </v-row>
               </v-card-subtitle>
+                </v-col>
+              </v-row>           
             </v-card>
             <br />
           </div>
@@ -60,7 +56,7 @@
             dark
             large
             color="#8BC34A"
-            :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2'  }"
+            :to="{ path: '/selectionScope/' + $route.params.orderId }"
           >
             <v-icon dark>mdi-play</v-icon>Weiter
           </v-btn>
@@ -95,27 +91,69 @@ export default {
     },
     scopeId: {
       type: String
+    },
+    taskId: {
+      type: String
+    },
+    orderEntryId: {
+      type: String
     }
   },
   data: () => ({
-    order: {},
+    taskInfo: {},
+    orderEntryAttributes: [],
+    orderEntry: {},
   }),
 
   methods: {
-    getOrder() {
+    getTaskInfo() {
       let self = this;
       this.axios
-        .post(process.env.VUE_APP_API + "/order/get", { orderId: this.orderId })
+        .post(process.env.VUE_APP_API + "/task/getInfo", {
+          taskId: this.taskId
+        })
         .then(function(response) {
-          self.order = response.data;
+          self.taskInfo = response.data;
+        })
+        .catch(function(error) {
+          if (error.response.status !== 404) {
+            alert("Error: " + error);
+          }
+        });
+    },
+    getEntryAttributes() {
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/order/getEntryAttributes", {
+          orderEntryId: this.orderEntryId
+        })
+        .then(function(response) {
+          self.orderEntryAttributes = response.data;
         })
         .catch(function(error) {
           alert("Error: " + error);
         });
-    }
+    },
+    getOrderEntry() {
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/order/getEntry", {
+          orderEntryId: this.orderEntryId
+        })
+        .then(function(response) {
+          self.orderEntry = response.data;
+          // self.startDate = new Date(response.data.StartTime);
+          // self.endDate = new Date(response.data.StartTime);
+        })
+        .catch(function(error) {
+          alert("Error: " + error);
+        });
+    },
   },
   beforeMount() {
-    this.getOrder();
+    this.getTaskInfo();
+    this.getEntryAttributes();
+    this.getOrderEntry();
   }
 };
 </script>
