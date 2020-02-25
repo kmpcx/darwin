@@ -18,12 +18,10 @@
                 </v-col>
                 <v-col cols="6">
                   <v-card-title class="headline">Parameter</v-card-title>
-                  <v-card-subtitle
-                    v-for="(item, i) in orderEntryAttributes"
+                  <v-card-subtitle>
+                    <p v-for="(item, i) in orderEntryAttributes"
                     :key="i"
-                    class="order-info"
-                  >
-                    <p>{{item.Name}}: {{item.InputValue}}</p>
+                    class="order-info">{{item.Name}}: {{item.InputValue}}</p>
                   </v-card-subtitle>
                 </v-col>
 
