@@ -69,11 +69,24 @@ const router = new Router({
       }
     },
     {
-      path: "/processRunning/:orderId/:scopeId/:taskId/:orderEntryId",
+      path: "/processRunning/:orderEntryId",
       name: "processRunning",
       meta: { layout: "no-sidebar" },
       component: () => import("@/views/ProcessRunning.vue"),
       props: true,
+      props: {
+        default: true,
+        businessId: "2",
+        // orderEntryId: {
+        //   default: function() {
+        //     // return { message: 'hello' }
+        //     return 'hello'
+        //   }
+        // },
+        // orderEntryId: route => {
+        //   return route.params.orderEntryId
+        // },
+      },
       meta: { 
         requiresAuth: true
       }

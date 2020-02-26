@@ -82,6 +82,23 @@ router.post('/get', (req, res) => {
     })
 })
 
+router.post('/getById', (req, res) => {
+    let selectQuery = 'SELECT * FROM Orders WHERE OrderId = ?';
+    let query = mysql.format(selectQuery,[req.body.orderId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                // getOrderFromSage(req.body.orderId, res);
+                return res.status(404).send('No Order found.')
+            } else {
+                res.status(200).send( result.data[0] )
+            }
+        }
+    })
+})
+
 router.post('/getAll', (req, res) => {
     let selectQuery = 'SELECT * FROM Orders';
     DB.handle_db(selectQuery, (result) => {

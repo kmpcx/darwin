@@ -2,7 +2,7 @@
   <div data-app>
     <stepper-bar stepperValue="5"></stepper-bar>
     <br />
-    <order-info :orderId="order.OrderId" :businessId="orderId">
+    <order-info :businessId="businessId">
       </order-info>
     <br />
     <div>
@@ -12,7 +12,7 @@
             <v-card tile>
               <v-row>
                 <v-col cols="12">
-                  <v-card-title class="headline">{{taskInfo.ScopeName}} - {{taskInfo.Name}}</v-card-title>
+                  <v-card-title class="headline">{{taskInfo.ScopeName}} - {{taskInfo.Name}} - {{orderEntryId}}</v-card-title>
                 </v-col>
                 <v-col cols="6">
                   <v-card-title class="headline">Start-Parameter</v-card-title>
@@ -178,20 +178,12 @@
 <script>
 export default {
   props: {
-    orderId: {
-      type: String
-    },
-    scopeId: {
-      type: String
-    },
-    taskId: {
-      type: String
-    },
-    orderEntryId: {
+    businessId: {
       type: String
     }
   },
   data: () => ({
+    orderEntryId: '',
     parameters: [],
     errors: [],
     form: { parameters: [] },
@@ -208,12 +200,13 @@ export default {
     getOrder() {
       let self = this;
       this.axios
-        .post(process.env.VUE_APP_API + "/order/get", { orderId: this.orderId })
+        .post(process.env.VUE_APP_API + "/order/get", { businessId: this.businessId })
         .then(function(response) {
           self.order = response.data;
         })
         .catch(function(error) {
-          alert("OrderId: " + orderId);
+          console.length(error)
+          alert("BusinessId: " + this.businessId);
         });
     },
     getOrderEntry() {
@@ -225,6 +218,7 @@ export default {
         .then(function(response) {
           self.orderEntry = response.data;
           self.startDate = new Date(response.data.StartTime);
+          self.getTaskInfo(response.data.TaskId);
           if (response.data.EndTime) {
             alert("Achtung, Eintrag bereits abgeschlossen!");
           }
@@ -264,11 +258,11 @@ export default {
           }
         });
     },
-    getTaskInfo() {
+    getTaskInfo(taskId) {
       let self = this;
       this.axios
         .post(process.env.VUE_APP_API + "/task/getInfo", {
-          taskId: this.taskId
+          taskId: taskId
         })
         .then(function(response) {
           self.taskInfo = response.data;
@@ -314,11 +308,13 @@ export default {
     }
   },
   beforeMount() {
-    this.getOrder();
     this.getParameters();
-    this.getOrderEntry();
     this.getEntryAttributes();
-    this.getTaskInfo();
+    this.getOrder();
+    this.getOrderEntry();
+  },
+  created() {
+    this.orderEntryId = this.$route.params.orderEntryId;
   }
 };
 </script>
