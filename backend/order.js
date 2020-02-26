@@ -73,8 +73,11 @@ router.post('/get', (req, res) => {
             return res.status(500).send('Error on the server.')
         } else {
             if (!result.data[0]){
-                getOrderFromSage(req.body.orderId, res);
-                // return res.status(404).send('No Order found.')
+                if(req.body.import){
+                    getOrderFromSage(req.body.businessId, res);
+                } else {
+                    return res.status(404).send('No Order found.')
+                }
             } else {
                 res.status(200).send( result.data[0] )
             }

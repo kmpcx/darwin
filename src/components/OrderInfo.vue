@@ -78,25 +78,33 @@ export default {
     }
   },
   mounted() {
-    this.getOrder();
+    this.getOrder(1);
   },
   destroyed() {},
   methods: {
-    getOrder() {
+    getOrder(run) {
       let self = this;
       let apiString = "/order/get"
       if(this.idType === 'orderEntryId'){
         apiString = "/order/getByOrderEntry";
       }
       this.axios
-        .post(process.env.VUE_APP_API + apiString, { [this.idType]: this.id })
+        .post(process.env.VUE_APP_API + apiString, { [this.idType]: this.id, import: false })
         .then(function(response) {
           self.order = response.data;
           self.getOrderDuration();
           self.getOrderEntries();
         })
         .catch(function(error) {
-          console.log(error);
+          if(run<=3){
+            setTimeout(() => {
+              // callback function for timer, gets called after the time-delay
+              // Your timer is done now. Print a line for debugging and resolve myTimerPromise
+              self.getOrder(run++);
+            }, 2000);
+          } else {
+            console.log(error);
+          }
           // console.log("BusinessId: " + self.businessId);
         });
     },

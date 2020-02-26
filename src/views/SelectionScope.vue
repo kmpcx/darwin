@@ -76,7 +76,7 @@ export default {
     getOrder() {
       let self = this;
       this.axios
-        .post(process.env.VUE_APP_API + "/order/get", { businessId: this.businessId })
+        .post(process.env.VUE_APP_API + "/order/get", { businessId: this.businessId, import: true })
         .then(function(response) {
           self.order = response.data;
           self.orderId = response.data.OrderId;
