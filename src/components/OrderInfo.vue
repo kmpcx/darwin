@@ -86,25 +86,25 @@ export default {
     getOrder() {
       let self = this;
       this.axios
-        .post(process.env.VUE_APP_API + "/order/get", { orderId: this.businessId })
+        .post(process.env.VUE_APP_API + "/order/get", { businessId: this.businessId })
         .then(function(response) {
           self.order = response.data;
         })
         .catch(function(error) {
-          alert("OrderId: " + businessId);
+          alert("BusinessId: " + businessId);
         });
     },
     getOrderDuration() {
       let self = this;
       this.axios
         .post(process.env.VUE_APP_API + "/order/getOrderDuration", {
-          orderId: this.businessId
+          orderId: this.orderId
         })
         .then(function(response) {
           self.orderDuration = response.data;
         })
         .catch(function(error) {
-          alert("OrderId: " + businessId);
+          alert("OrderId: " + orderId);
         });
     },
     getOrderEntries() {

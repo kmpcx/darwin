@@ -67,7 +67,7 @@ router.post('/edit', function (req, res) {
 
 router.post('/get', (req, res) => {
     let selectQuery = 'SELECT * FROM Orders WHERE BusinessId = ?';
-    let query = mysql.format(selectQuery,[req.body.orderId]);
+    let query = mysql.format(selectQuery,[req.body.businessId]);
     DB.handle_db(query, (result) => {
         if (result.error){
             return res.status(500).send('Error on the server.')
