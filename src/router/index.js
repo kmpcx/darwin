@@ -59,7 +59,7 @@ const router = new Router({
       }
     },
     {
-      path: "/process/:orderId/:scopeId/:taskId",
+      path: "/process/:businessId/:taskId",
       name: "process",
       meta: { layout: "no-sidebar" },
       component: () => import("@/views/Process.vue"),

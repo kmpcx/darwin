@@ -3,7 +3,7 @@
     <stepper-bar stepperValue="5">
       </stepper-bar>
     <br />
-      <order-info :orderId="order.OrderId" :businessId="orderId">
+      <order-info :businessId="businessId">
       </order-info>
     <div>
       <v-row>
@@ -48,12 +48,12 @@
     <br />
     <v-row>
       <v-col class="btn-outter-left" cols="6">
-        <v-btn tile :to="{ path: '/selectionTask/1/' + $route.params.orderId }">
+        <v-btn tile :to="{ path: '/selectionTask/' + $route.params.businessId + '/' + taskInfo.ScopeId }">
           <v-icon dark>mdi-arrow-left-thick</v-icon>
         </v-btn>
       </v-col>
       <v-col class="btn-outter-right" cols="6">
-        <v-btn tile :to="{ path: '/processRunning/' + $route.params.orderId + '/2/2/0'  }">
+        <v-btn tile :to="{ path: '/processRunning/1' }">
           <v-icon dark>mdi-arrow-right-thick</v-icon>
         </v-btn>
       </v-col>
@@ -64,10 +64,7 @@
 <script>
 export default {
   props: {
-    orderId: {
-      type: String
-    },
-    scopeId: {
+    businessId: {
       type: String
     },
     taskId: {
@@ -87,7 +84,7 @@ export default {
     getOrder() {
       let self = this;
       this.axios
-        .post(process.env.VUE_APP_API + "/order/get", { orderId: this.orderId })
+        .post(process.env.VUE_APP_API + "/order/get", { businessId: this.businessId })
         .then(function(response) {
           self.order = response.data;
         })
@@ -129,7 +126,7 @@ export default {
           .post(process.env.VUE_APP_API + "/order/startTask",
           {taskId: this.taskId , orderId: this.order.OrderId, parameters: this.parameters, form: this.form, userId: this.$store.getters.getUserId})
           .then(function(response) {
-            self.$router.push('/processRunning/' + self.orderId + '/' + self.scopeId + '/' + self.taskId + '/' + response.data.insertId)
+            self.$router.push('/processRunning/' + response.data.insertId)
           })
           .catch(function(error) {
             alert("Error: " + error);         

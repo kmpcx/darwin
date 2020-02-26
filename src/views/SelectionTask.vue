@@ -12,7 +12,7 @@
         <v-row dense>
           <v-col v-for="(item, i) in items" :key="i" cols="4">
             <v-card tile :color="item.ColorBackground" dark max-height="150"
-            :to="{ path: '/process/' + $route.params.orderId + '/' + '2'+ '/' + item.TaskId}">
+            :to="{ path: '/process/' + $route.params.businessId + '/' + item.TaskId}">
               <div>
                 <div>
                   <v-icon size="100">{{item.Icon}}</v-icon>
@@ -27,11 +27,11 @@
     <br />
       <v-row>
     <v-col class="btn-outter-left" cols="6">
-      <v-btn tile :to="{ path: '/selectionScope/' + $route.params.orderId }"><v-icon dark>mdi-arrow-left-thick</v-icon></v-btn>
+      <v-btn tile :to="{ path: '/selectionScope/' + $route.params.businessId }"><v-icon dark>mdi-arrow-left-thick</v-icon></v-btn>
     </v-col>
 
     <v-col class="btn-outter-right" cols="6">
-      <v-btn tile :to="{ path: '/process/' + $route.params.orderId + '/2/2'  }"><v-icon dark>mdi-arrow-right-thick</v-icon></v-btn>
+      <v-btn tile :to="{ path: '/process/' + $route.params.businessId + '/2'  }"><v-icon dark>mdi-arrow-right-thick</v-icon></v-btn>
     </v-col>
   </v-row>
   </div>
