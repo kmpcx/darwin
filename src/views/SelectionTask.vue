@@ -3,7 +3,7 @@
     <stepper-bar stepperValue="4">
       </stepper-bar>
     <br />
-      <order-info :orderId="order.OrderId" :businessId="orderId">
+      <order-info :businessId="businessId">
       </order-info>
     <br />
     <v-card tile max-width="100%" class="mx-auto">
@@ -40,7 +40,7 @@
 <script>
 export default {
   props: {
-    orderId: {
+    businessId: {
       type: String
     },
     scopeId: {
@@ -59,7 +59,7 @@ export default {
       let self = this;
       this.axios
         .post(process.env.VUE_APP_API + "/task/getByOrderAndScope", {
-          orderId: this.orderId,
+          orderId: this.order.OrderId,
           scopeId: this.scopeId
         })
         .then(function(response) {
@@ -76,6 +76,7 @@ export default {
         .post(process.env.VUE_APP_API + "/order/get", { businessId: this.businessId })
         .then(function(response) {
           self.order = response.data;
+          self.getTasks();
         })
         .catch(function(error) {
           alert(error);
@@ -94,7 +95,6 @@ export default {
     },
   },
   beforeMount() {
-    this.getTasks();
     this.getOrder();
     this.getScope();
   }

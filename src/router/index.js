@@ -40,7 +40,7 @@ const router = new Router({
       }
     },
     {
-      path: "/selectionTask/:orderId/:scopeId",
+      path: "/selectionTask/:businessId/:scopeId",
       name: "selectionTask",
       meta: { layout: "no-sidebar" },
       component: require("@/views/SelectionTask.vue").default,

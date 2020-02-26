@@ -16,7 +16,7 @@
               :color="item.ColorBackground"
               dark
               max-height="150"
-              :to="{ path: '/selectionTask/' + $route.params.orderId + '/' + item.ScopeId }"
+              :to="{ path: '/selectionTask/' + $route.params.businessId + '/' + item.ScopeId }"
             >
               <div>
                 <div>
@@ -37,7 +37,7 @@
     </v-col>
 
     <v-col class="btn-outter-right" cols="6">
-      <v-btn tile :to="{ path: '/selectionTask/' + $route.params.orderId + '/1'}"><v-icon dark>mdi-arrow-right-thick</v-icon></v-btn>
+      <v-btn tile :to="{ path: '/selectionTask/' + $route.params.businessId + '/1'}"><v-icon dark>mdi-arrow-right-thick</v-icon></v-btn>
     </v-col>
   </v-row>
 
