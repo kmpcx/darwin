@@ -39,6 +39,7 @@
                       <th class="text-left">Kunde.</th>
                       <th class="text-left">Nr.</th>
                       <th class="text-left">Auftrag</th>
+                      <!-- <th class="text-left">End</th> -->
                     </tr>
                   </thead>
                   <tbody>
@@ -46,6 +47,7 @@
                       <td class="text-left">{{recentOrder.Customer}}</td>
                       <td class="text-left">{{recentOrder.BusinessId}}</td>
                       <td class="text-left">{{recentOrder.Name}}</td>
+                      <!-- <td class="text-left">{{recentOrder.EndTime}}</td> -->
                     </tr>
                   </tbody>
                 </template>

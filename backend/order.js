@@ -150,7 +150,7 @@ router.post('/getActiveTasks', (req, res) => {
 })
 
 router.post('/getRecent', (req, res) => {
-    let selectQuery = 'SELECT DISTINCT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OrderId FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.UserId = ? ORDER BY StartTime LIMIT 5' ;
+    let selectQuery = 'SELECT DISTINCT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OrderId, oe.EndTime FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.UserId = ? ORDER BY oe.EndTime DESC LIMIT 5' ;
     let  query = mysql.format(selectQuery,[req.body.userId]);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -204,7 +204,7 @@ router.post('/getOrderDuration', (req, res) => {
                         }
                     }
                 } else {
-                    res.status(200).send( {running, duration: new Date (null, null, null)} )
+                    res.status(200).send( {running, duration: 0} )
                 }
         }
     })
