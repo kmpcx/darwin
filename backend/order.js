@@ -398,7 +398,7 @@ router.post('/getTaskMapping', function (req, res) {
     })
 })
 
-router.post('/getByBusinessId', (req, res) => {
+router.post('/getBusinessId', (req, res) => {
     let selectQuery = 'SELECT o.BusinessId FROM Orders o, OrderEntry oe WHERE oe.orderEntryId = ? AND oe.OrderId = o.OrderId';
     let query = mysql.format(selectQuery,[req.body.orderEntryId]);
     DB.handle_db(query, (result) => {

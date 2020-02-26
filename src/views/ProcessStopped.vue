@@ -3,7 +3,7 @@
     <stepper-bar stepperValue="5">
       </stepper-bar>
     <br />
-      <order-info :orderId="orderEntry.OrderId" :businessId="orderId">
+     <order-info :id="orderEntryId" idType="orderEntryId">
       </order-info>
     <br />
 
@@ -54,7 +54,7 @@
             dark
             large
             color="#8BC34A"
-            :to="{ path: '/selectionScope/' + $route.params.orderId }"
+            :to="{ path: '/selectionScope/' + businessId }"
           >
             <v-icon dark>mdi-play</v-icon>Weiter
           </v-btn>
@@ -72,7 +72,7 @@
     <br />
     <v-row>
       <v-col class="btn-outter-left" cols="6">
-        <v-btn tile :to="{ path: '/process/' + $route.params.orderId + '/2/2'  }">
+        <v-btn tile :to="{ path: '/process/' + businessId + '/2/2'  }">
           <v-icon dark>mdi-arrow-left-thick</v-icon>
         </v-btn>
       </v-col>
@@ -84,15 +84,6 @@
 <script>
 export default {
   props: {
-    orderId: {
-      type: String
-    },
-    scopeId: {
-      type: String
-    },
-    taskId: {
-      type: String
-    },
     orderEntryId: {
       type: String
     }
@@ -101,20 +92,21 @@ export default {
     taskInfo: {},
     orderEntryAttributes: [],
     orderEntry: {},
+    businessId: ""
   }),
 
   methods: {
-    getTaskInfo() {
+    getTaskInfo(taskId) {
       let self = this;
       this.axios
         .post(process.env.VUE_APP_API + "/task/getInfo", {
-          taskId: this.taskId
+          taskId: taskId
         })
         .then(function(response) {
           self.taskInfo = response.data;
         })
         .catch(function(error) {
-          if (error.response.status !== 404) {
+          if (error.response.status !== 404 && error.response.status !== 200) {
             alert("Error: " + error);
           }
         });
@@ -142,11 +134,25 @@ export default {
         })
         .then(function(response) {
           self.orderEntry = response.data;
+          self.getTaskInfo(response.data.TaskId);
+          self.getBusinessId();
           // self.startDate = new Date(response.data.StartTime);
           // self.endDate = new Date(response.data.StartTime);
         })
         .catch(function(error) {
           alert("Error: " + error);
+        });
+    },
+    getBusinessId() {
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/order/getBusinessId", { orderEntryId: this.orderEntryId })
+        .then(function(response) {
+          console.log(response.data)
+          self.businessId = response.data;
+        })
+        .catch(function(error) {
+          console.log(error)
         });
     },
     getDuration(item){
@@ -179,7 +185,6 @@ export default {
     },
   },
   beforeMount() {
-    this.getTaskInfo();
     this.getEntryAttributes();
     this.getOrderEntry();
   }

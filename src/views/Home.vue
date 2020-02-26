@@ -100,7 +100,7 @@ export default {
 
   methods: {
     clickRecentOrder(recentOrder) {
-      this.$router.push('/selectionScope/' + recentOrder.OrderId);
+      this.$router.push('/selectionScope/' + recentOrder.BusinessId);
     },
     clickRunningActivity(activeOrder) {
       this.$router.push('/processRunning/' + activeOrder.OrderEntryId);
