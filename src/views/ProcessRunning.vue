@@ -2,7 +2,7 @@
   <div data-app>
     <stepper-bar stepperValue="5"></stepper-bar>
     <br />
-    <order-info :businessId="businessId">
+    <order-info :id="orderEntryId" idType="orderEntryId">
       </order-info>
     <br />
     <div>
@@ -12,7 +12,7 @@
             <v-card tile>
               <v-row>
                 <v-col cols="12">
-                  <v-card-title class="headline">{{taskInfo.ScopeName}} - {{taskInfo.Name}} - {{orderEntryId}}</v-card-title>
+                  <v-card-title class="headline">{{taskInfo.ScopeName}} - {{taskInfo.Name}}</v-card-title>
                 </v-col>
                 <v-col cols="6">
                   <v-card-title class="headline">Start-Parameter</v-card-title>
@@ -178,16 +178,15 @@
 <script>
 export default {
   props: {
-    businessId: {
+    orderEntryId: {
       type: String
     }
   },
   data: () => ({
-    orderEntryId: '',
+    businessId: '',
     parameters: [],
     errors: [],
     form: { parameters: [] },
-    order: {},
     orderEntry: {},
     completeDialog: false,
     stopDialog: false,
@@ -195,20 +194,9 @@ export default {
     orderEntryAttributes: [],
     taskInfo: {}
   }),
-  computed: {},
+  computed: {
+  },
   methods: {
-    getOrder() {
-      let self = this;
-      this.axios
-        .post(process.env.VUE_APP_API + "/order/get", { businessId: this.businessId })
-        .then(function(response) {
-          self.order = response.data;
-        })
-        .catch(function(error) {
-          console.length(error)
-          alert("BusinessId: " + this.businessId);
-        });
-    },
     getOrderEntry() {
       let self = this;
       this.axios
@@ -220,7 +208,10 @@ export default {
           self.startDate = new Date(response.data.StartTime);
           self.getTaskInfo(response.data.TaskId);
           if (response.data.EndTime) {
-            alert("Achtung, Eintrag bereits abgeschlossen!");
+            self.$router.push(
+              "/processStopped/" +
+                self.orderEntryId
+            );
           }
         })
         .catch(function(error) {
@@ -290,12 +281,6 @@ export default {
           .then(function(response) {
             self.$router.push(
               "/processStopped/" +
-                self.orderId +
-                "/" +
-                self.scopeId +
-                "/" +
-                self.taskId + 
-                "/" +
                 self.orderEntryId
             );
           })
@@ -310,11 +295,9 @@ export default {
   beforeMount() {
     this.getParameters();
     this.getEntryAttributes();
-    this.getOrder();
     this.getOrderEntry();
   },
   created() {
-    this.orderEntryId = this.$route.params.orderEntryId;
   }
 };
 </script>

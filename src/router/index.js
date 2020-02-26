@@ -74,35 +74,16 @@ const router = new Router({
       meta: { layout: "no-sidebar" },
       component: () => import("@/views/ProcessRunning.vue"),
       props: true,
-      props: {
-        default: true,
-        businessId: "2",
-        // orderEntryId: {
-        //   default: function() {
-        //     // return { message: 'hello' }
-        //     return 'hello'
-        //   }
-        // },
-        // orderEntryId: route => {
-        //   return route.params.orderEntryId
-        // },
-      },
+      // props: {
+      //   default: true,
+      //   businessId: "2",
+      // },
       meta: { 
         requiresAuth: true
       }
     },
-    // {
-    //   path: "/processPaused/:orderId/:scopeId/:taskId",
-    //   name: "processPaused",
-    //   meta: { layout: "no-sidebar" },
-    //   component: () => import("@/views/ProcessPaused.vue"),
-    //   props: true,
-    //   meta: { 
-    //     requiresAuth: true
-    //   }
-    // },
     {
-      path: "/processStopped/:orderId/:scopeId/:taskId/:orderEntryId",
+      path: "/processStopped/:orderEntryId",
       name: "processStopped",
       meta: { layout: "no-sidebar" },
       component: () => import("@/views/ProcessStopped.vue"),

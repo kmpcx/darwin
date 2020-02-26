@@ -3,7 +3,7 @@
     <stepper-bar stepperValue="4">
       </stepper-bar>
     <br />
-      <order-info :businessId="businessId">
+      <order-info :id="businessId">
       </order-info>
     <br />
     <v-card tile max-width="100%" class="mx-auto">

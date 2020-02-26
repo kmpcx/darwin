@@ -398,6 +398,41 @@ router.post('/getTaskMapping', function (req, res) {
     })
 })
 
+router.post('/getByBusinessId', (req, res) => {
+    let selectQuery = 'SELECT o.BusinessId FROM Orders o, OrderEntry oe WHERE oe.orderEntryId = ? AND oe.OrderId = o.OrderId';
+    let query = mysql.format(selectQuery,[req.body.orderEntryId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                // getOrderFromSage(req.body.orderId, res);
+                return res.status(404).send('No Order found.')
+            } else {
+                res.status(200).send( result.data[0].BusinessId )
+            }
+        }
+    })
+})
+
+router.post('/getByOrderEntry', (req, res) => {
+    let selectQuery = 'SELECT o.BusinessId, o.Name, o.OrderId, o.Note, o.Customer FROM Orders o, OrderEntry oe WHERE oe.orderEntryId = ? AND oe.OrderId = o.OrderId';
+    let query = mysql.format(selectQuery,[req.body.orderEntryId]);
+    DB.handle_db(query, (result) => {
+        if (result.error){
+            return res.status(500).send('Error on the server.')
+        } else {
+            if (!result.data[0]){
+                // getOrderFromSage(req.body.orderId, res);
+                return res.status(404).send('No Order found.')
+            } else {
+                res.status(200).send( result.data[0] )
+            }
+        }
+    })
+})
+
+
 // ---------- Test
 
 router.get('/ping', function (req, res) {

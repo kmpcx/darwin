@@ -103,7 +103,7 @@ export default {
       this.$router.push('/selectionScope/' + recentOrder.OrderId);
     },
     clickRunningActivity(activeOrder) {
-      this.$router.push('/processRunning/' + activeOrder.OrderId + '/0/' + activeOrder.TaskId + '/' + activeOrder.OrderEntryId);
+      this.$router.push('/processRunning/' + activeOrder.OrderEntryId);
     },
     getActiveOrders() {
       let self = this;

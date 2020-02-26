@@ -3,7 +3,7 @@
     <stepper-bar stepperValue="5">
       </stepper-bar>
     <br />
-      <order-info :businessId="businessId">
+      <order-info :id="businessId">
       </order-info>
     <div>
       <v-row>

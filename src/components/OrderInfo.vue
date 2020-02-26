@@ -69,8 +69,12 @@ export default {
     };
   },
   props: {
-    businessId: {
+    id: {
       required: true
+    },
+    idType: {
+      required: false,
+      default: 'businessId'
     }
   },
   mounted() {
@@ -80,8 +84,12 @@ export default {
   methods: {
     getOrder() {
       let self = this;
+      let apiString = "/order/get"
+      if(this.idType === 'orderEntryId'){
+        apiString = "/order/getByOrderEntry";
+      }
       this.axios
-        .post(process.env.VUE_APP_API + "/order/get", { businessId: this.businessId })
+        .post(process.env.VUE_APP_API + apiString, { [this.idType]: this.id })
         .then(function(response) {
           self.order = response.data;
           self.getOrderDuration();
