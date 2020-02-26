@@ -30,7 +30,7 @@ const router = new Router({
       component: () => import("@/views/Login.vue")
     },
     {
-      path: "/selectionScope/:orderId",
+      path: "/selectionScope/:businessId",
       name: "selectionScope",
       meta: { layout: "no-sidebar" },
       component: require("@/views/SelectionScope.vue").default,

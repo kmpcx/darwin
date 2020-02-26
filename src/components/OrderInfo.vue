@@ -69,17 +69,12 @@ export default {
     };
   },
   props: {
-    orderId: {
-      required: true
-    },
     businessId: {
       required: true
     }
   },
   mounted() {
     this.getOrder();
-    this.getOrderDuration();
-    this.getOrderEntries();
   },
   destroyed() {},
   methods: {
@@ -89,16 +84,19 @@ export default {
         .post(process.env.VUE_APP_API + "/order/get", { businessId: this.businessId })
         .then(function(response) {
           self.order = response.data;
+          self.getOrderDuration();
+          self.getOrderEntries();
         })
         .catch(function(error) {
-          alert("BusinessId: " + businessId);
+          console.log(error);
+          // console.log("BusinessId: " + self.businessId);
         });
     },
     getOrderDuration() {
       let self = this;
       this.axios
         .post(process.env.VUE_APP_API + "/order/getOrderDuration", {
-          orderId: this.orderId
+          orderId: this.order.OrderId
         })
         .then(function(response) {
           self.orderDuration = response.data;
@@ -111,13 +109,13 @@ export default {
       let self = this;
       this.axios
         .post(process.env.VUE_APP_API + "/order/getEntries", {
-          orderId: this.orderId
+          orderId: this.order.OrderId
         })
         .then(function(response) {
           self.orderEntries = response.data;
         })
         .catch(function(error) {
-          alert("OrderId: " + businessId);
+          alert("OrderId: " + this.order.OrderId);
         });
     },
     getState(item){
