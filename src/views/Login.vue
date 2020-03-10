@@ -2,9 +2,7 @@
   <div>
     <v-stepper>
       <v-stepper-header>
-        <v-stepper-step editable color="#283593" step="0">
-          <router-link to="/login">Login</router-link>
-        </v-stepper-step>
+        <v-stepper-step color="blue darken-3" step="L">Login</v-stepper-step>
       </v-stepper-header>
     </v-stepper>
     <br />

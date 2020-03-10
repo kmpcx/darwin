@@ -11,7 +11,7 @@
           <div>
             <br>
               <v-card tile>
-                <v-card-title class="headline">Start-Parameter für {{taskInfo.Name}} in {{taskInfo.ScopeName}}</v-card-title>
+                <v-card-title class="table-title">Start-Parameter für {{taskInfo.Name}} in {{taskInfo.ScopeName}}</v-card-title>
                 <p v-if="errors.length">
                   <b>Fehler:</b>
                   {{errors[0]}}

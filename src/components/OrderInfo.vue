@@ -1,9 +1,9 @@
 <template>
   <v-card tile>
-    <v-card-title class="headline">Informationen zum Auftrag: {{order.BusinessId}}</v-card-title>
+    <v-card-title class="table-title">Informationen zum Auftrag: {{order.BusinessId}}</v-card-title>
     <v-card-subtitle class="order-info">
       <v-row>
-        <v-col cols="4">
+        <v-col cols="5" class="text-left">
           Name: {{order.Name}}
           <br />
           Kunde: {{order.Customer}}
@@ -11,11 +11,11 @@
           Gesamtlaufzeit bisher: {{calculateTimeFromDuration(orderDuration.duration, true)}}
           <!-- Gesamtlaufzeit bisher: {{new Date(orderDuration.duration).getDay()}}T {{new Date(orderDuration.duration).getHours()}}S {{new Date(orderDuration.duration).getMinutes()}}M {{new Date(orderDuration.duration).getSeconds()}}s -->
         </v-col>
-        <v-col cols="8">Notiz: {{order.Note}}</v-col>
+        <v-col cols="7" class="text-left">Notiz: {{order.Note}}</v-col>
         <v-row justify="center">
-          <v-dialog v-model="dialog" persistent max-width="80%">
+          <v-dialog v-model="dialog" max-width="80%">
             <template v-slot:activator="{ on }">
-              <v-btn color="primary" dark v-on="on">Aktivitätshistorie</v-btn>
+              <v-btn class="history-button" color="primary" dark v-on="on">Aktivitätshistorie</v-btn>
             </template>
             <v-card>
               <v-data-table
@@ -40,6 +40,12 @@
     </v-card-subtitle>
   </v-card>
 </template>
+
+<style scoped>
+.history-button {
+  margin-top: 20px
+}
+</style>
 
 <script>
 export default {

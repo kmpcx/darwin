@@ -76,7 +76,7 @@
               <v-img
                 class="white--text align-end"
                 height="300"
-                src="https://images.unsplash.com/photo-1529220502050-f15e570c634e"
+                src="https://pixabay.com/get/54e6dd434256b108feda8460825668204022dfe05b52794a772f7fd2/cleaning-268084_1920.jpg"
               >
                 <div>
                   <div>

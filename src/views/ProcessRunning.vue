@@ -12,10 +12,10 @@
             <v-card tile>
               <v-row>
                 <v-col cols="12">
-                  <v-card-title class="headline">{{taskInfo.ScopeName}} - {{taskInfo.Name}}</v-card-title>
+                  <v-card-title class="table-title">{{taskInfo.ScopeName}} - {{taskInfo.Name}}</v-card-title>
                 </v-col>
                 <v-col cols="6">
-                  <v-card-title class="headline">Start-Parameter</v-card-title>
+                  <v-card-title class="table-title">Start-Parameter</v-card-title>
                   <v-card-subtitle
                     v-for="(item, i) in orderEntryAttributes"
                     :key="i"
@@ -26,7 +26,7 @@
                 </v-col>
 
                 <v-col cols="6">
-                  <v-card-title class="headline">Statusinformationen</v-card-title>
+                  <v-card-title class="table-title">Statusinformationen</v-card-title>
 
                   <v-card-subtitle class="order-info">
                     <p>Status: in Bearbeitung</p>
@@ -48,7 +48,7 @@
           </div>
         </v-col>
         <v-col cols="4">
-          <v-dialog v-model="stopDialog" persistent max-width="450" max-height="250">
+          <v-dialog v-model="stopDialog" max-width="50%" max-height="50%">
             <template v-slot:activator="{ on }">
               <v-btn tile width="120" height="70" dark large color="#F44336" v-on="on">
                 <v-icon dark>mdi-stop</v-icon>Pause
@@ -70,7 +70,7 @@
               </v-btn>
               <br>-->
               <v-card tile>
-                <v-card-title class="headline">Stop-Parameter</v-card-title>
+                <v-card-title class="table-title">Stop-Parameter</v-card-title>
                 <p v-if="errors.length">
                   <b>Fehler:</b>
                   {{errors[0]}}
@@ -110,7 +110,7 @@
           </v-dialog>
           <br />
           <br />
-          <v-dialog v-model="completeDialog" persistent max-width="450" max-height="250">
+          <v-dialog v-model="completeDialog" max-width="50%" max-height="50%">
             <template v-slot:activator="{ on }">
               <v-btn tile width="120" height="70" dark large color="#8BC34A" v-on="on">
                 <v-icon dark>mdi-check</v-icon>Fertig
@@ -120,7 +120,7 @@
               <v-card-title class="headline">Aktivität fertigstellen</v-card-title>
               <!-- <v-card-text>Ist die laufende Aktivität fertiggestellt?</v-card-text> -->
               <v-card tile>
-                <v-card-title class="headline">Stop-Parameter</v-card-title>
+                <v-card-title class="table-title">Stop-Parameter</v-card-title>
                 <p v-if="errors.length">
                   <b>Fehler:</b>
                   {{errors[0]}}

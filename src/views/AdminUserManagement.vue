@@ -1,4 +1,11 @@
 <template>
+  <div>
+    <v-stepper>
+      <v-stepper-header>
+        <v-stepper-step color="blue darken-3" step="B">Benutzerverwaltung</v-stepper-step>
+      </v-stepper-header>
+    </v-stepper>
+    <br />
   <v-card>
     <v-card-title>
       Benutzer
@@ -24,7 +31,7 @@
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="300px">
+          <v-dialog v-model="dialog" max-width="50%">
             <template v-slot:activator="{ on }">
               <v-btn color="primary" dark class="mb-2" v-on="on">Neuer Benutzer</v-btn>
             </template>
@@ -67,6 +74,7 @@
       </template>
     </v-data-table>
   </v-card>
+</div>
 </template>
 
 <script>
@@ -83,8 +91,8 @@ export default {
       },
       { text: "Name", value: "Name" },
       { text: "Business ID", value: "BusinessId" },
-      { text: "Ist Admin", value: "IsAdmin" },
-      { text: "Actions", value: "action", sortable: false }
+      { text: "Adminrechte", value: "IsAdmin" },
+      { text: "Aktionen", value: "action", sortable: false }
     ],
     users: [],
     editedIndex: -1,
@@ -103,7 +111,7 @@ export default {
   }),
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Neuer Benutzer" : "Benutzer Anpassen";
+      return this.editedIndex === -1 ? "Neuer Benutzer" : "Benutzer anpassen";
     }
   },
   watch: {
@@ -144,7 +152,7 @@ export default {
         })
         .catch(function(error) {
           if (error.response.status !== 404) {
-            alert("Fehler beim löschen des Users.");
+            alert("Fehler beim Löschen des Benutzers.");
             console.log(error);
           }
         });

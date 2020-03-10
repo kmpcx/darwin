@@ -7,7 +7,7 @@
       </order-info>
     <br />
     <v-card tile max-width="100%" class="mx-auto">
-      <v-card-title class="headline">Auswahl der Veredelungsart</v-card-title>
+      <v-card-title class="table-title">Auswahl der Veredelungsart</v-card-title>
       <v-container>
         <v-row dense>
           <v-col v-for="(item, i) in items" :key="i" cols="4">
