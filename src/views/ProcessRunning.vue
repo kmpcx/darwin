@@ -2,8 +2,7 @@
   <div data-app>
     <stepper-bar stepperValue="5"></stepper-bar>
     <br />
-    <order-info :id="orderEntryId" idType="orderEntryId">
-      </order-info>
+    <order-info :id="orderEntryId" idType="orderEntryId"></order-info>
     <br />
     <div>
       <v-row>
@@ -48,7 +47,7 @@
           </div>
         </v-col>
         <v-col cols="4">
-          <v-dialog v-model="stopDialog" max-width="50%" max-height="50%">
+          <!-- <v-dialog v-model="stopDialog" max-width="50%" max-height="50%">
             <template v-slot:activator="{ on }">
               <v-btn tile width="120" height="70" dark large color="#F44336" v-on="on">
                 <v-icon dark>mdi-stop</v-icon>Pause
@@ -56,19 +55,6 @@
             </template>
             <v-card>
               <v-card-title class="headline">Aktivität beenden</v-card-title>
-              <!-- <v-card-text>Aus welchem Grund soll die Aktivität abgebrochen werden?</v-card-text>
-              <v-btn tile block large :to="{ path: '/processStopped/' + $route.params.orderId + '/2/2'  }">
-                <v-icon dark>mdi-border-none-variant</v-icon>Material leer
-              </v-btn>
-              <br>
-              <v-btn tile block large :to="{ path: '/processStopped/' + $route.params.orderId + '/2/2'  }">
-                <v-icon dark>mdi-hotel</v-icon>Krankheit
-              </v-btn>
-              <br>
-              <v-btn tile block large :to="{ path: '/processStopped/' + $route.params.orderId + '/2/2'  }">
-                <v-icon dark>mdi-weather-night</v-icon>Feierabend
-              </v-btn>
-              <br>-->
               <v-card tile>
                 <v-card-title class="table-title">Stop-Parameter</v-card-title>
                 <p v-if="errors.length">
@@ -91,36 +77,35 @@
                       v-model="form.parameters[i]"
                       :label="item.name"
                       hide-details
-                      single-line
                       type="number"
                     />
                   </v-card-subtitle>
                 </p>
               </v-card>
               <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="green darken-1" text @click="stopDialog = false">
-                    <v-icon dark>mdi-close-circle</v-icon>Abbrechen
-                  </v-btn>
-                  <v-btn color="green darken-1" text @click="submit">
-                    <v-icon dark>mdi-check</v-icon>Fertigstellen
-                  </v-btn>
-                </v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" text @click="stopDialog = false">
+                  <v-icon dark>mdi-close-circle</v-icon>Abbrechen
+                </v-btn>
+                <v-btn color="green darken-1" text @click="submit">
+                  <v-icon dark>mdi-check</v-icon>Fertigstellen
+                </v-btn>
+              </v-card-actions>
             </v-card>
           </v-dialog>
           <br />
-          <br />
+          <br /> -->
           <v-dialog v-model="completeDialog" max-width="50%" max-height="50%">
             <template v-slot:activator="{ on }">
               <v-btn tile width="120" height="70" dark large color="#8BC34A" v-on="on">
-                <v-icon dark>mdi-check</v-icon>Fertig
+                <v-icon dark>mdi-check</v-icon>Abschluss
               </v-btn>
             </template>
             <v-card>
               <v-card-title class="headline">Aktivität fertigstellen</v-card-title>
               <!-- <v-card-text>Ist die laufende Aktivität fertiggestellt?</v-card-text> -->
               <v-card tile>
-                <v-card-title class="table-title">Stop-Parameter</v-card-title>
+                <v-card-title class="table-title">Parameter zum beenden festlegen</v-card-title>
                 <p v-if="errors.length">
                   <b>Fehler:</b>
                   {{errors[0]}}
@@ -141,12 +126,10 @@
                       v-model="form.parameters[i]"
                       :label="item.name"
                       hide-details
-                      single-line
                       type="number"
                     />
                   </v-card-subtitle>
                 </p>
-               
               </v-card>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -183,7 +166,7 @@ export default {
     }
   },
   data: () => ({
-    businessId: '',
+    businessId: "",
     parameters: [],
     errors: [],
     form: { parameters: [] },
@@ -194,8 +177,7 @@ export default {
     orderEntryAttributes: [],
     taskInfo: {}
   }),
-  computed: {
-  },
+  computed: {},
   methods: {
     getOrderEntry() {
       let self = this;
@@ -207,11 +189,9 @@ export default {
           self.orderEntry = response.data;
           self.startDate = new Date(response.data.StartTime);
           self.getTaskInfo(response.data.TaskId);
+          self.getParameters(response.data.TaskId);
           if (response.data.EndTime) {
-            self.$router.push(
-              "/processStopped/" +
-                self.orderEntryId
-            );
+            self.$router.push("/processStopped/" + self.orderEntryId);
           }
         })
         .catch(function(error) {
@@ -228,26 +208,33 @@ export default {
           self.orderEntryAttributes = response.data;
         })
         .catch(function(error) {
-          if (error.response.status !== 404) {
-            alert("Error: " + error);
-          }
+          console.log("Error: " + error);
         });
     },
-    getParameters() {
+    getParameters(taskId) {
+      console.log(this.taskInfo);
       let self = this;
       this.axios
         .post(process.env.VUE_APP_API + "/task/getAttributes", {
-          taskId: this.taskId,
+          taskId: taskId,
           time: "isEnd"
         })
         .then(function(response) {
           self.parameters = response.data;
+          if (response.data.length > 0) {
+            self.checkIntFields();
+          }
         })
         .catch(function(error) {
-          if (error.response.status !== 404) {
-            alert("Error: " + error);
-          }
+          console.log("Error: " + error);
         });
+    },
+    checkIntFields() {
+      this.parameters.forEach((element, index) => {
+        if (element.type === "int") {
+          this.form.parameters[index] = element.values;
+        }
+      });
     },
     getTaskInfo(taskId) {
       let self = this;
@@ -259,16 +246,15 @@ export default {
           self.taskInfo = response.data;
         })
         .catch(function(error) {
-          if (error.response.status !== 404) {
-            alert("Error: " + error);
-          }
+          console.log("Error: " + error);
         });
     },
     submit: function() {
       let self = this;
       this.errors = [];
       if (
-        this.form.parameters.length === this.parameters.length ||
+        (!this.form.parameters.includes(undefined) &&
+          this.form.parameters.length === this.parameters.length) ||
         !this.parameters.length
       ) {
         this.axios
@@ -279,10 +265,7 @@ export default {
             note: "Abgeschlossen"
           })
           .then(function(response) {
-            self.$router.push(
-              "/processStopped/" +
-                self.orderEntryId
-            );
+            self.$router.push("/processStopped/" + self.orderEntryId);
           })
           .catch(function(error) {
             alert("Error: " + error);
@@ -293,12 +276,10 @@ export default {
     }
   },
   beforeMount() {
-    this.getParameters();
     this.getEntryAttributes();
     this.getOrderEntry();
   },
-  created() {
-  }
+  created() {}
 };
 </script>
 

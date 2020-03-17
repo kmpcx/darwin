@@ -146,7 +146,10 @@ router.post('/getAttributes', (req, res) => {
                 let parameters = []
                 result.data.forEach(element => {
                     let parameter = {id: element.TaskAttributeId,name: element.Name, type: element.Type}
-                    if(element.Values){
+                    if(element.Type === 'int'){
+                        console.log(element.Values);
+                        parameter.values = element.Values;
+                    } else if(element.Values){
                         parameter.values = JSON.parse(element.Values);
                     }
                     parameters.push(parameter)

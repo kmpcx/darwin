@@ -113,6 +113,16 @@ const router = new Router({
       }
     },
     {
+      path: "/admin/report/order",
+      name: "reportOrder",
+      meta: { layout: "no-sidebar" },
+      component: () => import("@/views/AdminReportOrder.vue"),
+      meta: { 
+        requiresAuth: true,
+        requiresAdmin: true
+      }
+    },
+    {
       path: "/404",
       name: "404*",
       component: require("@/views/404.vue").default

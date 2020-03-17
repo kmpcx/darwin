@@ -15,7 +15,7 @@
             </div>
         </v-card>
         <br>
-        <v-card tile color="green darken-3" dark height="220" :to="{ path: '/admin/report'}">
+        <v-card tile color="green darken-3" dark height="220" :to="{ path: '/admin/report/order'}">
             <div>
                 <v-icon size="160">mdi-file-chart</v-icon>
                 <v-card-title class="headline justify-center">Auswertung 1</v-card-title>
