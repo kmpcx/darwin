@@ -15,7 +15,9 @@
         <v-row justify="center">
           <v-dialog v-model="dialog" max-width="80%">
             <template v-slot:activator="{ on }">
-              <v-btn class="history-button" color="primary" dark v-on="on">Aktivitätshistorie</v-btn>
+              <v-btn class="history-button" color="blue darken-3" dark v-on="on">
+                <v-icon>mdi-history</v-icon>
+              </v-btn>
             </template>
             <v-card>
               <v-data-table
