@@ -7,7 +7,7 @@
       </order-info>
     <br />
     <v-card tile max-width="100%" class="mx-auto">
-      <v-card-title class="headline">Auswahl der Aktivität für {{scope.Name}}</v-card-title>
+      <v-card-title class="table-title">Auswahl der Aktivität für {{scope.Name}}</v-card-title>
       <v-container>
         <v-row dense>
           <v-col v-for="(item, i) in items" :key="i" cols="4">
@@ -16,7 +16,7 @@
             <v-img class="white--text align-end" height="180" :src="item.ImageLoaded"> 
               <div>
                 <div>
-                  <v-icon size="40">{{item.Icon}}</v-icon>
+                  <!-- <v-icon size="40">{{item.Icon}}</v-icon> -->
                   <v-card-title class="headline justify-center" v-text="item.Name"></v-card-title>
                 </div>
               </div>
