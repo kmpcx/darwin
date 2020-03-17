@@ -21,7 +21,7 @@
                   <v-card-subtitle>
                     <p v-for="(item, i) in orderEntryAttributes"
                     :key="i"
-                    class="order-info">{{item.Name}}: {{item.InputValue}}</p>
+                    class="order-info">{{item.Name}} {{item.InputValue}}</p>
                   </v-card-subtitle>
                 </v-col>
 
@@ -31,8 +31,8 @@
                   <v-card-subtitle class="order-info">
                 <v-row>
                   <v-col cols="12">
-                    <p>Start: {{new Date(orderEntry.StartTime)}}</p>
-                    <p>Ende: {{new Date(orderEntry.EndTime)}}</p>
+                    <p>Start: {{new Date(orderEntry.StartTime).toLocaleString('de-DE', {})}}</p>
+                    <p>Ende: {{new Date(orderEntry.EndTime).toLocaleString('de-DE', {})}}</p>
                     <p>Laufzeit: {{getDuration(orderEntry)}}</p>
                   </v-col>
                   <v-col cols="12">

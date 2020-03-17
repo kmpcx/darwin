@@ -20,7 +20,7 @@
                     :key="i"
                     class="order-info"
                   >
-                    <p>{{item.Name}}: {{item.InputValue}}</p>
+                    <p>{{item.Name}} {{item.InputValue}}</p>
                   </v-card-subtitle>
                 </v-col>
 
