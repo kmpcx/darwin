@@ -15,15 +15,17 @@
               tile
               :color="item.ColorBackground"
               dark
-              max-height="150"
+              max-height="180"
               :to="{ path: '/selectionTask/' + $route.params.businessId + '/' + item.ScopeId }"
             >
+            <v-img class="white--text align-end" height="180" :src="item.ImageLoaded"> 
               <div>
                 <div>
-                  <v-icon size="100">{{item.Icon}}</v-icon>
+                  <v-icon size="40">{{item.Icon}}</v-icon>
                   <v-card-title class="headline justify-center" v-text="item.Name"></v-card-title>
                 </div>
               </div>
+            </v-img>
             </v-card>
           </v-col>
         </v-row>
@@ -67,10 +69,19 @@ export default {
         })
         .then(function(response) {
           self.items = response.data;
+          self.loadImages();
         })
         .catch(function(error) {
           alert(error);
         });
+    },
+
+    loadImages() {
+      this.items.forEach((item, index) => {
+        if (item.Image !== "") {
+          item.ImageLoaded = require("../assets/img/" + item.Image)
+        }
+      });
     },
 
     getOrder() {
