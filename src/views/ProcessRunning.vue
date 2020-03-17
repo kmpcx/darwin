@@ -29,7 +29,7 @@
 
                   <v-card-subtitle class="order-info">
                     <p>Status: in Bearbeitung</p>
-                    <p>Start: {{startDate}}</p>
+                    <p>Start: {{startDate.toLocaleString('de-DE', {})}}</p>
                     <p>
                       Laufzeit:
                       <time-since :date="startDate">
