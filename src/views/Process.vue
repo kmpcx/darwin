@@ -21,7 +21,7 @@
                     <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row> {{item.name}}
                       <v-radio v-for="(value, j) in item.values" :key="j" :label="value.name" :value="value.value"></v-radio>
                     </v-radio-group>
-                    <v-text-field v-else-if="item.type === 'int'" v-model="form.parameters[i]" :label="item.name" hide-details single-line type="number"/>
+                    <v-text-field v-else-if="item.type === 'int'" v-model="form.parameters[i]" :label="item.name" hide-details type="number"/>
                   </v-card-subtitle>
                 </p>
               </v-card>
@@ -98,12 +98,21 @@ export default {
         .post(process.env.VUE_APP_API + "/task/getAttributes", { taskId: this.taskId , time: 'isStart'})
         .then(function(response) {
           self.parameters = response.data;
+          if(response.data.length > 0){
+            self.checkIntFields();
+          }
         })
         .catch(function(error) {
-          if(error.response.status !== 404){
-            alert("Error: " + error);
-          }         
+          console.log("Error: " + error);     
         });
+    },
+    checkIntFields(){
+      this.parameters.forEach((element, index) => {
+        if(element.type === 'int'){
+          this.form.parameters[index] = element.values;
+        }
+        
+      });
     },
     getTaskInfo() {
       let self = this;
@@ -113,15 +122,13 @@ export default {
           self.taskInfo = response.data;
         })
         .catch(function(error) {
-          if(error.response.status !== 404){
-            alert("Error: " + error);
-          }         
+          console.log("Error: " + error);      
         });
     },
     submit: function () {
       let self = this;
       this.errors = [];
-      if (this.form.parameters.length === this.parameters.length || !this.parameters.length) {
+      if (!this.form.parameters.includes(undefined) && this.form.parameters.length === this.parameters.length || !this.parameters.length) {
         this.axios
           .post(process.env.VUE_APP_API + "/order/startTask",
           {taskId: this.taskId , orderId: this.order.OrderId, parameters: this.parameters, form: this.form, userId: this.$store.getters.getUserId})
