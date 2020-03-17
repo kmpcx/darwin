@@ -11,14 +11,16 @@
       <v-container>
         <v-row dense>
           <v-col v-for="(item, i) in items" :key="i" cols="4">
-            <v-card tile :color="item.ColorBackground" dark max-height="150"
+            <v-card tile :color="item.ColorBackground" dark max-height="180"
             :to="{ path: '/process/' + $route.params.businessId + '/' + item.TaskId}">
+            <v-img class="white--text align-end" height="180" :src="item.ImageLoaded"> 
               <div>
                 <div>
-                  <v-icon size="100">{{item.Icon}}</v-icon>
+                  <v-icon size="40">{{item.Icon}}</v-icon>
                   <v-card-title class="headline justify-center" v-text="item.Name"></v-card-title>
                 </div>
               </div>
+            </v-img>
             </v-card>
           </v-col>
         </v-row>
@@ -65,12 +67,22 @@ export default {
         .then(function(response) {
            //alert(scopeId);
           self.items = response.data;
+          self.loadImages();
         })
         .catch(function(error) {
           alert(error);
         });
     },
-      getOrder() {
+
+    loadImages() {
+      this.items.forEach((item, index) => {
+        if (item.Image !== "") {
+          item.ImageLoaded = require("../assets/img/" + item.Image)
+        }
+      });
+    },
+
+    getOrder() {
       let self = this;
       this.axios
         .post(process.env.VUE_APP_API + "/order/get", { businessId: this.businessId })
@@ -82,6 +94,7 @@ export default {
           alert(error);
         });
     },
+
     getScope() {
       let self = this;
       this.axios
