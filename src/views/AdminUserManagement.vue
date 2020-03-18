@@ -6,75 +6,81 @@
       </v-stepper-header>
     </v-stepper>
     <br />
-  <v-card>
-    <v-card-title>
-      Benutzer
-      <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Suche"
-        single-line
-        hide-details
-      ></v-text-field>
-    </v-card-title>
-    <v-data-table
-      :headers="headers"
-      :items="users"
-      :items-per-page="10"
-      :search="search"
-      class="elevation-1"
-    >
-      <!-- <template v-slot:item.IsAdmin="{ item }">
+    <v-card>
+      <v-card-title>
+        Benutzer
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Suche"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="users"
+        :items-per-page="10"
+        :search="search"
+        class="elevation-1"
+      >
+        <!-- <template v-slot:item.IsAdmin="{ item }">
         <v-simple-checkbox v-model="item.IsAdmin" disabled></v-simple-checkbox>
-      </template>' -->
-      <template v-slot:top>
-        <v-toolbar flat color="white">
-          <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="50%">
-            <template v-slot:activator="{ on }">
-              <v-btn color="primary" dark class="mb-2" v-on="on">Neuer Benutzer</v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span class="headline">{{ formTitle }}</span>
-              </v-card-title>
+        </template>-->
+        <template
+          v-slot:item.Kosten="{ item }"
+        >{{formatMoney(item.Kosten, 2, ",", ".")}} €</template>
+        <template v-slot:top>
+          <v-toolbar flat color="white">
+            <v-spacer></v-spacer>
+            <v-dialog v-model="dialog" max-width="50%">
+              <template v-slot:activator="{ on }">
+                <v-btn color="primary" dark class="mb-2" v-on="on">Neuer Benutzer</v-btn>
+              </template>
+              <v-card>
+                <v-card-title>
+                  <span class="headline">{{ formTitle }}</span>
+                </v-card-title>
 
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.Username" label="Benutzername"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.Name" label="Name"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.BusinessId" label="Business ID"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.password" label="Passwort"></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.Username" label="Benutzername"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.Name" label="Name"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.BusinessId" label="Business ID"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.Kosten" type="decimal" suffix="€" label="Personenkosten"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.password" label="Passwort"></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">Abbrechen</v-btn>
-                <v-btn color="blue darken-1" text @click="save">Speichern</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-toolbar>
-      </template>
-      <template v-slot:item.action="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)">mdi-account-edit</v-icon>
-        <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
-      </template>
-    </v-data-table>
-  </v-card>
-</div>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="close">Abbrechen</v-btn>
+                  <v-btn color="blue darken-1" text @click="save">Speichern</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-toolbar>
+        </template>
+        <template v-slot:item.action="{ item }">
+          <v-icon small class="mr-2" @click="editItem(item)">mdi-account-edit</v-icon>
+          <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+        </template>
+      </v-data-table>
+    </v-card>
+  </div>
 </template>
 
 <script>
@@ -91,6 +97,7 @@ export default {
       },
       { text: "Name", value: "Name" },
       { text: "Business ID", value: "BusinessId" },
+      { text: "Personenkosten (€)", value: "Kosten" },
       { text: "Adminrechte", value: "IsAdmin" },
       { text: "Aktionen", value: "action", sortable: false }
     ],
@@ -100,13 +107,15 @@ export default {
       Username: "",
       Name: "",
       BusinessId: "",
-      password: "",
+      Kosten: "",
+      password: ""
     },
     defaultItem: {
       Username: "",
       Name: "",
       BusinessId: "",
-      password: "",
+      Kosten: "0,00",
+      password: ""
     }
   }),
   computed: {
@@ -136,6 +145,8 @@ export default {
     editItem(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      console.log(this.editedItem.Kosten.toString().replace(".", ","))
+      this.editedItem.Kosten = this.editedItem.Kosten.toString().replace(".", ",");
       this.dialog = true;
     },
     deleteItem(item) {
@@ -165,29 +176,30 @@ export default {
       }, 300);
     },
     save() {
+      this.editedItem.Kosten = parseFloat(this.editedItem.Kosten.replace(",", "."))
       if (this.editedIndex > -1) {
-          let self = this;
-      this.axios
-        .post(process.env.VUE_APP_API + "/auth/update", {
-          userId: this.editedItem.UserId,
-          user: this.editedItem
-        })
-        .then(function(response) {
-          Object.assign(self.users[self.editedIndex], self.editedItem);
-        })
-        .catch(function(error) {
-          console.log(error);
-          alert("Benutzer konnte nicht bearbeitet werden.");
-        });
+        let self = this;
+        this.axios
+          .post(process.env.VUE_APP_API + "/auth/update", {
+            userId: this.editedItem.UserId,
+            user: this.editedItem
+          })
+          .then(function(response) {
+            Object.assign(self.users[self.editedIndex], self.editedItem);
+          })
+          .catch(function(error) {
+            console.log(error);
+            alert("Benutzer konnte nicht bearbeitet werden.");
+          });
       } else {
         this.createUser(this.editedItem);
       }
       this.close();
     },
     createUser(user) {
-        console.log(user)
-        user.IsAdmin = 0;
-        user.IsActive = 1;
+      console.log(user);
+      user.IsAdmin = 0;
+      user.IsActive = 1;
       let self = this;
       this.axios
         .post(process.env.VUE_APP_API + "/auth/create", {
@@ -200,6 +212,28 @@ export default {
           console.log(error);
           alert("Benutzer konnte nicht erstellt werden.");
         });
+    },
+    formatMoney(number, decPlaces, decSep, thouSep) {
+      (decPlaces = isNaN((decPlaces = Math.abs(decPlaces))) ? 2 : decPlaces),
+        (decSep = typeof decSep === "undefined" ? "." : decSep);
+      thouSep = typeof thouSep === "undefined" ? "," : thouSep;
+      var sign = number < 0 ? "-" : "";
+      var i = String(
+        parseInt((number = Math.abs(Number(number) || 0).toFixed(decPlaces)))
+      );
+      var j = (j = i.length) > 3 ? j % 3 : 0;
+
+      return (
+        sign +
+        (j ? i.substr(0, j) + thouSep : "") +
+        i.substr(j).replace(/(\decSep{3})(?=\decSep)/g, "$1" + thouSep) +
+        (decPlaces
+          ? decSep +
+            Math.abs(number - i)
+              .toFixed(decPlaces)
+              .slice(2)
+          : "")
+      );
     }
   },
   beforeMount() {

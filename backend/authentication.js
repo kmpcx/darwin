@@ -73,7 +73,7 @@ router.post('/info', (req, res) => {
 })
 
 router.post('/getAll', (req, res) => {
-    let selectQuery = 'SELECT BusinessId, Name, Username, Language, IsAdmin, IsActive, UserId FROM User WHERE IsActive = 1';
+    let selectQuery = 'SELECT BusinessId, Name, Username, Kosten, Language, IsAdmin, IsActive, UserId FROM User WHERE IsActive = 1';
     let query = mysql.format(selectQuery);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -100,7 +100,7 @@ router.post('/create', function (req, res) {
 
 router.post('/update', function (req, res) {
     let updateQuery = 'UPDATE User SET ? WHERE UserId = ?';
-    if(req.body.user.password !== ''){
+    if(req.body.user.password){
         req.body.user.Password = bcrypt.hashSync(req.body.user.password, 8);
     }
     let query = mysql.format(updateQuery, [req.body.user, req.body.userId]);
