@@ -40,144 +40,184 @@ function getOrderFromSage(belID, res) {
 }
 
 router.post('/create', function (req, res) {
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let insertQuery = 'INSERT INTO Orders SET ?'
+            let query = mysql.format(insertQuery, req.body.order);
 
-    let insertQuery = 'INSERT INTO Orders SET ?'
-    let query = mysql.format(insertQuery, req.body.order);
-
-    DB.handle_db(query, (result) => {
-        if (result.error){
-            return res.status(500).send('There was a problem creating the Order.')
+            DB.handle_db(query, (result) => {
+                if (result.error){
+                    return res.status(500).send('There was a problem creating the Order.')
+                } else {
+                    res.status(200).send(result.data)
+                }
+            });
         } else {
-            res.status(200).send(result.data)
+            return res.status(401).send(sec.err)
         }
     });
 });
 
 router.post('/edit', function (req, res) {
-    let updateQuery = 'UPDATE Orders SET ? WHERE OrderId = ?';
-    let query = mysql.format(updateQuery, [req.body.order, req.body.orderId]);
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let updateQuery = 'UPDATE Orders SET ? WHERE OrderId = ?';
+            let query = mysql.format(updateQuery, [req.body.order, req.body.orderId]);
 
-    DB.handle_db(query, (result) => {
-        if (result.error){
-            return res.status(500).send('There was a problem creating the Order.')
+            DB.handle_db(query, (result) => {
+                if (result.error){
+                    return res.status(500).send('There was a problem creating the Order.')
+                } else {
+                    res.status(200).send(result.data)
+                }
+            });
         } else {
-            res.status(200).send(result.data)
+            return res.status(401).send(sec.err)
         }
     });
 });
 
 
 router.post('/get', (req, res) => {
-    let selectQuery = 'SELECT * FROM Orders WHERE BusinessId = ?';
-    let query = mysql.format(selectQuery,[req.body.businessId]);
-    DB.handle_db(query, (result) => {
-        if (result.error){
-            return res.status(500).send('Error on the server.')
-        } else {
-            if (!result.data[0]){
-                if(req.body.import){
-                    getOrderFromSage(req.body.businessId, res);
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT * FROM Orders WHERE BusinessId = ?';
+            let query = mysql.format(selectQuery,[req.body.businessId]);
+            DB.handle_db(query, (result) => {
+                if (result.error){
+                    return res.status(500).send('Error on the server.')
                 } else {
-                    return res.status(404).send('No Order found.')
+                    if (!result.data[0]){
+                        if(req.body.import){
+                            getOrderFromSage(req.body.businessId, res);
+                        } else {
+                            return res.status(404).send('No Order found.')
+                        }
+                    } else {
+                        res.status(200).send( result.data[0] )
+                    }
                 }
-            } else {
-                res.status(200).send( result.data[0] )
-            }
+            })
+        } else {
+            return res.status(401).send(sec.err)
         }
-    })
+    });
 })
 
 router.post('/getById', (req, res) => {
-    let selectQuery = 'SELECT * FROM Orders WHERE OrderId = ?';
-    let query = mysql.format(selectQuery,[req.body.orderId]);
-    DB.handle_db(query, (result) => {
-        if (result.error){
-            return res.status(500).send('Error on the server.')
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT * FROM Orders WHERE OrderId = ?';
+            let query = mysql.format(selectQuery,[req.body.orderId]);
+            DB.handle_db(query, (result) => {
+                if (result.error){
+                    return res.status(500).send('Error on the server.')
+                } else {
+                    if (!result.data[0]){
+                        // getOrderFromSage(req.body.orderId, res);
+                        return res.status(404).send('No Order found.')
+                    } else {
+                        res.status(200).send( result.data[0] )
+                    }
+                }
+            })
         } else {
-            if (!result.data[0]){
-                // getOrderFromSage(req.body.orderId, res);
-                return res.status(404).send('No Order found.')
-            } else {
-                res.status(200).send( result.data[0] )
-            }
+            return res.status(401).send(sec.err)
         }
-    })
+    });
 })
 
 router.post('/getAll', (req, res) => {
-    let selectQuery = 'SELECT * FROM Orders';
-    DB.handle_db(selectQuery, (result) => {
-        if (result.error){
-            return res.status(500).send('Error on the server.')
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT * FROM Orders';
+            DB.handle_db(selectQuery, (result) => {
+                if (result.error){
+                    return res.status(500).send('Error on the server.')
+                } else {
+                    if (!result.data[0]){
+                        return res.status(404).send('No Orders found.')
+                    } else {
+                        res.status(200).send( result.data )
+                    }
+                }
+            })
         } else {
-            if (!result.data[0]){
-                return res.status(404).send('No Orders found.')
-            } else {
-                res.status(200).send( result.data )
-            }
+            return res.status(401).send(sec.err)
         }
-    })
+    });
 })
 
 router.post('/getAllSage', (req, res) => {
-    let selectQuery = 'SELECT BelID, Mandant, Belegnummer, A0Name1 FROM KHKVKBelege';
-    DB.handle_db_sageDB(selectQuery, (result) => {
-        if (result.error){
-            return res.status(500).send('Error on the server.')
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT BelID, Mandant, Belegnummer, A0Name1 FROM KHKVKBelege';
+            DB.handle_db_sageDB(selectQuery, (result) => {
+                if (result.error){
+                    return res.status(500).send('Error on the server.')
+                } else {
+                    if (!result.data[0]){
+                        return res.status(404).send('No Orders found.')
+                    } else {
+                        res.status(200).send( result.data )
+                    }
+                }
+            })
         } else {
-            if (!result.data[0]){
-                return res.status(404).send('No Orders found.')
-            } else {
-                res.status(200).send( result.data )
-            }
+            return res.status(401).send(sec.err)
         }
-    })
+    });
 })
 
 router.post('/getActiveTasks', (req, res) => {
-    let selectQuery = 'SELECT o.Name, o.Note, o.Customer, t.Name as TaskName, s.Name as ScopeName, o.OrderId, oe.TaskId, oe.OrderEntryId FROM Orders o, OrderEntry oe, Task t, Scope s WHERE o.OrderID = oe.OrderId AND oe.TaskId = t.TaskId AND t.ScopeId = s.ScopeId AND oe.EndTime IS NULL AND oe.UserId = ?' ;
-    let  query = mysql.format(selectQuery,[req.body.userId]);
-    DB.handle_db(query, (result) => {
-        if (result.error){
-            return res.status(500).send('Error on the server.')
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT o.Name, o.Note, o.Customer, t.Name as TaskName, s.Name as ScopeName, o.OrderId, oe.TaskId, oe.OrderEntryId FROM Orders o, OrderEntry oe, Task t, Scope s WHERE o.OrderID = oe.OrderId AND oe.TaskId = t.TaskId AND t.ScopeId = s.ScopeId AND oe.EndTime IS NULL AND oe.UserId = ?' ;
+            let  query = mysql.format(selectQuery,[req.body.userId]);
+            DB.handle_db(query, (result) => {
+                if (result.error){
+                    return res.status(500).send('Error on the server.')
+                } else {
+                    if (!result.data[0]){
+                        return res.status(404).send('No Orders found.')
+                    } else {
+                        // console.log(result.data)
+                        res.status(200).send( result.data )
+                    }
+                }
+            })
         } else {
-            if (!result.data[0]){
-                return res.status(404).send('No Orders found.')
-            } else {
-                // console.log(result.data)
-                res.status(200).send( result.data )
-            }
+            return res.status(401).send(sec.err)
         }
-    })
+    });
 })
 
 router.post('/getRecent', (req, res) => {
-    // console.log(req);
-    // console.log(res);
-    // console.log(req.headers.authorization);
-    let sec = secure.verify(req.headers.authorization);
-    if(sec.auth){
-        let selectQuery = 'SELECT DISTINCT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OrderId, oe.EndTime FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.UserId = ? ORDER BY oe.EndTime DESC LIMIT 5' ;
-        let  query = mysql.format(selectQuery,[req.body.userId]);
-        DB.handle_db(query, (result) => {
-            if (result.error){
-                return res.status(500).send('Error on the server.')
-            } else {
-                if (!result.data[0]){
-                    return res.status(404).send('No Orders found.')
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT DISTINCT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OrderId, oe.EndTime FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.UserId = ? ORDER BY oe.EndTime DESC LIMIT 5' ;
+            let  query = mysql.format(selectQuery,[req.body.userId]);
+            DB.handle_db(query, (result) => {
+                if (result.error){
+                    return res.status(500).send('Error on the server.')
                 } else {
-                    res.status(200).send( result.data )
+                    if (!result.data[0]){
+                        return res.status(404).send('No Orders found.')
+                    } else {
+                        res.status(200).send( result.data )
+                    }
                 }
-            }
-        })
-    } else {
-        return res.status(401).send(sec.err)
-    }
-    
+            })
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    }); 
 })
 
 router.post('/getOrderStatus', (req, res) => {
-    let selectQuery = 'SELECT * FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.EndTime IS NULL AND oe.UserId = ?' ;
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT * FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.EndTime IS NULL AND oe.UserId = ?' ;
     let  query = mysql.format(selectQuery,[req.body.userId]);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -190,10 +230,16 @@ router.post('/getOrderStatus', (req, res) => {
             }
         }
     })
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 })
 
 router.post('/getOrderDuration', (req, res) => {
-    let selectQuery = 'SELECT StartTime, EndTime FROM OrderEntry WHERE OrderId = ?' ;
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT StartTime, EndTime FROM OrderEntry WHERE OrderId = ?' ;
     let  query = mysql.format(selectQuery,[req.body.orderId]);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -219,12 +265,18 @@ router.post('/getOrderDuration', (req, res) => {
                 }
         }
     })
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 })
 
 // ---------- Order Entry
 
 router.post('/createEntry', function (req, res) {
-    let insertQuery = 'INSERT INTO OrderEntry SET ?'
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let insertQuery = 'INSERT INTO OrderEntry SET ?'
     let query = mysql.format(insertQuery, req.body.orderEntry);
 
     DB.handle_db(query, (result) => {
@@ -234,10 +286,16 @@ router.post('/createEntry', function (req, res) {
             res.status(200).send(result.data)
         }
     });
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 });
 
 router.post('/editEntry', function (req, res) {
-    let updateQuery = 'UPDATE OrderEntry SET ? WHERE OrderEntryId = ?';
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let updateQuery = 'UPDATE OrderEntry SET ? WHERE OrderEntryId = ?';
     let query = mysql.format(updateQuery, [req.body.orderEntry, req.body.orderEntryId]);
     console.log(query);
     DB.handle_db(query, (result) => {
@@ -247,11 +305,17 @@ router.post('/editEntry', function (req, res) {
             res.status(200).send(result.data)
         }
     });
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 });
 
 
 router.post('/getEntry', (req, res) => {
-    let selectQuery = 'SELECT * FROM OrderEntry WHERE OrderEntryId = ?';
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT * FROM OrderEntry WHERE OrderEntryId = ?';
     let query = mysql.format(selectQuery,[req.body.orderEntryId]);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -264,10 +328,16 @@ router.post('/getEntry', (req, res) => {
             }
         }
     })
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 });
 
 router.post('/getEntryAttributes', (req, res) => {
-    let selectQuery = 'SELECT te.InputValue, te.Timestamp, te.TaskAttributeEntryId, te.TaskAttributeId, ta.IsStart, ta.IsEnd, ta.Type, te.InputValue, ta.Name FROM TaskAttributeEntry te, TaskAttribute ta WHERE te.OrderEntryId = ? AND te.TaskAttributeId = ta.TaskAttributeId';
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT te.InputValue, te.Timestamp, te.TaskAttributeEntryId, te.TaskAttributeId, ta.IsStart, ta.IsEnd, ta.Type, te.InputValue, ta.Name FROM TaskAttributeEntry te, TaskAttribute ta WHERE te.OrderEntryId = ? AND te.TaskAttributeId = ta.TaskAttributeId';
     let query = mysql.format(selectQuery,[req.body.orderEntryId]);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -280,10 +350,16 @@ router.post('/getEntryAttributes', (req, res) => {
             }
         }
     })
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 });
 
 router.post('/getEntries', (req, res) => {
-    let selectQuery = 'SELECT oe.OrderEntryId, oe.StartTime, oe.EndTime, oe.Note, t.Name as TaskName, s.Name as ScopeName, u.Name as Username FROM OrderEntry oe, Task t, Scope s, User u WHERE oe.OrderId = ? AND oe.TaskId = t.TaskId AND t.ScopeId = s.ScopeId AND oe.UserId = u.UserId';
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT oe.OrderEntryId, oe.StartTime, oe.EndTime, oe.Note, t.Name as TaskName, s.Name as ScopeName, u.Name as Username FROM OrderEntry oe, Task t, Scope s, User u WHERE oe.OrderId = ? AND oe.TaskId = t.TaskId AND t.ScopeId = s.ScopeId AND oe.UserId = u.UserId';
     let query = mysql.format(selectQuery,[req.body.orderId]);
     console.log(query)
     DB.handle_db(query, (result) => {
@@ -297,12 +373,16 @@ router.post('/getEntries', (req, res) => {
             }
         }
     })
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 })
 
 router.post('/startTask', function (req, res) {
-    // let time = new Date().toJSON().slice(0, 19).replace('T', ' ');
-    // let time = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    let time = new Date().toLocaleString();
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let time = new Date().toLocaleString();
     let insertQuery = 'INSERT INTO OrderEntry (StartTime, Note, UserId, OrderId, TaskId) VALUES (?, ?, ?, ?, ?)'
     let query = mysql.format(insertQuery, [time, null, req.body.userId, req.body.orderId, req.body.taskId]);
     DB.handle_db(query, (result) => {
@@ -329,10 +409,16 @@ router.post('/startTask', function (req, res) {
             }
         }
     });
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 });
 
 router.post('/stopTask', function (req, res) {
-    let time = new Date().toLocaleString();
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let time = new Date().toLocaleString();
     let updateQuery = 'UPDATE OrderEntry SET EndTime = ?, Note = ? WHERE OrderEntryId = ?';
     let query = mysql.format(updateQuery, [time, req.body.note, req.body.orderEntryId]);
     console.log(query)
@@ -360,13 +446,19 @@ router.post('/stopTask', function (req, res) {
             }
         }
     });
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 });
 
 
 // ---------- Task
 
 router.post('/getTaskAttributeEntries', (req, res) => {
-    let selectQuery = 'SELECT * FROM TaskAttributeEntry WHERE OrderEntryId = ?';
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT * FROM TaskAttributeEntry WHERE OrderEntryId = ?';
     let query = mysql.format(selectQuery,[req.body.orderEntryId]);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -378,13 +470,19 @@ router.post('/getTaskAttributeEntries', (req, res) => {
                 res.status(200).send( result.data )
             }
         }
-    })
+    }) 
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 })
 
 // ---------- Task Mapping
 
 router.post('/createTaskMapping', function (req, res) {
-    let insertQuery = 'INSERT INTO OrderTask SET ?'
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let insertQuery = 'INSERT INTO OrderTask SET ?'
     let query = mysql.format(insertQuery, req.body.orderTask);
 
     DB.handle_db(query, (result) => {
@@ -394,10 +492,16 @@ router.post('/createTaskMapping', function (req, res) {
             res.status(200).send(result.data)
         }
     });
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 });
 
 router.post('/getTaskMapping', function (req, res) {
-    let selectQuery = 'SELECT * FROM OrderTask WHERE OrderId = ?';
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT * FROM OrderTask WHERE OrderId = ?';
     let query = mysql.format(selectQuery,[req.body.orderId]);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -410,10 +514,16 @@ router.post('/getTaskMapping', function (req, res) {
             }
         }
     })
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 })
 
 router.post('/getBusinessId', (req, res) => {
-    let selectQuery = 'SELECT o.BusinessId FROM Orders o, OrderEntry oe WHERE oe.orderEntryId = ? AND oe.OrderId = o.OrderId';
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT o.BusinessId FROM Orders o, OrderEntry oe WHERE oe.orderEntryId = ? AND oe.OrderId = o.OrderId';
     let query = mysql.format(selectQuery,[req.body.orderEntryId]);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -427,10 +537,16 @@ router.post('/getBusinessId', (req, res) => {
             }
         }
     })
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 })
 
 router.post('/getByOrderEntry', (req, res) => {
-    let selectQuery = 'SELECT o.BusinessId, o.Name, o.OrderId, o.Note, o.Customer FROM Orders o, OrderEntry oe WHERE oe.orderEntryId = ? AND oe.OrderId = o.OrderId';
+    secure.verify(req.headers.authorization, function(sec) {
+        if(sec.auth){
+            let selectQuery = 'SELECT o.BusinessId, o.Name, o.OrderId, o.Note, o.Customer FROM Orders o, OrderEntry oe WHERE oe.orderEntryId = ? AND oe.OrderId = o.OrderId';
     let query = mysql.format(selectQuery,[req.body.orderEntryId]);
     DB.handle_db(query, (result) => {
         if (result.error){
@@ -444,6 +560,10 @@ router.post('/getByOrderEntry', (req, res) => {
             }
         }
     })
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
 })
 
 

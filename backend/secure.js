@@ -9,18 +9,12 @@ function sign(userId) {
     return token;
 }
 
-function verify(token){
+function verify(token, callback){
     jwt.verify(token, config.secret, function(err, decoded) {
-        // console.log("decoded: " + decoded);
-        // console.log("err: " + err);
-        // console.log(decoded.foo); // bar
         if(decoded){
-            console.log("auth")
-            return {auth: true, err: null}
+            callback({auth: true, err: null})
         } else {
-            console.log("No auth")
-            console.log(err)
-            return {auth: true, err: err.name}
+            callback({auth: true, err: err.name})
         }
       });
 }
