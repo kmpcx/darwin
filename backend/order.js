@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken')
 const mysql = require('mysql')
 
 const DB = require('./dbSQL')
+const secure = require('./secure');
 
 router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.json())
@@ -39,6 +40,7 @@ function getOrderFromSage(belID, res) {
 }
 
 router.post('/create', function (req, res) {
+
     let insertQuery = 'INSERT INTO Orders SET ?'
     let query = mysql.format(insertQuery, req.body.order);
 
@@ -150,19 +152,28 @@ router.post('/getActiveTasks', (req, res) => {
 })
 
 router.post('/getRecent', (req, res) => {
-    let selectQuery = 'SELECT DISTINCT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OrderId, oe.EndTime FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.UserId = ? ORDER BY oe.EndTime DESC LIMIT 5' ;
-    let  query = mysql.format(selectQuery,[req.body.userId]);
-    DB.handle_db(query, (result) => {
-        if (result.error){
-            return res.status(500).send('Error on the server.')
-        } else {
-            if (!result.data[0]){
-                return res.status(404).send('No Orders found.')
+    // console.log(req);
+    // console.log(res);
+    // console.log(req.headers.authorization);
+    let sec = secure.verify(req.headers.authorization);
+    if(sec.auth){
+        let selectQuery = 'SELECT DISTINCT o.Name, o.Note, o.Customer, o.ScanCode, o.BusinessId, o.OrderId, oe.EndTime FROM Orders o, OrderEntry oe WHERE o.OrderID = oe.OrderId AND oe.UserId = ? ORDER BY oe.EndTime DESC LIMIT 5' ;
+        let  query = mysql.format(selectQuery,[req.body.userId]);
+        DB.handle_db(query, (result) => {
+            if (result.error){
+                return res.status(500).send('Error on the server.')
             } else {
-                res.status(200).send( result.data )
+                if (!result.data[0]){
+                    return res.status(404).send('No Orders found.')
+                } else {
+                    res.status(200).send( result.data )
+                }
             }
-        }
-    })
+        })
+    } else {
+        return res.status(401).send(sec.err)
+    }
+    
 })
 
 router.post('/getOrderStatus', (req, res) => {

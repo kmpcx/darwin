@@ -100,6 +100,7 @@ export default new Vuex.Store({
     authStatus: state => state.status,
     getUserId: state => state.user,
     getUsername: state => state.username,
-    getIsAdmin: state => state.isAdmin
+    getIsAdmin: state => state.isAdmin,
+    getUserToken: state => state.token
   }
 })
