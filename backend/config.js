@@ -1,3 +1,3 @@
 module.exports = {
-  'secret': 'thisIsMySecreT2019'
+  'secret': '***REMOVED***'
 }

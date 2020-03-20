@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken')
 const mysql = require('mysql')
 
 const DB = require('./dbSQL')
+const secure = require('./secure')
 
 router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.json())
