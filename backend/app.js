@@ -1,5 +1,6 @@
 'use strict'
 const express = require('express')
+var cors = require('cors')
 const authentication = require('./authentication');
 const scope = require('./scope');
 const task = require('./task');
@@ -8,13 +9,17 @@ const moment = require('vue-moment');
 
 const app = express()
 
-const allowCrossDomain = function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Methods', '*')
-  res.header('Access-Control-Allow-Headers', '*')
-  next()
-}
-app.use(allowCrossDomain)
+// const allowCrossDomain = function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', '*')
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
+//   res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type')
+//   res.setHeader('Access-Control-Allow-Credentials', true)
+//   next()
+// }
+// app.use(allowCrossDomain)
+
+app.use(cors());
+// app.use(cors({origin: 'https://***REMOVED***.kmpc.de'}));
 
 app.use('/auth', authentication);
 app.use('/scope', scope);
