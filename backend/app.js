@@ -21,10 +21,10 @@ app.use(allowCrossDomain)
 // app.use(cors());
 // app.use(cors({origin: 'https://***REMOVED***.kmpc.de'}));
 
-app.use('/auth', authentication);
-app.use('/scope', scope);
-app.use('/task', task);
-app.use('/order', order);
+app.use('/api/auth', authentication);
+app.use('/api/scope', scope);
+app.use('/api/task', task);
+app.use('/api/order', order);
 
 let port = process.env.PORT || 3000
 
