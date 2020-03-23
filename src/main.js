@@ -22,7 +22,7 @@ Vue.component("stepper-bar", StepperBar);
 
 Vue.use(VueAxios, Axios)
 
-Vue.config.productionTip = false
+Vue.config.productionTip = true
 
 // Vue.prototype.$http = Axios //Needed for login?
 
