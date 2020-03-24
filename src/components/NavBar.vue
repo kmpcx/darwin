@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <v-app-bar color="blue darken-3" dense dark>
+  <div id="app" class="sticky-bar">
+    <v-app-bar  color="blue darken-3" dense dark fixed>
       <v-btn v-if="this.$route.path === '/'" icon tile onclick="location.reload(true)">
         <v-icon>mdi-home</v-icon>
       </v-btn>
@@ -78,3 +78,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.sticky-bar {
+  margin-top: 50px
+}
+</style>

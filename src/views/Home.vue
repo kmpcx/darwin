@@ -57,11 +57,11 @@
         </v-col>
         <v-col cols="4">
           <div>
-            <v-card tile color="blue darken-3" dark height="300" :to="{ path: '/order/'}">
+            <v-card tile color="black" dark height="300" :to="{ path: '/order/'}">
               <v-img
                 class="white--text align-end"
                 height="300"
-                src="https://images.unsplash.com/photo-1495364037436-fed1ba81ad3e"
+                src="../assets/img/img_av.jpg"
               >
                 <div>
                   <div>
@@ -72,11 +72,11 @@
               </v-img>
             </v-card>
             <br />
-            <v-card tile dark color="deep-orange" height="300" :to="{ path: '/selectionScope/1'}">
+            <v-card tile dark color="black" height="300" :to="{ path: '/selectionScope/1'}">
               <v-img
                 class="white--text align-end"
                 height="300"
-                src="https://pixabay.com/get/54e6dd434256b108feda8460825668204022dfe05b52794a772f7fd2/cleaning-268084_1920.jpg"
+                src="../assets/img/img_sonstiges.jpg"
               >
                 <div>
                   <div>
