@@ -5,45 +5,57 @@
         <v-stepper-step color="blue darken-3" step="L">Login</v-stepper-step>
       </v-stepper-header>
     </v-stepper>
-    <br />
-    <v-card tile>
-      <v-card-title class="headline">Login</v-card-title>
+
+    <div>
       <v-row>
         <v-col cols="12">
-          <v-form @submit.prevent="login">
-            <v-container>
+          <div>
+            <v-card tile>
+              <v-card-title class="headline">Login</v-card-title>
               <v-row>
-                <v-col cols="12" md="5">
-                  <v-text-field
-                    v-model="username"
-                    label="Benutzername"
-                    required
-                    type="text"
-                    :rules="nameRules"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="password"
-                    label="Passwort"
-                    required
-                    type="password"
-                    :rules="pwRules"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="3">
-                  <button type="submit">Login</button>
+                <v-col cols="12">
+                  <v-form @submit.prevent="login">
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" md="5">
+                          <v-text-field
+                            v-model="username"
+                            label="Benutzername"
+                            required
+                            type="text"
+                            :rules="nameRules"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="4">
+                          <v-text-field
+                            v-model="password"
+                            label="Passwort"
+                            required
+                            type="password"
+                            :rules="pwRules"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="3">
+                          <button type="submit">Login</button>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-form>
                 </v-col>
               </v-row>
-            </v-container>
-          </v-form>
+              <v-snackbar
+                v-model="alert"
+                top
+                right
+                color="error"
+                multi-line
+                timeout="3000"
+              >{{ alertText }}</v-snackbar>
+            </v-card>
+          </div>
         </v-col>
       </v-row>
-      <v-snackbar v-model="alert" top right color="error" multi-line timeout="3000">
-        {{ alertText }}
-      </v-snackbar>
-    </v-card>
-    <br />
+    </div>
   </div>
 </template>
 
@@ -83,7 +95,9 @@ export default {
         .then(() => this.$router.push("/"))
         .catch(function(error) {
           if (error.response && error.response.status === 404) {
-            self.openAlert("Benutzername falsch oder Benutzer nicht im System.");
+            self.openAlert(
+              "Benutzername falsch oder Benutzer nicht im System."
+            );
           } else if (error.response && error.response.status === 401) {
             self.openAlert("Passwort für den Benutzer nicht korrekt.");
           }

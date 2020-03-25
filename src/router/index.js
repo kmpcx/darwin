@@ -27,7 +27,11 @@ const router = new Router({
       path: "/login",
       name: "login",
       meta: { layout: "no-sidebar" },
-      component: () => import("@/views/Login.vue")
+      component: require("@/views/Login.vue").default,
+      props: true,
+      meta: { 
+        requiresAuth: false
+      }
     },
     {
       path: "/selectionScope/:businessId",
