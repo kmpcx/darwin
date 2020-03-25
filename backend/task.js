@@ -52,6 +52,25 @@ router.post('/edit', function (req, res) {
     });
 });
 
+router.post('/update', function (req, res) {
+    secure.verify(req.headers.authorization, function (sec) {
+        if (sec.auth) {
+            let updateQuery = 'UPDATE Task SET ? WHERE TaskId = ?';
+            let query = mysql.format(updateQuery, [req.body.task, req.body.taskId]);
+
+            DB.handle_db(query, (result) => {
+                if (result.error) {
+                    return res.status(500).send('There was a updating creating the Task.')
+                } else {
+                    res.status(200).send(result.data)
+                }
+            });
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
+});
+
 
 router.post('/get', (req, res) => {
     secure.verify(req.headers.authorization, function (sec) {
@@ -101,7 +120,7 @@ router.post('/getAll', (req, res) => {
     secure.verify(req.headers.authorization, function (sec) {
         if (sec.auth) {
             let selectQuery = 'SELECT * FROM Task';
-            DB.handle_db(query, (result) => {
+            DB.handle_db(selectQuery, (result) => {
                 if (result.error) {
                     return res.status(500).send('Error on the server.')
                 } else {

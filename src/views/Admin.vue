@@ -15,6 +15,13 @@
             </div>
         </v-card>
         <br>
+         <v-card tile color="red darken-3" dark height="220" :to="{ path: '/admin/task'}">
+            <div>
+                <v-icon size="160">mdi-order-bool-ascending-variant</v-icon>
+                <v-card-title class="headline justify-center">Tätigkeitsverwaltung</v-card-title>
+            </div>
+        </v-card>
+        <br>
         <v-card tile color="green darken-3" dark height="220" :to="{ path: '/admin/report/order'}">
             <div>
                 <v-icon size="160">mdi-file-chart</v-icon>
