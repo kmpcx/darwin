@@ -45,19 +45,6 @@
         </v-col>
       </v-row>
     </div>
-    <br />
-    <v-row>
-      <v-col class="btn-outter-left" cols="6">
-        <v-btn tile :to="{ path: '/selectionTask/' + $route.params.businessId + '/' + taskInfo.ScopeId }">
-          <v-icon dark>mdi-arrow-left-thick</v-icon>
-        </v-btn>
-      </v-col>
-      <v-col class="btn-outter-right" cols="6">
-        <v-btn tile :to="{ path: '/processRunning/1' }">
-          <v-icon dark>mdi-arrow-right-thick</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
   </div>
 </template>
 

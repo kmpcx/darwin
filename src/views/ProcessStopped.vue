@@ -68,16 +68,6 @@
         </v-col>
       </v-row>
     </div>
-
-    <br />
-    <v-row>
-      <v-col class="btn-outter-left" cols="6">
-        <v-btn tile :to="{ path: '/process/' + businessId + '/2/2'  }">
-          <v-icon dark>mdi-arrow-left-thick</v-icon>
-        </v-btn>
-      </v-col>
-      <v-col class="btn-outter-right" cols="6"></v-col>
-    </v-row>
   </div>
 </template>
 
