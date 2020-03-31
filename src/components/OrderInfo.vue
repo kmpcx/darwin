@@ -104,8 +104,16 @@ export default {
         })
         .then(function(response) {
           self.order = response.data;
+          // console.log("Test1");
           self.getOrderDuration();
+          // console.log("Test2");
           self.getOrderEntries();
+          if(this.adminView){
+            console.log("Test3");
+            self.getOrderCosts();
+          } else {
+            console.log("Test4");
+          }
         })
         .catch(function(error) {
           if (run <= 3) {
@@ -150,6 +158,20 @@ export default {
         })
         .then(function(response) {
           self.orderDuration = response.data;
+        })
+        .catch(function(error) {
+          alert("OrderId: " + orderId);
+        });
+    },
+    getOrderCosts() {
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/order/getOrderCosts", {
+          orderId: this.order.OrderId
+        })
+        .then(function(response) {
+          // self.orderDuration = response.data;
+          console.log(response);
         })
         .catch(function(error) {
           alert("OrderId: " + orderId);

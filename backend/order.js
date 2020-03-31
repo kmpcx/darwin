@@ -272,6 +272,44 @@ router.post('/getOrderDuration', (req, res) => {
     });
 })
 
+router.post('/getOrderCosts', (req, res) => {
+    secure.verify(req.headers.authorization, function (sec) {
+        if (sec.auth) {
+            let selectQuery = 'SELECT oe.StartTime, oe.EndTime, u.Cost as StaffCost, t.Cost as HardwareCost FROM OrderEntry oe, Task t, User u WHERE oe.OrderId = ? AND oe.TaskId = t.TaskId AND oe.UserId = u.UserId';
+            let query = mysql.format(selectQuery, [req.body.orderId]);
+            DB.handle_db(query, (result) => {
+                if (result.error) {
+                    return res.status(500).send('Error on the server.')
+                } else {
+                    let staffCost = 0;
+                    let hardwareCost = 0;
+                    if (result.data.length > 0) {
+                        let groupLength = result.data.length;
+                        for (var i = 0; i < groupLength; i++) {
+                            var tmp = result.data[i]
+                            if (!tmp.EndTime) {
+                                tmp.EndTime = new Date();
+                            }
+                            let duration = ((tmp.EndTime.getTime() - tmp.StartTime.getTime()) / 1000);
+                            staffCost += duration*tmp.StaffCost/3600;
+                            hardwareCost += duration*tmp.HardwareCost/3600;
+                            if ((i + 1) == (groupLength)) {
+                                console.log({ staffCost, hardwareCost });
+                                res.status(200).send({ staffCost, hardwareCost })
+                            }
+                        }
+                    } else {
+                        console.log({ staffCost, hardwareCost });
+                        res.status(200).send({ staffCost, hardwareCost})
+                    }
+                }
+            })
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
+})
+
 // ---------- Order Entry
 
 router.post('/createEntry', function (req, res) {
