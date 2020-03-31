@@ -174,6 +174,7 @@ router.post('/getActiveTasks', (req, res) => {
         if (sec.auth) {
             let selectQuery = 'SELECT o.Name, o.Note, o.Customer, t.Name as TaskName, s.Name as ScopeName, o.OrderId, oe.TaskId, oe.OrderEntryId FROM Orders o, OrderEntry oe, Task t, Scope s WHERE o.OrderID = oe.OrderId AND oe.TaskId = t.TaskId AND t.ScopeId = s.ScopeId AND oe.EndTime IS NULL AND oe.UserId = ?';
             let query = mysql.format(selectQuery, [req.body.userId]);
+            console.log(query);
             DB.handle_db(query, (result) => {
                 if (result.error) {
                     return res.status(500).send('Error on the server.')
@@ -359,7 +360,7 @@ router.post('/getEntryAttributes', (req, res) => {
 router.post('/getEntries', (req, res) => {
     secure.verify(req.headers.authorization, function (sec) {
         if (sec.auth) {
-            let selectQuery = 'SELECT oe.OrderEntryId, oe.StartTime, oe.EndTime, oe.Note, t.Name as TaskName, s.Name as ScopeName, u.Name as Username FROM OrderEntry oe, Task t, Scope s, User u WHERE oe.OrderId = ? AND oe.TaskId = t.TaskId AND t.ScopeId = s.ScopeId AND oe.UserId = u.UserId';
+            let selectQuery = 'SELECT oe.OrderEntryId, oe.StartTime, oe.EndTime, oe.Note, t.Name as TaskName, s.Name as ScopeName, u.Name as Username, u.Cost as StaffCost, t.Cost as HardwareCost FROM OrderEntry oe, Task t, Scope s, User u WHERE oe.OrderId = ? AND oe.TaskId = t.TaskId AND t.ScopeId = s.ScopeId AND oe.UserId = u.UserId';
             let query = mysql.format(selectQuery, [req.body.orderId]);
             console.log(query)
             DB.handle_db(query, (result) => {

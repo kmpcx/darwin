@@ -82,7 +82,7 @@ router.post('/info', (req, res) => {
 router.post('/getAll', (req, res) => {
     secure.verify(req.headers.authorization, function (sec) {
         if (sec.auth) {
-            let selectQuery = 'SELECT BusinessId, Name, Username, Kosten, Language, IsAdmin, IsActive, UserId FROM User WHERE IsActive = 1';
+            let selectQuery = 'SELECT BusinessId, Name, Username, Cost, Language, IsAdmin, IsActive, UserId FROM User WHERE IsActive = 1';
             let query = mysql.format(selectQuery);
             DB.handle_db(query, (result) => {
                 if (result.error) {

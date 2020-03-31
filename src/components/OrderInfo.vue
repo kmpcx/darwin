@@ -13,7 +13,7 @@
         </v-col>
         <v-col cols="7" class="text-left">Notiz: {{order.Note}}</v-col>
         <v-row justify="center">
-          <v-dialog v-model="dialog" max-width="80%">
+          <v-dialog v-model="dialog" max-width="95%">
             <template v-slot:activator="{ on }">
               <v-btn class="history-button" color="blue darken-3" dark v-on="on">
                 <v-icon>mdi-history</v-icon>
@@ -30,6 +30,8 @@
                 <template v-slot:item.duration="{ item }">{{getDuration(item)}}</template>
                 <template v-slot:item.StartTime="{ item }">{{getDateString(item.StartTime)}}</template>
                 <template v-slot:item.EndTime="{ item }">{{getDateString(item.EndTime)}}</template>
+                <template v-slot:item.staffCost="{ item }">{{formatMoney((getDurationRaw(item)*item.StaffCost)/3600, 2, ",", ".")}} €</template>
+                <template v-slot:item.hardwareCost="{ item }">{{formatMoney((getDurationRaw(item)*item.HardwareCost)/3600, 2, ",", ".")}} €</template>
               </v-data-table>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -75,10 +77,17 @@ export default {
     idType: {
       required: false,
       default: "businessId"
+    },
+    adminView: {
+      required: false,
+      default: false
     }
   },
   mounted() {
     this.getOrder(1);
+    if(this.adminView){
+      this.headers.push( { text: "Personalkosten", value: "staffCost" },  { text: "Hardwarekosten", value: "hardwareCost" })
+    }
   },
   destroyed() {},
   methods: {
@@ -111,6 +120,28 @@ export default {
           // console.log("BusinessId: " + self.businessId);
         });
     },
+    formatMoney(number, decPlaces, decSep, thouSep) {
+      (decPlaces = isNaN((decPlaces = Math.abs(decPlaces))) ? 2 : decPlaces),
+        (decSep = typeof decSep === "undefined" ? "." : decSep);
+      thouSep = typeof thouSep === "undefined" ? "," : thouSep;
+      var sign = number < 0 ? "-" : "";
+      var i = String(
+        parseInt((number = Math.abs(Number(number) || 0).toFixed(decPlaces)))
+      );
+      var j = (j = i.length) > 3 ? j % 3 : 0;
+
+      return (
+        sign +
+        (j ? i.substr(0, j) + thouSep : "") +
+        i.substr(j).replace(/(\decSep{3})(?=\decSep)/g, "$1" + thouSep) +
+        (decPlaces
+          ? decSep +
+            Math.abs(number - i)
+              .toFixed(decPlaces)
+              .slice(2)
+          : "")
+      );
+    },
     getOrderDuration() {
       let self = this;
       this.axios
@@ -141,15 +172,28 @@ export default {
       if (item.EndTime) return "Abgeschlossen";
       else return "Wird bearbeitet";
     },
-    getDuration(item) {
+    getDurationRaw(item){
+      let endDate;
       if (item.EndTime) {
-        let startDate = new Date(item.StartTime);
-        let endDate = new Date(item.EndTime);
-        let delta = (endDate.getTime() - startDate.getTime()) / 1000;
-        return this.calculateTimeFromDuration(delta, false);
+        endDate = new Date(item.EndTime);
       } else {
-        return "-";
+        endDate = new Date();
       }
+      let startDate = new Date(item.StartTime);
+      
+      let delta = (endDate.getTime() - startDate.getTime()) / 1000;
+      return delta;
+    },
+    getDuration(item) {
+      let endDate;
+      if (item.EndTime) {
+        endDate = new Date(item.EndTime);
+      } else {
+        endDate = new Date();
+      }
+      let startDate = new Date(item.StartTime);
+      let delta = (endDate.getTime() - startDate.getTime()) / 1000;
+      return this.calculateTimeFromDuration(delta, false);
     },
     calculateTimeFromDuration(delta, seconds) {
       let durationString = "";

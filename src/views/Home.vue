@@ -134,11 +134,19 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+    },
+    checkUser() {
+      if(this.$store.getters.getUserId === undefined){
+        this.$router.go()
+      }
     }
   },
-  beforeMount() {
+  mounted() {
     this.getActiveOrders();
     this.getRecentOrders();
+  }, 
+  beforeMount() {
+    this.checkUser();
   }
 };
 </script>

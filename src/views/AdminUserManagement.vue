@@ -29,8 +29,8 @@
         <v-simple-checkbox v-model="item.IsAdmin" disabled></v-simple-checkbox>
         </template>-->
         <template
-          v-slot:item.Kosten="{ item }"
-        >{{formatMoney(item.Kosten, 2, ",", ".")}} €</template>
+          v-slot:item.Cost="{ item }"
+        >{{formatMoney(item.Cost, 2, ",", ".")}} €</template>
         <template v-slot:top>
           <v-toolbar flat color="white">
             <v-spacer></v-spacer>
@@ -56,7 +56,7 @@
                         <v-text-field v-model="editedItem.BusinessId" label="Business ID"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.Kosten" type="decimal" suffix="€" label="Personenkosten"></v-text-field>
+                        <v-text-field v-model="editedItem.Cost" type="decimal" suffix="€" label="Personenkosten"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field v-model="editedItem.password" label="Passwort"></v-text-field>
@@ -97,7 +97,7 @@ export default {
       },
       { text: "Name", value: "Name" },
       { text: "Business ID", value: "BusinessId" },
-      { text: "Personenkosten (€/H)", value: "Kosten" },
+      { text: "Personenkosten (€/H)", value: "Cost" },
       { text: "Adminrechte", value: "IsAdmin" },
       { text: "Aktionen", value: "action", sortable: false }
     ],
@@ -107,14 +107,14 @@ export default {
       Username: "",
       Name: "",
       BusinessId: "",
-      Kosten: "",
+      Cost: "",
       password: ""
     },
     defaultItem: {
       Username: "",
       Name: "",
       BusinessId: "",
-      Kosten: "0,00",
+      Cost: "0,00",
       password: ""
     }
   }),
@@ -145,8 +145,8 @@ export default {
     editItem(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      console.log(this.editedItem.Kosten.toString().replace(".", ","))
-      this.editedItem.Kosten = this.editedItem.Kosten.toString().replace(".", ",");
+      console.log(this.editedItem.Cost.toString().replace(".", ","))
+      this.editedItem.Cost = this.editedItem.Cost.toString().replace(".", ",");
       this.dialog = true;
     },
     deleteItem(item) {
@@ -176,7 +176,7 @@ export default {
       }, 300);
     },
     save() {
-      this.editedItem.Kosten = parseFloat(this.editedItem.Kosten.replace(",", "."))
+      this.editedItem.Cost = parseFloat(this.editedItem.Cost.replace(",", "."))
       if (this.editedIndex > -1) {
         let self = this;
         this.axios

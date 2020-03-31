@@ -13,7 +13,7 @@
 
       <v-toolbar-title>{{username}}</v-toolbar-title>
 
-      <v-menu left bottom>
+      <v-menu left bottom  v-if="isLoggedIn">
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on">
             <v-icon>mdi-account-circle</v-icon>
@@ -23,7 +23,7 @@
         <v-list>
           <v-list-item v-if="isAdmin > 0" href="/admin">
             <v-list-item-title>
-              <a>Admin Bereich</a>
+              <a>Adminbereich</a>
             </v-list-item-title>
           </v-list-item>
           <v-list-item>

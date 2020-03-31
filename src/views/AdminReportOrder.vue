@@ -2,7 +2,7 @@
   <div>
     <v-stepper>
       <v-stepper-header>
-        <v-stepper-step color="blue darken-3" step="B">Auftrags Auswertung</v-stepper-step>
+        <v-stepper-step color="blue darken-3" step="B">Auftragsauswertung</v-stepper-step>
       </v-stepper-header>
     </v-stepper>
     <br />
@@ -21,9 +21,9 @@
       </v-card-title>
     </v-card>
     <br />
-    <order-info :id="businessId" :key="componentKey">
-        </order-info>
-      <br />
+      <order-info :id="businessId" :key="componentKey" adminView="true" v-if="showReportData">
+      </order-info>
+    <br />
   </div>
 </template>
 
@@ -32,7 +32,8 @@ export default {
   data: () => ({
     orders: [],
     businessId: null,
-    componentKey: 0
+    componentKey: 0,
+    showReportData: false
   }),
   computed: {},
   watch: {},
@@ -44,9 +45,9 @@ export default {
       return item.BusinessId + ' - ' + item.Name + ' - ' + item.Customer;
     },
     updateOrder(item){
+      this.showReportData = true;
       this.businessId = item.split("-")[0].replace(" ", "");
       this.forceRerender();
-      console.log(this.businessId)
     },
     customFilter(item, queryText, itemText) {
       const textOne = item.Name.toLowerCase();
