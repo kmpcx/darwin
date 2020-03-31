@@ -19,11 +19,14 @@
         ></v-text-field>
       </v-card-title>
       <v-data-table
+        locale="de"
         :headers="headers"
         :items="users"
         :items-per-page="10"
         :search="search"
         class="elevation-1"
+        no-results-text="Keine passenden Einträge gefunden."
+        no-data-text="Keine Daten vorhanden."
       >
         <!-- <template v-slot:item.IsAdmin="{ item }">
         <v-simple-checkbox v-model="item.IsAdmin" disabled></v-simple-checkbox>

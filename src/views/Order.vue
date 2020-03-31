@@ -21,6 +21,8 @@
                 :headers="headers"
                 :items="items"
                 :items-per-page="itemsPerPage"
+                no-results-text="Keine passenden Einträge gefunden."
+                no-data-text="Keine Daten vorhanden."
                 :search="search"
                 :page.sync="page"
                 hide-default-footer
