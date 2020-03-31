@@ -25,6 +25,8 @@
                 :items="orderEntries"
                 :items-per-page="10"
                 class="elevation-1"
+                no-results-text="Keine passenden Einträge gefunden."
+                no-data-text="Keine Daten vorhanden."
               >
                 <template v-slot:item.Status="{ item }">{{getState(item)}}</template>
                 <template v-slot:item.duration="{ item }">{{getDuration(item)}}</template>

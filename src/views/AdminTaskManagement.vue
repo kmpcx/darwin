@@ -24,6 +24,8 @@
         :items-per-page="10"
         :search="search"
         class="elevation-1"
+        no-results-text="Keine passenden Einträge gefunden."
+        no-data-text="Keine Daten vorhanden."
       >
         <template v-slot:item.ScopeId="{ item }">
           {{scopes[item.ScopeId]}}
