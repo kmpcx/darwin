@@ -1,6 +1,6 @@
 <template>
   <div data-app>
-    <stepper-bar stepperValue="2"></stepper-bar>
+    <stepper-bar stepperValue="2" backLastStep="true"></stepper-bar>
     <div>
       <v-row>
         <v-col cols="7">

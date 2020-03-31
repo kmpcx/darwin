@@ -1,6 +1,6 @@
 <template>
   <div>
-    <stepper-bar stepperValue="3">
+    <stepper-bar stepperValue="3" backLastStep="true">
       </stepper-bar>
     <br />
       <order-info :id="businessId">
