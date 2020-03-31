@@ -1,6 +1,6 @@
 <template>
   <div data-app>
-    <stepper-bar stepperValue="5">
+    <stepper-bar stepperValue="5" backLastStep="true">
       </stepper-bar>
     <br />
       <order-info :id="businessId">
@@ -16,14 +16,14 @@
                   <b>Fehler:</b>
                   {{errors[0]}}
                 </p>
-                <p>
+                
                   <v-card-subtitle v-for="(item, i) in parameters" :key="i" class="order-info">
                     <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row> {{item.name}}
                       <v-radio v-for="(value, j) in item.values" :key="j" :label="value.name" :value="value.value"></v-radio>
                     </v-radio-group>
-                    <v-text-field v-else-if="item.type === 'int'" v-model="form.parameters[i]" :label="item.name" hide-details type="number"/>
+                    <v-text-field dense v-else-if="item.type === 'int'" v-model="form.parameters[i]" :label="item.name" hide-details type="number"/>
                   </v-card-subtitle>
-                </p>
+                
               </v-card>
             <br />
           </div>
