@@ -97,7 +97,7 @@ export default {
       },
       { text: "Name", value: "Name" },
       { text: "Business ID", value: "BusinessId" },
-      { text: "Personenkosten (€)", value: "Kosten" },
+      { text: "Personenkosten (€/H)", value: "Kosten" },
       { text: "Adminrechte", value: "IsAdmin" },
       { text: "Aktionen", value: "action", sortable: false }
     ],

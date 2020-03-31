@@ -56,7 +56,7 @@
                         <v-text-field v-model="editedItem.ScopeId" label="Veredelungsart"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.Kosten" type="decimal" suffix="€" label="Personenkosten"></v-text-field>
+                        <v-text-field v-model="editedItem.Kosten" type="decimal" suffix="€" label="Kosten"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field v-model="editedItem.SortingNumber" type="decimal" label="Sortier Nummer"></v-text-field>
@@ -98,7 +98,7 @@ export default {
       },
       { text: "Beschreibung", value: "Description" },
       { text: "Sortier Nummer", value: "SortingNumber" },
-      { text: "hardwarekosten (€/Stunde)", value: "Kosten" },
+      { text: "Kosten (€/H)", value: "Kosten" },
       { text: "Aktionen", value: "action", sortable: false }
     ],
     tasks: [],

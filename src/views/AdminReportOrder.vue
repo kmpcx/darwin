@@ -15,10 +15,15 @@
           :filter="customFilter"
           color="white"
           :item-text="customName"
-          label="Auftrag"
+          label="Zum Tippen klicken ..."
+          @change="updateOrder"
         ></v-autocomplete>
       </v-card-title>
     </v-card>
+    <br />
+    <order-info :id="businessId" :key="componentKey">
+        </order-info>
+      <br />
   </div>
 </template>
 
@@ -26,12 +31,22 @@
 export default {
   data: () => ({
     orders: [],
+    businessId: null,
+    componentKey: 0
   }),
   computed: {},
   watch: {},
   methods: {
+    forceRerender() {
+      this.componentKey += 1;  
+    },
     customName(item){
       return item.BusinessId + ' - ' + item.Name + ' - ' + item.Customer;
+    },
+    updateOrder(item){
+      this.businessId = item.split("-")[0].replace(" ", "");
+      this.forceRerender();
+      console.log(this.businessId)
     },
     customFilter(item, queryText, itemText) {
       const textOne = item.Name.toLowerCase();
