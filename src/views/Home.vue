@@ -13,6 +13,7 @@
                   <thead>
                     <tr>
                       <th class="text-left">Kunde</th>
+                      <th class="text-left">Nr.</th>
                       <th class="text-left">Auftrag</th>
                       <th class="text-left">Veredelungsart</th>
                       <th class="text-left">Aktivität</th>
@@ -21,6 +22,7 @@
                   <tbody>
                     <tr v-for="(activeOrder, i) in activeOrders" :key="i" v-on:click="clickRunningActivity(activeOrder)">
                       <td class="text-left">{{activeOrder.Customer}}</td>
+                      <td class="text-left">{{activeOrder.BusinessId}}</td>
                       <td class="text-left">{{activeOrder.Name}}</td>
                       <td class="text-left">{{activeOrder.ScopeName}}</td>
                       <td class="text-left">{{activeOrder.TaskName}}</td>

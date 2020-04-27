@@ -172,7 +172,7 @@ router.post('/getAllSage', (req, res) => {
 router.post('/getActiveTasks', (req, res) => {
     secure.verify(req.headers.authorization, function (sec) {
         if (sec.auth) {
-            let selectQuery = 'SELECT o.Name, o.Note, o.Customer, t.Name as TaskName, s.Name as ScopeName, o.OrderId, oe.TaskId, oe.OrderEntryId FROM Orders o, OrderEntry oe, Task t, Scope s WHERE o.OrderID = oe.OrderId AND oe.TaskId = t.TaskId AND t.ScopeId = s.ScopeId AND oe.EndTime IS NULL AND oe.UserId = ?';
+            let selectQuery = 'SELECT o.Name, o.Note, o.Customer, o.BusinessId, t.Name as TaskName, s.Name as ScopeName, o.OrderId, oe.TaskId, oe.OrderEntryId FROM Orders o, OrderEntry oe, Task t, Scope s WHERE o.OrderID = oe.OrderId AND oe.TaskId = t.TaskId AND t.ScopeId = s.ScopeId AND oe.EndTime IS NULL AND oe.UserId = ?';
             let query = mysql.format(selectQuery, [req.body.userId]);
             console.log(query);
             DB.handle_db(query, (result) => {
