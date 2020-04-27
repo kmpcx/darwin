@@ -18,9 +18,15 @@
                 </p>
                 
                   <v-card-subtitle v-for="(item, i) in parameters" :key="i" class="order-info">
-                    <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row> {{item.name}}
+                    <v-container row v-if="item.type === 'radio'">{{item.name}}
+                        <v-checkbox v-for="(value, j) in item.values" :key="j" v-model="form.parameters[i]" :label="value.name" :value="value.value"></v-checkbox>
+                    </v-container>
+                    <!-- <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row>{{item.name}}
                       <v-radio v-for="(value, j) in item.values" :key="j" :label="value.name" :value="value.value"></v-radio>
-                    </v-radio-group>
+                    </v-radio-group> -->
+                    <v-container row v-if="item.type === 'checkbox'">{{item.name}}
+                        <v-checkbox v-for="(value, j) in item.values" :key="j" v-model="form.parameters[i]" :label="value.name" :value="value.value"></v-checkbox>
+                    </v-container>
                     <v-text-field dense v-else-if="item.type === 'int'" v-model="form.parameters[i]" :label="item.name" hide-details type="number"/>
                   </v-card-subtitle>
                 
@@ -86,17 +92,21 @@ export default {
         .then(function(response) {
           self.parameters = response.data;
           if(response.data.length > 0){
-            self.checkIntFields();
+            self.checkParameters();
           }
         })
         .catch(function(error) {
           console.log("Error: " + error);     
         });
     },
-    checkIntFields(){
+    checkParameters(){
       this.parameters.forEach((element, index) => {
         if(element.type === 'int'){
           this.form.parameters[index] = element.values;
+        } else if(element.type === 'checkbox'){
+          this.form.parameters[index] = [];
+        } else {
+          this.form.parameters[index] = '';
         }
         
       });
