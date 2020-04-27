@@ -17,15 +17,15 @@
                   {{errors[0]}}
                 </p>
                 
-                  <v-card-subtitle v-for="(item, i) in parameters" :key="i" class="order-info">
-                    <v-container row v-if="item.type === 'radio'">{{item.name}}
-                        <v-checkbox v-for="(value, j) in item.values" :key="j" v-model="form.parameters[i]" :label="value.name" :value="value.value"></v-checkbox>
+                  <v-card-subtitle class="order-info" v-for="(item, i) in parameters" :key="i" >
+                    <v-container class="order-parameter-group-1" row v-if="item.type === 'radio'">{{item.name}} 
+                        <v-checkbox class="order-parameter-item" v-for="(value, j) in item.values" :key="j" v-model="form.parameters[i]" :label="value.name" :value="value.value"></v-checkbox>
                     </v-container>
                     <!-- <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row>{{item.name}}
                       <v-radio v-for="(value, j) in item.values" :key="j" :label="value.name" :value="value.value"></v-radio>
                     </v-radio-group> -->
-                    <v-container row v-if="item.type === 'checkbox'">{{item.name}}
-                        <v-checkbox v-for="(value, j) in item.values" :key="j" v-model="form.parameters[i]" :label="value.name" :value="value.value"></v-checkbox>
+                    <v-container class="order-parameter-group-2" row v-if="item.type === 'checkbox'">{{item.name}}
+                        <v-checkbox class="order-parameter-item" v-for="(value, j) in item.values" :key="j" v-model="form.parameters[i]" :label="value.name" :value="value.value"></v-checkbox>
                     </v-container>
                     <v-text-field dense v-else-if="item.type === 'int'" v-model="form.parameters[i]" :label="item.name" hide-details type="number"/>
                   </v-card-subtitle>
@@ -151,10 +151,34 @@ export default {
 <style scoped>
 .order-info {
   text-align: left;
+  /* background-color: forestgreen; */
+  padding-left: 16px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin: 0px;
 }
 
-.checkboxes {
-  padding-left: 2%;
+.order-parameter-group-1 {
+  text-align: left;
+  /* background-color: yellow; */
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.order-parameter-group-2 {
+  text-align: left;
+  /* background-color: orange; */
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.order-parameter-item {
+  text-align: left;
+  /* background-color: pink; */
+  padding-left: 15px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin: 0px;
 }
 
 .btn-outter-left {
