@@ -105,7 +105,7 @@
               <v-card-title class="headline">Aktivität fertigstellen</v-card-title>
               <!-- <v-card-text>Ist die laufende Aktivität fertiggestellt?</v-card-text> -->
               <v-card tile>
-                <v-card-title class="table-title">Parameter zum beenden festlegen</v-card-title>
+                <v-card-title class="table-title">Parameter zum Beenden festlegen</v-card-title>
                 <p v-if="errors.length">
                   <b>Fehler:</b>
                   {{errors[0]}}
@@ -261,7 +261,7 @@ export default {
             alert("Error: " + error);
           });
       } else {
-        this.errors.push("Bitte prüfen sie die Stop-Parameter.");
+        this.errors.push("Bitte prüfen Sie die Stop-Parameter.");
       }
     }
   },
