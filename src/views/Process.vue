@@ -12,7 +12,6 @@
               <v-card-title
                 class="table-title"
               >Start-Parameter für {{taskInfo.Name}} in {{taskInfo.ScopeName}}</v-card-title>
-              {{parameterShown}}
               <p v-if="errors.length">
                 <b>Fehler:</b>
                 {{errors[0]}}
@@ -29,7 +28,7 @@
                       v-model="form.parameters[item.id]"
                       :label="value.name"
                       :value="value.value"
-                      v-on:change="invokeFunction(value.invoke, form.parameters[item.id].toString(), value.value)"
+                      v-on:change="invokeFunction(value.invoke, form.parameters[item.id], value.value)"
                     ></v-checkbox>
                   </v-container>
                   <!-- <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row>{{item.name}}
@@ -44,7 +43,7 @@
                       v-model="form.parameters[item.id]"
                       :label="value.name"
                       :value="value.value"
-                      v-on:change="invokeFunction(value.invoke, form.parameters[item.id].toString(), value.value)"
+                      v-on:change="invokeFunction(value.invoke, form.parameters[item.id], value.value)"
                     ></v-checkbox>
                   </v-container>
                   <v-text-field
@@ -96,21 +95,23 @@ export default {
   methods: {
     invokeFunction(invokeList, group, value) {
       let invokes = invokeList.split(";");
-      if (group.includes(value)) {
-        console.log("1")
+      if(invokes != ""){
+        if (group !== null && group.includes(value)) {
         invokes.forEach((invoke, index) => {
-          console.log(invoke)
           this.parameterShown[invoke]++;
-          console.log(this.parameterShown)
+          // this.parameterShown = Object.assign({}, this.parameterShown, { tmp: true})
         });
       } else {
         invokes.forEach((invoke, index) => {
           this.parameterShown[invoke]--;
           if(this.parameterShown[invoke] === 0){
-            this.form.parameters[invoke] = null;
+            this.form.parameters[invoke] = "";
           }
+          // this.parameterShown = Object.assign({}, this.parameterShown, { tmp: true})
         });
       }
+      }
+      this.parameterShown = Object.assign({}, this.parameterShown, { tmp: true})
     },
     getOrder() {
       let self = this;
@@ -174,28 +175,28 @@ export default {
     submit: function() {
       let self = this;
       this.errors = [];
-      if (
-        (!this.form.parameters.includes(undefined) &&
-          this.form.parameters.length === this.parameters.length) ||
-        !this.parameters.length
-      ) {
-        this.axios
-          .post(process.env.VUE_APP_API + "/order/startTask", {
-            taskId: this.taskId,
-            orderId: this.order.OrderId,
-            parameters: this.parameters,
-            form: this.form,
-            userId: this.$store.getters.getUserId
-          })
-          .then(function(response) {
-            self.$router.push("/processRunning/" + response.data.insertId);
-          })
-          .catch(function(error) {
-            alert("Error: " + error);
-          });
-      } else {
-        this.errors.push("Bitte prüfen sie die Start-Parameter.");
-      }
+      // if (
+      //   (!this.form.parameters.includes(undefined) &&
+      //     this.form.parameters.length === this.parameters.length) ||
+      //   !this.parameters.length
+      // ) {
+      //   this.axios
+      //     .post(process.env.VUE_APP_API + "/order/startTask", {
+      //       taskId: this.taskId,
+      //       orderId: this.order.OrderId,
+      //       parameters: this.parameters,
+      //       form: this.form,
+      //       userId: this.$store.getters.getUserId
+      //     })
+      //     .then(function(response) {
+      //       self.$router.push("/processRunning/" + response.data.insertId);
+      //     })
+      //     .catch(function(error) {
+      //       alert("Error: " + error);
+      //     });
+      // } else {
+      //   this.errors.push("Bitte prüfen sie die Start-Parameter.");
+      // }
     }
   },
   beforeMount() {
