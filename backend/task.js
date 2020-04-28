@@ -192,7 +192,8 @@ router.post('/getAttribute', (req, res) => {
 router.post('/getAttributes', (req, res) => {
     secure.verify(req.headers.authorization, function (sec) {
         if (sec.auth) {
-            let selectQuery = "SELECT * FROM TaskAttribute WHERE TaskId = ? and ?? = '1'";
+            // let selectQuery = "SELECT * FROM TaskAttribute WHERE TaskId = ? and ?? = '1'";
+            let selectQuery = "SELECT ta.TaskAttributeId, ta.Name, ta.Type, ta.Root, ta.Default, GROUP_CONCAT(tav.Value) as ValValues, GROUP_CONCAT(tav.Name) as ValNames, GROUP_CONCAT(tav.Invoke) as ValInvoke FROM TaskAttribute as ta, TaskAttributeValue as tav WHERE ta.TaskId = ? AND ?? = 1 AND ta.TaskAttributeId = tav.TaskAttributeId GROUP BY ta.TaskAttributeId"
             let query = mysql.format(selectQuery, [req.body.taskId, req.body.time]);
             DB.handle_db(query, (result) => {
                 if (result.error) {
@@ -203,13 +204,21 @@ router.post('/getAttributes', (req, res) => {
                     } else {
                         let parameters = []
                         result.data.forEach(element => {
-                            let parameter = { id: element.TaskAttributeId, name: element.Name, type: element.Type }
+                            console.log(element.ValInvoke);
+                            let parameter = { id: element.TaskAttributeId, name: element.Name, type: element.Type, root: element.Root, default: element.Default }
                             if (element.Type === 'int') {
-                                console.log(element.Values);
-                                parameter.values = element.Values;
-                            } else if (element.Values) {
-                                parameter.values = JSON.parse(element.Values);
+                                parameter.values = element.Default;
+                            } else if (element.ValValues){
+                                var values = element.ValValues.split(",");
+                                var names =  element.ValNames.split(",");
+                                var invoke = element.ValInvoke.split(",");
+                                var keyVal = [];
+                                for (var i = 0; i < values.length; i++) {
+                                    keyVal.push({ name: names[i], value: values[i], invoke: invoke[i] });
+                                }
+                                parameter.values = keyVal;
                             }
+                            console.log(parameter);
                             parameters.push(parameter)
                         });
                         res.status(200).send(parameters)
