@@ -12,22 +12,25 @@
             <br>
               <v-card tile>
                 <v-card-title class="table-title">Start-Parameter für {{taskInfo.Name}} in {{taskInfo.ScopeName}}</v-card-title>
+                <p>{{shown}}</p>
                 <p v-if="errors.length">
                   <b>Fehler:</b>
                   {{errors[0]}}
                 </p>
                 
                   <v-card-subtitle class="order-info" v-for="(item, i) in parameters" :key="i" >
-                    <v-container class="order-parameter-group" row v-if="item.type === 'radio'">{{item.name}} 
-                        <v-checkbox class="order-parameter-item" v-for="(value, j) in item.values" :key="j" v-model="form.parameters[i]" :label="value.name" :value="value.value"></v-checkbox>
-                    </v-container>
-                    <!-- <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row>{{item.name}}
-                      <v-radio v-for="(value, j) in item.values" :key="j" :label="value.name" :value="value.value"></v-radio>
-                    </v-radio-group> -->
-                    <v-container class="order-parameter-group" row v-if="item.type === 'checkbox'">{{item.name}}
-                        <v-checkbox class="order-parameter-item" v-for="(value, j) in item.values" :key="j" v-model="form.parameters[i]" :label="value.name" :value="value.value"></v-checkbox>
-                    </v-container>
-                    <v-text-field dense v-else-if="item.type === 'int'" v-model="form.parameters[i]" :label="item.name" hide-details type="number"/>
+                    <div v-if="parameterShown[item.id]">
+                      <v-container class="order-parameter-group" row v-if="item.type === 'radio'">{{item.name}} 
+                          <v-checkbox class="order-parameter-item" v-for="(value, j) in item.values" :key="j" v-model="form.parameters[i]" :label="value.name" :value="value.value"></v-checkbox>
+                      </v-container>
+                      <!-- <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row>{{item.name}}
+                        <v-radio v-for="(value, j) in item.values" :key="j" :label="value.name" :value="value.value"></v-radio>
+                      </v-radio-group> -->
+                      <v-container class="order-parameter-group" row v-if="item.type === 'checkbox'">{{item.name}}
+                          <v-checkbox class="order-parameter-item" v-for="(value, j) in item.values" :key="j" v-model="form.parameters[i]" :label="value.name" :value="value.value"></v-checkbox>
+                      </v-container>
+                      <v-text-field dense v-else-if="item.type === 'int'" v-model="form.parameters[i]" :label="item.name" hide-details type="number"/>
+                    </div>
                   </v-card-subtitle>
                 
               </v-card>
@@ -70,7 +73,8 @@ export default {
     order: {},
     errors: [],
     form: {parameters: []},
-    taskInfo: {}
+    taskInfo: {},
+    parameterShown: {}
   }),
 
   methods: {
@@ -101,6 +105,11 @@ export default {
     },
     checkParameters(){
       this.parameters.forEach((element, index) => {
+        if(element.root === 1){
+          this.parameterShown[element.id] = true;
+        } else {
+          this.parameterShown[element.id] = false;
+        }
         if(element.type === 'int'){
           this.form.parameters[index] = element.values;
         } else if(element.type === 'checkbox'){
