@@ -28,8 +28,9 @@
                   <v-card-title class="table-title">Statusinformationen</v-card-title>
 
                   <v-card-subtitle class="order-info">
-                    <p>Status: in Bearbeitung</p>
-                    <p>Start: {{startDate.toLocaleString('de-DE', {})}}</p>
+                    Status: in Bearbeitung
+                    <br />
+                    Start: {{startDate.toLocaleString('de-DE', {})}}
                     <p>
                       Laufzeit:
                       <time-since :date="startDate">
@@ -46,129 +47,23 @@
             <br />
           </div>
         </v-col>
-        <v-col cols="4">
-          <!-- <v-dialog v-model="stopDialog" max-width="50%" max-height="50%">
-            <template v-slot:activator="{ on }">
-              <v-btn tile width="120" height="70" dark large color="#F44336" v-on="on">
-                <v-icon dark>mdi-stop</v-icon>Pause
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title class="headline">Aktivität beenden</v-card-title>
-              <v-card tile>
-                <v-card-title class="table-title">Stop-Parameter</v-card-title>
-                <p v-if="errors.length">
-                  <b>Fehler:</b>
-                  {{errors[0]}}
-                </p>
-                <p>
-                  <v-card-subtitle v-for="(item, i) in parameters" :key="i" class="order-info">
-                    <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row>
-                      {{item.name}}
-                      <v-radio
-                        v-for="(value, j) in item.values"
-                        :key="j"
-                        :label="value.name"
-                        :value="value.value"
-                      ></v-radio>
-                    </v-radio-group>
-                    <v-text-field
-                      v-else-if="item.type === 'int'"
-                      v-model="form.parameters[i]"
-                      :label="item.name"
-                      hide-details
-                      type="number"
-                    />
-                  </v-card-subtitle>
-                </p>
-              </v-card>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="green darken-1" text @click="stopDialog = false">
-                  <v-icon dark>mdi-close-circle</v-icon>Abbrechen
-                </v-btn>
-                <v-btn color="green darken-1" text @click="submit">
-                  <v-icon dark>mdi-check</v-icon>Fertigstellen
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <br />
-          <br />-->
-          <p>
-            Beide Buttons öffnen das gleiche Modal (jedoch redundant im Code) mit vorausgewählten Gründen und möglichem Wechsel zwischen Unterbrechungs-/Abschluss-Gründen ODER es werden nur die jeweiligen Causes gezeigt, die zu Unterbrechung bzw. Abschluss gehören?
-          </p>
+        
+        
+          
           <v-dialog v-model="completeDialog" max-width="50%" max-height="50%">
             <template v-slot:activator="{ on }">
-              <v-btn tile width="120" height="70" dark large color="#BDBDBD" v-on="on">
-                <v-icon dark>mdi-pause</v-icon>Pause
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title class="headline">Aktivität fertigstellen</v-card-title>
-              <!-- <v-card-text>Ist die laufende Aktivität fertiggestellt?</v-card-text> -->
-              <v-card tile>
-                <v-card-title class="table-title">Parameter zum Beenden festlegen</v-card-title>
-                <p v-if="errors.length">
-                  <b>Fehler:</b>
-                  {{errors[0]}}
-                </p>
-                <p>
-                  <v-card-subtitle v-for="(item, i) in parameters" :key="i" class="order-info">
-                    <v-row>
-                      <v-col cols="6">
-                      <p> ## Hier Unterbrechungen? </p>
-                      <v-radio-group
-                        column
-                        class="order-parameter-group"
-                        v-if="item.type === 'radio'"
-                        v-model="form.parameters[i]"
-                      >
-                        {{item.name}}
-                        <v-radio
-                          class="order-parameter-item"
-                          v-for="(value, j) in item.values"
-                          :key="j"
-                          :label="value.name"
-                          :value="value.value"
-                        ></v-radio>
-                      </v-radio-group>
-                      <v-text-field
-                        v-else-if="item.type === 'int'"
-                        v-model="form.parameters[i]"
-                        :label="item.name"
-                        hide-details
-                        type="number"
-                      />
-                    </v-col>
-                    <v-col cols="6">
-                      <p> ## Hier Abschluss samt Mengenparameter? </p>
-                    </v-col>
-                    </v-row>
-                    
-                  </v-card-subtitle>
-                </p>
-              </v-card>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="green darken-1" text @click="completeDialog = false">
-                  <v-icon dark>mdi-close-circle</v-icon>Abbrechen
-                </v-btn>
-                <v-btn color="green darken-1" text @click="submit">
-                  <v-icon dark>mdi-check</v-icon>Fertigstellen
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-
-          <br>
-          <br>
-
-          <v-dialog v-model="completeDialog" max-width="50%" max-height="50%">
-            <template v-slot:activator="{ on }">
+             <v-col cols="4">
               <v-btn tile width="120" height="70" dark large color="#8BC34A" v-on="on">
                 <v-icon dark>mdi-check</v-icon>Abschluss
               </v-btn>
+
+          <br>
+          <br>
+
+              <v-btn tile width="120" height="70" dark large color="#BDBDBD" v-on="on">
+                <v-icon dark>mdi-pause</v-icon>Pause
+              </v-btn>
+               </v-col>
             </template>
             <v-card>
               <v-card-title class="headline">Aktivität fertigstellen</v-card-title>
@@ -183,35 +78,34 @@
                   <v-card-subtitle v-for="(item, i) in parameters" :key="i" class="order-info">
                     <v-row>
                       <v-col cols="6">
-                      <p> ## Hier Unterbrechungen? </p>
-                      <v-radio-group
-                        column
-                        class="order-parameter-group"
-                        v-if="item.type === 'radio'"
-                        v-model="form.parameters[i]"
-                      >
-                        {{item.name}}
-                        <v-radio
-                          class="order-parameter-item"
-                          v-for="(value, j) in item.values"
-                          :key="j"
-                          :label="value.name"
-                          :value="value.value"
-                        ></v-radio>
-                      </v-radio-group>
-                      <v-text-field
-                        v-else-if="item.type === 'int'"
-                        v-model="form.parameters[i]"
-                        :label="item.name"
-                        hide-details
-                        type="number"
-                      />
-                    </v-col>
-                    <v-col cols="6">
-                      <p> ## Hier Abschluss samt Mengenparameter? </p>
-                    </v-col>
+                        <p>## Hier Unterbrechungen?</p>
+                        <v-radio-group
+                          column
+                          class="order-parameter-group"
+                          v-if="item.type === 'radio'"
+                          v-model="form.parameters[i]"
+                        >
+                          {{item.name}}
+                          <v-radio
+                            class="order-parameter-item"
+                            v-for="(value, j) in item.values"
+                            :key="j"
+                            :label="value.name"
+                            :value="value.value"
+                          ></v-radio>
+                        </v-radio-group>
+                        <v-text-field
+                          v-else-if="item.type === 'int'"
+                          v-model="form.parameters[i]"
+                          :label="item.name"
+                          hide-details
+                          type="number"
+                        />
+                      </v-col>
+                      <v-col cols="6">
+                        <p>## Hier Abschluss samt Mengenparameter?</p>
+                      </v-col>
                     </v-row>
-                    
                   </v-card-subtitle>
                 </p>
               </v-card>
@@ -227,7 +121,9 @@
             </v-card>
           </v-dialog>
 
-        </v-col>
+          <br />
+          <br />
+       
       </v-row>
     </div>
   </div>
@@ -366,6 +262,7 @@ export default {
   padding-top: 0px;
   padding-bottom: 0px;
   margin: 0px;
+  margin-bottom: -15px;
 }
 
 .order-parameter-group {
