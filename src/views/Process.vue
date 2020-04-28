@@ -1,53 +1,69 @@
 <template>
   <div data-app>
-    <stepper-bar stepperValue="5" backLastStep="true">
-      </stepper-bar>
+    <stepper-bar stepperValue="5" backLastStep="true"></stepper-bar>
     <br />
-      <order-info :id="businessId">
-      </order-info>
+    <order-info :id="businessId"></order-info>
     <div>
       <v-row>
         <v-col cols="8">
           <div>
-            <br>
-              <v-card tile>
-                <v-card-title class="table-title">Start-Parameter für {{taskInfo.Name}} in {{taskInfo.ScopeName}}</v-card-title>
-                <p>{{shown}}</p>
-                <p v-if="errors.length">
-                  <b>Fehler:</b>
-                  {{errors[0]}}
-                </p>
-                
-                  <v-card-subtitle class="order-info" v-for="(item, i) in parameters" :key="i" >
-                    <div v-if="parameterShown[item.id]">
-                      <v-container class="order-parameter-group" row v-if="item.type === 'radio'">{{item.name}} 
-                          <v-checkbox class="order-parameter-item" v-for="(value, j) in item.values" :key="j" v-model="form.parameters[i]" :label="value.name" :value="value.value"></v-checkbox>
-                      </v-container>
-                      <!-- <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row>{{item.name}}
+            <br />
+            <v-card tile>
+              <v-card-title
+                class="table-title"
+              >Start-Parameter für {{taskInfo.Name}} in {{taskInfo.ScopeName}}</v-card-title>
+              {{parameterShown}}
+              <p v-if="errors.length">
+                <b>Fehler:</b>
+                {{errors[0]}}
+              </p>
+
+              <v-card-subtitle class="order-info" v-for="(item, i) in parameters" :key="i">
+                <div v-if="parameterShown[item.id] > 0">
+                  <v-container class="order-parameter-group" row v-if="item.type === 'radio'">
+                    {{item.name}}
+                    <v-checkbox
+                      class="order-parameter-item"
+                      v-for="(value, j) in item.values"
+                      :key="j"
+                      v-model="form.parameters[item.id]"
+                      :label="value.name"
+                      :value="value.value"
+                      v-on:change="invokeFunction(value.invoke, form.parameters[item.id].toString(), value.value)"
+                    ></v-checkbox>
+                  </v-container>
+                  <!-- <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row>{{item.name}}
                         <v-radio v-for="(value, j) in item.values" :key="j" :label="value.name" :value="value.value"></v-radio>
-                      </v-radio-group> -->
-                      <v-container class="order-parameter-group" row v-if="item.type === 'checkbox'">{{item.name}}
-                          <v-checkbox class="order-parameter-item" v-for="(value, j) in item.values" :key="j" v-model="form.parameters[i]" :label="value.name" :value="value.value"></v-checkbox>
-                      </v-container>
-                      <v-text-field dense v-else-if="item.type === 'int'" v-model="form.parameters[i]" :label="item.name" hide-details type="number"/>
-                    </div>
-                  </v-card-subtitle>
-                
-              </v-card>
+                  </v-radio-group>-->
+                  <v-container class="order-parameter-group" row v-if="item.type === 'checkbox'">
+                    {{item.name}}
+                    <v-checkbox
+                      class="order-parameter-item"
+                      v-for="(value, j) in item.values"
+                      :key="j"
+                      v-model="form.parameters[item.id]"
+                      :label="value.name"
+                      :value="value.value"
+                      v-on:change="invokeFunction(value.invoke, form.parameters[item.id].toString(), value.value)"
+                    ></v-checkbox>
+                  </v-container>
+                  <v-text-field
+                    dense
+                    v-else-if="item.type === 'int'"
+                    v-model="form.parameters[item.id]"
+                    :label="item.name"
+                    hide-details
+                    type="number"
+                  />
+                </div>
+              </v-card-subtitle>
+            </v-card>
             <br />
           </div>
         </v-col>
         <v-col cols="4">
           <br />
-          <v-btn
-            tile
-            width="120"
-            height="70"
-            dark
-            large
-            color="#8BC34A"
-            @click="submit"
-          >
+          <v-btn tile width="120" height="70" dark large color="#8BC34A" @click="submit">
             <v-icon dark>mdi-play</v-icon>Start
           </v-btn>
           <br />
@@ -72,16 +88,36 @@ export default {
     parameters: [],
     order: {},
     errors: [],
-    form: {parameters: []},
+    form: { parameters: {} },
     taskInfo: {},
     parameterShown: {}
   }),
 
   methods: {
+    invokeFunction(invokeList, group, value) {
+      let invokes = invokeList.split(";");
+      if (group.includes(value)) {
+        console.log("1")
+        invokes.forEach((invoke, index) => {
+          console.log(invoke)
+          this.parameterShown[invoke]++;
+          console.log(this.parameterShown)
+        });
+      } else {
+        invokes.forEach((invoke, index) => {
+          this.parameterShown[invoke]--;
+          if(this.parameterShown[invoke] === 0){
+            this.form.parameters[invoke] = null;
+          }
+        });
+      }
+    },
     getOrder() {
       let self = this;
       this.axios
-        .post(process.env.VUE_APP_API + "/order/get", { businessId: this.businessId })
+        .post(process.env.VUE_APP_API + "/order/get", {
+          businessId: this.businessId
+        })
         .then(function(response) {
           self.order = response.data;
         })
@@ -92,60 +128,73 @@ export default {
     getParameters() {
       let self = this;
       this.axios
-        .post(process.env.VUE_APP_API + "/task/getAttributes", { taskId: this.taskId , time: 'isStart'})
+        .post(process.env.VUE_APP_API + "/task/getAttributes", {
+          taskId: this.taskId,
+          time: "isStart"
+        })
         .then(function(response) {
           self.parameters = response.data;
-          if(response.data.length > 0){
+          if (response.data.length > 0) {
             self.checkParameters();
           }
         })
         .catch(function(error) {
-          console.log("Error: " + error);     
+          console.log("Error: " + error);
         });
     },
-    checkParameters(){
+    checkParameters() {
       this.parameters.forEach((element, index) => {
-        if(element.root === 1){
-          this.parameterShown[element.id] = true;
+        if (element.root === 1) {
+          this.parameterShown[element.id] = 1;
         } else {
-          this.parameterShown[element.id] = false;
+          this.parameterShown[element.id] = 0;
         }
-        if(element.type === 'int'){
-          this.form.parameters[index] = element.values;
-        } else if(element.type === 'checkbox'){
-          this.form.parameters[index] = [];
+        if (element.type === "int") {
+          this.form.parameters[element.id] = element.values;
+        } else if (element.type === "checkbox") {
+          this.form.parameters[element.id] = [];
         } else {
-          this.form.parameters[index] = '';
+          this.form.parameters[element.id] = "";
         }
-        
       });
     },
     getTaskInfo() {
       let self = this;
       this.axios
-        .post(process.env.VUE_APP_API + "/task/getInfo", { taskId: this.taskId})
+        .post(process.env.VUE_APP_API + "/task/getInfo", {
+          taskId: this.taskId
+        })
         .then(function(response) {
           self.taskInfo = response.data;
         })
         .catch(function(error) {
-          console.log("Error: " + error);      
+          console.log("Error: " + error);
         });
     },
-    submit: function () {
+    submit: function() {
       let self = this;
       this.errors = [];
-      if (!this.form.parameters.includes(undefined) && this.form.parameters.length === this.parameters.length || !this.parameters.length) {
+      if (
+        (!this.form.parameters.includes(undefined) &&
+          this.form.parameters.length === this.parameters.length) ||
+        !this.parameters.length
+      ) {
         this.axios
-          .post(process.env.VUE_APP_API + "/order/startTask",
-          {taskId: this.taskId , orderId: this.order.OrderId, parameters: this.parameters, form: this.form, userId: this.$store.getters.getUserId})
+          .post(process.env.VUE_APP_API + "/order/startTask", {
+            taskId: this.taskId,
+            orderId: this.order.OrderId,
+            parameters: this.parameters,
+            form: this.form,
+            userId: this.$store.getters.getUserId
+          })
           .then(function(response) {
-            self.$router.push('/processRunning/' + response.data.insertId)
+            self.$router.push("/processRunning/" + response.data.insertId);
           })
           .catch(function(error) {
-            alert("Error: " + error);         
+            alert("Error: " + error);
           });
       } else {
-        this.errors.push('Bitte prüfen sie die Start-Parameter.');
+        this.errors.push("Bitte prüfen sie die Start-Parameter.");
       }
     }
   },
