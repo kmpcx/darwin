@@ -8,7 +8,7 @@
           <br />
           Kunde: {{order.Customer}}
           <br />
-          Gesamtlaufzeit bisher: {{calculateTimeFromDuration(orderDuration.duration, true)}}
+          Gesamtlaufzeit bisher: {{calculateTimeFromDuration(orderDuration.duration, false)}}
           <!-- Gesamtlaufzeit bisher: {{new Date(orderDuration.duration).getDay()}}T {{new Date(orderDuration.duration).getHours()}}S {{new Date(orderDuration.duration).getMinutes()}}M {{new Date(orderDuration.duration).getSeconds()}}s -->
         </v-col>
         <v-col cols="7" class="text-left">Notiz: {{order.Note}}</v-col>
