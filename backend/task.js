@@ -204,7 +204,6 @@ router.post('/getAttributes', (req, res) => {
                     } else {
                         let parameters = []
                         result.data.forEach(element => {
-                            console.log(element.ValInvoke);
                             let parameter = { id: element.TaskAttributeId, name: element.Name, type: element.Type, root: element.Root, default: element.Default }
                             if (element.Type === 'int') {
                                 parameter.values = element.Default;
@@ -218,7 +217,6 @@ router.post('/getAttributes', (req, res) => {
                                 }
                                 parameter.values = keyVal;
                             }
-                            console.log(parameter);
                             parameters.push(parameter)
                         });
                         res.status(200).send(parameters)

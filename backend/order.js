@@ -432,9 +432,13 @@ router.post('/startTask', function (req, res) {
                     let insertQuery = '(?, ?, ?, ?),'
                     let query = 'INSERT INTO TaskAttributeEntry (TaskAttributeId, OrderEntryId, Timestamp, InputValue) VALUES';
                     if (req.body.parameters.length >= 0) {
+                        console.log(req.body.parameters)
+                        console.log(req.body.form.parameters)
                         req.body.parameters.forEach((val, key, arr) => {
-                            var queryTmp = mysql.format(insertQuery, [val.id, result.data.insertId, time, req.body.form.parameters[key]]);
-                            query = query.concat(queryTmp)
+                            if(req.body.form.parameters[val.id]){
+                                var queryTmp = mysql.format(insertQuery, [val.id, result.data.insertId, time, req.body.form.parameters[val.id].toString()]);
+                                query = query.concat(queryTmp)
+                            }
                             if (Object.is(arr.length - 1, key)) {
                                 console.log(query)
                                 query = query.substring(0, query.length - 1);

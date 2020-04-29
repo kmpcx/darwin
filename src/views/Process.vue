@@ -89,7 +89,9 @@ export default {
     errors: [],
     form: { parameters: {} },
     taskInfo: {},
-    parameterShown: {}
+    parameterShown: {},
+    parameterType: {},
+    parameterCount: 0
   }),
 
   methods: {
@@ -99,15 +101,22 @@ export default {
         if (group !== null && group.includes(value)) {
         invokes.forEach((invoke, index) => {
           this.parameterShown[invoke]++;
-          // this.parameterShown = Object.assign({}, this.parameterShown, { tmp: true})
+          if(this.parameterShown[invoke] === 1){
+            if(this.parameterType[invoke] === "checkbox"){
+              this.form.parameters[invoke] = [];
+            } else {
+              this.form.parameters[invoke] = "";
+            }
+            this.parameterCount++;
+          }
         });
       } else {
         invokes.forEach((invoke, index) => {
           this.parameterShown[invoke]--;
           if(this.parameterShown[invoke] === 0){
-            this.form.parameters[invoke] = "";
+            delete this.form.parameters[invoke];
+            this.parameterCount--;
           }
-          // this.parameterShown = Object.assign({}, this.parameterShown, { tmp: true})
         });
       }
       }
@@ -147,16 +156,20 @@ export default {
       this.parameters.forEach((element, index) => {
         if (element.root === 1) {
           this.parameterShown[element.id] = 1;
+          this.parameterCount++;
+          
+          if (element.type === "int") {
+            this.form.parameters[element.id] = element.values;
+          } else if (element.type === "checkbox") {
+            this.form.parameters[element.id] = [];
+          } else {
+            this.form.parameters[element.id] = "";
+          }
         } else {
           this.parameterShown[element.id] = 0;
         }
-        if (element.type === "int") {
-          this.form.parameters[element.id] = element.values;
-        } else if (element.type === "checkbox") {
-          this.form.parameters[element.id] = [];
-        } else {
-          this.form.parameters[element.id] = "";
-        }
+        
+        this.parameterType[element.id] = element.type;
       });
     },
     getTaskInfo() {
@@ -173,32 +186,48 @@ export default {
         });
     },
     submit: function() {
-      let self = this;
       this.errors = [];
-      // if (
-      //   (!this.form.parameters.includes(undefined) &&
-      //     this.form.parameters.length === this.parameters.length) ||
-      //   !this.parameters.length
-      // ) {
-      //   this.axios
-      //     .post(process.env.VUE_APP_API + "/order/startTask", {
-      //       taskId: this.taskId,
-      //       orderId: this.order.OrderId,
-      //       parameters: this.parameters,
-      //       form: this.form,
-      //       userId: this.$store.getters.getUserId
-      //     })
-      //     .then(function(response) {
-      //       self.$router.push("/processRunning/" + response.data.insertId);
-      //     })
-      //     .catch(function(error) {
-      //       alert("Error: " + error);
-      //     });
-      // } else {
-      //   this.errors.push("Bitte prüfen sie die Start-Parameter.");
-      // }
-    }
-  },
+      let error = false;
+      if(this.parameterCount === 0){
+        this.sendSubmit();
+      } else {
+        var index = 0;
+        for (let parameter in this.form.parameters) {
+          index++;
+          if(this.form.parameters[parameter] === ""){
+            error = true;
+          } else if (Array.isArray(this.form.parameters[parameter]) && this.form.parameters[parameter].length === 0){
+            error = true;
+          }
+          console.log(error)
+          if(this.parameterCount === index){
+            if(error){
+              this.errors.push("Bitte prüfen sie die Start-Parameter.");
+            } else {
+              this.sendSubmit();
+            }
+          }
+        }
+      }
+    },
+    sendSubmit: function(){
+        let self = this;
+        this.axios
+          .post(process.env.VUE_APP_API + "/order/startTask", {
+            taskId: this.taskId,
+            orderId: this.order.OrderId,
+            parameters: this.parameters,
+            form: this.form,
+            userId: this.$store.getters.getUserId
+          })
+          .then(function(response) {
+            self.$router.push("/processRunning/" + response.data.insertId);
+          })
+          .catch(function(error) {
+            alert("Error: " + error);
+          });
+      }
+    },
   beforeMount() {
     this.getOrder();
     this.getParameters();
