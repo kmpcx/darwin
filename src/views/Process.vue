@@ -31,9 +31,6 @@
                       v-on:change="invokeFunction(value.invoke, form.parameters[item.id], value.value)"
                     ></v-checkbox>
                   </v-container>
-                  <!-- <v-radio-group v-if="item.type === 'radio'" v-model="form.parameters[i]" row>{{item.name}}
-                        <v-radio v-for="(value, j) in item.values" :key="j" :label="value.name" :value="value.value"></v-radio>
-                  </v-radio-group>-->
                   <v-container class="order-parameter-group" row v-if="item.type === 'checkbox'">
                     {{item.name}}
                     <v-checkbox
