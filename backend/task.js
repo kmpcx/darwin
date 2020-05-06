@@ -193,7 +193,7 @@ router.post('/getAttributes', (req, res) => {
     secure.verify(req.headers.authorization, function (sec) {
         if (sec.auth) {
             // let selectQuery = "SELECT * FROM TaskAttribute WHERE TaskId = ? and ?? = '1'";
-            let selectQuery = "SELECT ta.TaskAttributeId, ta.Name, ta.Type, ta.Root, ta.Default, GROUP_CONCAT(tav.Value) as ValValues, GROUP_CONCAT(tav.Name) as ValNames, GROUP_CONCAT(tav.Invoke) as ValInvoke FROM TaskAttribute as ta, TaskAttributeValue as tav WHERE ta.TaskId = ? AND ?? = 1 AND ta.TaskAttributeId = tav.TaskAttributeId GROUP BY ta.TaskAttributeId"
+            let selectQuery = "SELECT ta.TaskAttributeId, ta.Name, ta.Type, ta.Root, ta.Default, GROUP_CONCAT(tav.Value) as ValValues, GROUP_CONCAT(tav.Name) as ValNames, GROUP_CONCAT(tav.Invoke) as ValInvoke, GROUP_CONCAT(tav.TaskAttributeValueId) as ValIds FROM TaskAttribute as ta, TaskAttributeValue as tav WHERE ta.TaskId = ? AND ?? = 1 AND ta.TaskAttributeId = tav.TaskAttributeId GROUP BY ta.TaskAttributeId"
             let query = mysql.format(selectQuery, [req.body.taskId, req.body.time]);
             DB.handle_db(query, (result) => {
                 if (result.error) {
@@ -211,9 +211,10 @@ router.post('/getAttributes', (req, res) => {
                                 var values = element.ValValues.split(",");
                                 var names =  element.ValNames.split(",");
                                 var invoke = element.ValInvoke.split(",");
+                                var ids = element.ValIds.split(",");
                                 var keyVal = [];
                                 for (var i = 0; i < values.length; i++) {
-                                    keyVal.push({ name: names[i], value: values[i], invoke: invoke[i] });
+                                    keyVal.push({ name: names[i], value: values[i], invoke: invoke[i], id: ids[i] });
                                 }
                                 parameter.values = keyVal;
                             }

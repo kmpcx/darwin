@@ -8,58 +8,13 @@
         <v-col cols="8">
           <div>
             <br />
-            <v-card tile>
-              <v-card-title
-                class="table-title"
-              >Start-Parameter für {{taskInfo.Name}} in {{taskInfo.ScopeName}}</v-card-title>
-              <p v-if="errors.length">
-                <b>Fehler:</b>
-                {{errors[0]}}
-              </p>
-
-              <v-card-subtitle class="order-info" v-for="(item, i) in parameters" :key="i">
-                <div v-if="parameterShown[item.id] > 0">
-                  <v-container class="order-parameter-group" row v-if="item.type === 'radio'">
-                    {{item.name}}
-                    <v-checkbox
-                      class="order-parameter-item"
-                      v-for="(value, j) in item.values"
-                      :key="j"
-                      v-model="form.parameters[item.id]"
-                      :label="value.name"
-                      :value="value.value"
-                      v-on:change="invokeFunction(value.invoke, form.parameters[item.id], value.value)"
-                    ></v-checkbox>
-                  </v-container>
-                  <v-container class="order-parameter-group" row v-if="item.type === 'checkbox'">
-                    {{item.name}}
-                    <v-checkbox
-                      class="order-parameter-item"
-                      v-for="(value, j) in item.values"
-                      :key="j"
-                      v-model="form.parameters[item.id]"
-                      :label="value.name"
-                      :value="value.value"
-                      v-on:change="invokeFunction(value.invoke, form.parameters[item.id], value.value)"
-                    ></v-checkbox>
-                  </v-container>
-                  <v-text-field
-                    dense
-                    v-else-if="item.type === 'int'"
-                    v-model="form.parameters[item.id]"
-                    :label="item.name"
-                    hide-details
-                    type="number"
-                  />
-                </div>
-              </v-card-subtitle>
-            </v-card>
+            <parameter-controller start=true :taskId="taskId" ></parameter-controller>
             <br />
           </div>
         </v-col>
         <v-col cols="4">
           <br />
-          <v-btn tile width="120" height="70" dark large color="#8BC34A" @click="submit">
+          <v-btn tile width="120" height="70" dark large color="#8BC34A" @click="click">
             <v-icon dark>mdi-play</v-icon>Start
           </v-btn>
           <br />
@@ -70,6 +25,7 @@
 </template>
 
 <script>
+import { EventBus } from '../event-bus.js';
 export default {
   props: {
     businessId: {
@@ -80,95 +36,10 @@ export default {
     }
   },
   data: () => ({
-    items: [],
-    parameters: [],
-    order: {},
-    errors: [],
-    form: { parameters: {} },
     taskInfo: {},
-    parameterShown: {},
-    parameterType: {},
-    parameterCount: 0
   }),
 
   methods: {
-    invokeFunction(invokeList, group, value) {
-      let invokes = invokeList.split(";");
-      if(invokes != ""){
-        if (group !== null && group.includes(value)) {
-        invokes.forEach((invoke, index) => {
-          this.parameterShown[invoke]++;
-          if(this.parameterShown[invoke] === 1){
-            if(this.parameterType[invoke] === "checkbox"){
-              this.form.parameters[invoke] = [];
-            } else {
-              this.form.parameters[invoke] = "";
-            }
-            this.parameterCount++;
-          }
-        });
-      } else {
-        invokes.forEach((invoke, index) => {
-          this.parameterShown[invoke]--;
-          if(this.parameterShown[invoke] === 0){
-            delete this.form.parameters[invoke];
-            this.parameterCount--;
-          }
-        });
-      }
-      }
-      this.parameterShown = Object.assign({}, this.parameterShown, { tmp: true})
-    },
-    getOrder() {
-      let self = this;
-      this.axios
-        .post(process.env.VUE_APP_API + "/order/get", {
-          businessId: this.businessId
-        })
-        .then(function(response) {
-          self.order = response.data;
-        })
-        .catch(function(error) {
-          alert("Error: " + error);
-        });
-    },
-    getParameters() {
-      let self = this;
-      this.axios
-        .post(process.env.VUE_APP_API + "/task/getAttributes", {
-          taskId: this.taskId,
-          time: "isStart"
-        })
-        .then(function(response) {
-          self.parameters = response.data;
-          if (response.data.length > 0) {
-            self.checkParameters();
-          }
-        })
-        .catch(function(error) {
-          console.log("Error: " + error);
-        });
-    },
-    checkParameters() {
-      this.parameters.forEach((element, index) => {
-        if (element.root === 1) {
-          this.parameterShown[element.id] = 1;
-          this.parameterCount++;
-          
-          if (element.type === "int") {
-            this.form.parameters[element.id] = element.values;
-          } else if (element.type === "checkbox") {
-            this.form.parameters[element.id] = [];
-          } else {
-            this.form.parameters[element.id] = "";
-          }
-        } else {
-          this.parameterShown[element.id] = 0;
-        }
-        
-        this.parameterType[element.id] = element.type;
-      });
-    },
     getTaskInfo() {
       let self = this;
       this.axios
@@ -182,52 +53,12 @@ export default {
           console.log("Error: " + error);
         });
     },
-    submit: function() {
-      this.errors = [];
-      let error = false;
-      if(this.parameterCount === 0){
-        this.sendSubmit();
-      } else {
-        var index = 0;
-        for (let parameter in this.form.parameters) {
-          index++;
-          if(this.form.parameters[parameter] === ""){
-            error = true;
-          } else if (Array.isArray(this.form.parameters[parameter]) && this.form.parameters[parameter].length === 0){
-            error = true;
-          }
-          console.log(error)
-          if(this.parameterCount === index){
-            if(error){
-              this.errors.push("Bitte prüfen sie die Start-Parameter.");
-            } else {
-              this.sendSubmit();
-            }
-          }
-        }
-      }
+    click() {
+      EventBus.$emit('parameterSubmit', 1);
     },
-    sendSubmit: function(){
-        let self = this;
-        this.axios
-          .post(process.env.VUE_APP_API + "/order/startTask", {
-            taskId: this.taskId,
-            orderId: this.order.OrderId,
-            parameters: this.parameters,
-            form: this.form,
-            userId: this.$store.getters.getUserId
-          })
-          .then(function(response) {
-            self.$router.push("/processRunning/" + response.data.insertId);
-          })
-          .catch(function(error) {
-            alert("Error: " + error);
-          });
-      }
-    },
+  },
   beforeMount() {
-    this.getOrder();
-    this.getParameters();
+    // this.getOrder();
     this.getTaskInfo();
   }
 };

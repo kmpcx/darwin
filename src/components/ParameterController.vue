@@ -1,0 +1,311 @@
+<template>
+  <v-card tile>
+    <v-card-title
+      class="table-title"
+    >Start-Parameter für {{taskInfo.Name}} in {{taskInfo.ScopeName}}</v-card-title>
+    <p v-if="errors.length">
+      <b>Fehler:</b>
+      {{errors[0]}}
+    </p>
+
+    <v-card-subtitle class="order-info" v-for="(item, i) in parameters" :key="i">
+      <div v-if="parameterShownObj[item.id].length > 0">
+        <v-container class="order-parameter-group" row v-if="item.type === 'radio'">
+          {{item.name}} {{item.id}} ({{parameterShownObj[item.id]}})
+          <v-checkbox
+            class="order-parameter-item"
+            v-for="(value, j) in item.values"
+            :key="j"
+            v-model="form.parameters[item.id]"
+            :label="value.name"
+            :value="value.value"
+            v-on:change="invokeFunction(item.id, value.id, true)"
+          ></v-checkbox>
+        </v-container>
+        <v-container class="order-parameter-group" row v-if="item.type === 'checkbox'">
+          {{item.name}} {{item.id}} ({{parameterShownObj[item.id]}})
+          <v-checkbox
+            class="order-parameter-item"
+            v-for="(value, j) in item.values"
+            :key="j"
+            v-model="form.parameters[item.id]"
+            :label="value.name"
+            :value="value.value"
+            v-on:change="invokeFunction(item.id, value.id, false)"
+          ></v-checkbox>
+        </v-container>
+        <v-text-field
+          dense
+          v-else-if="item.type === 'int'"
+          v-model="form.parameters[item.id]"
+          :label="item.name"
+          hide-details
+          type="number"
+        />
+      </div>
+    </v-card-subtitle>
+  </v-card>
+</template>
+
+<script>
+import { EventBus } from "../event-bus.js";
+export default {
+  data() {
+    return {
+      errors: [],
+      parameters: [],
+      form: { parameters: {} },
+      taskInfo: {},
+      parameterShownObj: {},
+      parameterType: {},
+      parameterValues: {},
+      parameterRemoveAll: {},
+      parameterCount: 0
+    };
+  },
+  props: {
+    taskId: {
+      required: true
+    },
+    start: {
+      required: false,
+      default: true
+    }
+  },
+  mounted() {
+    this.getParameters();
+    this.getTaskInfo();
+    EventBus.$on("parameterSubmit", event => {
+      this.submit();
+    });
+  },
+  destroyed() {},
+  methods: {
+    getTaskInfo() {
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/task/getInfo", {
+          taskId: this.taskId
+        })
+        .then(function(response) {
+          self.taskInfo = response.data;
+        })
+        .catch(function(error) {
+          console.log("Error: " + error);
+        });
+    },
+    getParameters() {
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/task/getAttributes", {
+          taskId: this.taskId,
+          time: "isStart"
+        })
+        .then(function(response) {
+          self.parameters = response.data;
+          if (response.data.length > 0) {
+            self.checkParameters();
+          }
+        })
+        .catch(function(error) {
+          console.log("Error: " + error);
+        });
+    },
+    checkParameters() {
+      this.parameters.forEach((element, index) => {
+        if (element.root === 1) {
+          this.parameterShownObj[element.id] = [0];
+          this.parameterCount++;
+
+          if (element.type === "int") {
+            this.form.parameters[element.id] = element.values;
+          } else if (element.type === "checkbox") {
+            this.form.parameters[element.id] = [];
+          } else {
+            this.form.parameters[element.id] = "";
+          }
+        } else {
+          this.parameterShownObj[element.id] = [];
+        }
+        this.parameterRemoveAll[element.id] = [];
+        element.values.forEach((value, index) => {
+          let invokes = value.invoke.split(";");
+          this.parameterValues[value.id] = {
+            name: value.name,
+            value: value.value,
+            invoke: invokes,
+            parent: element.id
+          };
+          invokes.forEach((invoke, index) => {
+            if (
+              invoke !== "" &&
+              !this.parameterRemoveAll[element.id].includes(invoke)
+            ) {
+              this.parameterRemoveAll[element.id].push(invoke);
+            }
+          });
+        });
+
+        this.parameterType[element.id] = element.type;
+      });
+    },
+    invokeFunction(parameterId, valueId, removeAll) {
+      let hasInvoke = false;
+      //   console.log(this.parameterValues[valueId].invoke);
+
+      if (
+        this.parameterValues[valueId].invoke.length > 0 &&
+        this.parameterValues[valueId].invoke[0] !== ""
+      ) {
+        hasInvoke = true;
+      }
+      if (this.parameterRemoveAll[parameterId] !== null) {
+        if (this.parameterType[parameterId] === "checkbox") {
+          if (hasInvoke) {
+            this.parameterValues[valueId].invoke.forEach((invoke, index) => {
+              this.changeParameterShown(invoke, parameterId, true);
+            });
+          }
+        } else {
+          this.parameterRemoveAll[parameterId].forEach((invoke, index) => {
+            this.changeParameterShown(invoke, parameterId, true);
+          });
+        }
+        if (
+          hasInvoke &&
+          !(
+            this.form.parameters[parameterId] === null ||
+            this.form.parameters[parameterId].length === 0 ||
+            this.form.parameters[parameterId] === ""
+          )
+        ) {
+          this.parameterValues[valueId].invoke.forEach((invoke, index) => {
+            this.changeParameterShown(invoke, parameterId, false);
+          });
+        }
+        this.parameterRemoveAll[parameterId].forEach((invoke, index) => {
+          if (this.parameterShownObj[invoke].length === 0) {
+            this.cleanParameter(parameterId, invoke);
+          }
+        });
+      }
+      this.parameterShownObj = Object.assign({}, this.parameterShownObj, {
+        tmp: true
+      });
+    },
+    changeParameterShown(invoke, parameterId, deduct) {
+      let list = this.parameterShownObj[invoke];
+      if (deduct) {
+        let index = list.indexOf(parseInt(parameterId, 10));
+        if (index > -1) {
+          list.splice(index, 1);
+        }
+      } else {
+        list.push(parameterId);
+        if (list.length === 1) {
+          if (false || this.parameterType[invoke] === "checkbox") {
+            this.form.parameters[invoke] = [];
+          } else {
+            this.form.parameters[invoke] = "";
+          }
+          this.parameterCount++;
+        }
+      }
+    },
+    cleanParameter(parameterId, invoke) {
+      delete this.form.parameters[invoke];
+      this.parameterCount--;
+      if (this.parameterRemoveAll[invoke] !== null) {
+        if (this.parameterShownObj[invoke].length === 0) {
+          this.parameterRemoveAll[invoke].forEach((invokeTmp, index) => {
+            this.changeParameterShown(invokeTmp, invoke, true);
+            if (this.parameterShownObj[invokeTmp].length === 0) {
+              this.cleanParameter(invoke, invokeTmp);
+            }
+          });
+        }
+      }
+    },
+    test: function() {},
+    submit: function() {
+      this.errors = [];
+      let error = false;
+      if (this.parameterCount === 0) {
+        this.sendSubmit();
+      } else {
+        var index = 0;
+        for (let parameter in this.form.parameters) {
+          index++;
+          if (this.form.parameters[parameter] === "") {
+            error = true;
+          } else if (
+            Array.isArray(this.form.parameters[parameter]) &&
+            this.form.parameters[parameter].length === 0
+          ) {
+            error = true;
+          }
+          console.log(error);
+          if (this.parameterCount === index) {
+            if (error) {
+              this.errors.push("Bitte prüfen sie die Start-Parameter.");
+            } else {
+              this.sendSubmit();
+            }
+          }
+        }
+      }
+    },
+    sendSubmit: function() {
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/order/startTask", {
+          taskId: this.taskId,
+          orderId: this.order.OrderId,
+          parameters: this.parameters,
+          form: this.form,
+          userId: this.$store.getters.getUserId
+        })
+        .then(function(response) {
+          self.$router.push("/processRunning/" + response.data.insertId);
+        })
+        .catch(function(error) {
+          alert("Error: " + error);
+        });
+    }
+  }
+};
+</script>
+
+<style scoped>
+.order-parameter-group {
+  text-align: left;
+  /* background-color: yellow; */
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.order-parameter-item {
+  text-align: left;
+  /* background-color: pink; */
+  padding-left: 15px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin: 0px;
+}
+
+.btn-outter-left {
+  height: 50px;
+  position: absolute;
+  text-align: left;
+  bottom: 5%;
+  left: 5%;
+}
+
+.btn-outter-right {
+  height: 50px;
+  position: absolute;
+  text-align: right;
+  bottom: 5%;
+  right: 5%;
+}
+</style>
