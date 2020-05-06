@@ -7,7 +7,6 @@
       <b>Fehler:</b>
       {{errors[0]}}
     </p>
-
     <v-card-subtitle class="order-info" v-for="(item, i) in parameters" :key="i">
       <div v-if="parameterShownObj[item.id].length > 0">
         <v-container class="order-parameter-group" row v-if="item.type === 'radio'">
@@ -60,7 +59,8 @@ export default {
       parameterType: {},
       parameterValues: {},
       parameterRemoveAll: {},
-      parameterCount: 0
+      parameterCount: 0,
+      parameterVisible: []
     };
   },
   props: {
@@ -116,6 +116,7 @@ export default {
         if (element.root === 1) {
           this.parameterShownObj[element.id] = [0];
           this.parameterCount++;
+          this.parameterVisible.push(element.id);
 
           if (element.type === "int") {
             this.form.parameters[element.id] = element.values;
@@ -151,8 +152,7 @@ export default {
     },
     invokeFunction(parameterId, valueId, removeAll) {
       let hasInvoke = false;
-      //   console.log(this.parameterValues[valueId].invoke);
-
+      let checkboxSelect = true;
       if (
         this.parameterValues[valueId].invoke.length > 0 &&
         this.parameterValues[valueId].invoke[0] !== ""
@@ -161,7 +161,14 @@ export default {
       }
       if (this.parameterRemoveAll[parameterId] !== null) {
         if (this.parameterType[parameterId] === "checkbox") {
-          if (hasInvoke) {
+          if (
+            !this.form.parameters[parameterId].includes(
+              this.parameterValues[valueId].value
+            )
+          ) {
+            checkboxSelect = false;
+          }
+          if (hasInvoke && !checkboxSelect) {
             this.parameterValues[valueId].invoke.forEach((invoke, index) => {
               this.changeParameterShown(invoke, parameterId, true);
             });
@@ -173,6 +180,7 @@ export default {
         }
         if (
           hasInvoke &&
+          checkboxSelect &&
           !(
             this.form.parameters[parameterId] === null ||
             this.form.parameters[parameterId].length === 0 ||
@@ -196,25 +204,33 @@ export default {
     changeParameterShown(invoke, parameterId, deduct) {
       let list = this.parameterShownObj[invoke];
       if (deduct) {
+        //   console.log("Deduct: " + parameterId + " on " + invoke )
         let index = list.indexOf(parseInt(parameterId, 10));
         if (index > -1) {
           list.splice(index, 1);
         }
       } else {
         list.push(parameterId);
-        if (list.length === 1) {
+        if (list.length === 1 && !this.parameterVisible.includes(parseInt(invoke, 10))) {
           if (false || this.parameterType[invoke] === "checkbox") {
             this.form.parameters[invoke] = [];
           } else {
             this.form.parameters[invoke] = "";
           }
           this.parameterCount++;
+          this.parameterVisible.push(parseInt(invoke, 10));
         }
       }
     },
     cleanParameter(parameterId, invoke) {
-      delete this.form.parameters[invoke];
-      this.parameterCount--;
+      if (this.form.parameters[invoke] !== undefined) {
+        delete this.form.parameters[invoke];
+        this.parameterCount--;
+        let index = this.parameterVisible.indexOf(parseInt(invoke, 10));
+        if (index > -1) {
+          this.parameterVisible.splice(index, 1);
+        }
+      }
       if (this.parameterRemoveAll[invoke] !== null) {
         if (this.parameterShownObj[invoke].length === 0) {
           this.parameterRemoveAll[invoke].forEach((invokeTmp, index) => {
@@ -226,7 +242,6 @@ export default {
         }
       }
     },
-    test: function() {},
     submit: function() {
       this.errors = [];
       let error = false;
