@@ -10,7 +10,7 @@
     <v-card-subtitle class="order-info" v-for="(item, i) in parameters" :key="i">
       <div v-if="parameterShownObj[item.id].length > 0">
         <v-container class="order-parameter-group" row v-if="item.type === 'radio'">
-          {{item.name}} {{item.id}} ({{parameterShownObj[item.id]}})
+          {{item.name}}
           <v-checkbox
             class="order-parameter-item"
             v-for="(value, j) in item.values"
@@ -22,7 +22,7 @@
           ></v-checkbox>
         </v-container>
         <v-container class="order-parameter-group" row v-if="item.type === 'checkbox'">
-          {{item.name}} {{item.id}} ({{parameterShownObj[item.id]}})
+          {{item.name}}
           <v-checkbox
             class="order-parameter-item"
             v-for="(value, j) in item.values"
