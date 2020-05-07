@@ -59,7 +59,7 @@
                 large
                 color="#8BC34A"
                 v-on="on"
-                @click="setComplete(true)"
+                @click="clickOpen(true)"
               >
                 <v-icon dark>mdi-check</v-icon>Abschluss
               </v-btn>
@@ -75,7 +75,7 @@
                 large
                 color="#BDBDBD"
                 v-on="on"
-                @click="setComplete(false)"
+                @click="clickOpen(false)"
               >
                 <v-icon dark>mdi-pause</v-icon>Pause
               </v-btn>
@@ -83,7 +83,8 @@
           </template>
           <v-card>
             <v-card-title class="headline">Aktivität fertigstellen</v-card-title>
-            <v-card tile>
+            <parameter-controller start=false taskId="null" :orderEntryId="orderEntryId"></parameter-controller>
+            <!-- <v-card tile>
               <v-card-title class="table-title">Parameter zum Beenden festlegen</v-card-title>
               <p v-if="errors.length">
                 <b>Fehler:</b>
@@ -127,13 +128,13 @@
                   </div>
                 </v-card-subtitle>
               </p>
-            </v-card>
+            </v-card> -->
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="green darken-1" text @click="completeDialog = false">
                 <v-icon dark>mdi-close-circle</v-icon>Abbrechen
               </v-btn>
-              <v-btn color="green darken-1" text @click="submit">
+              <v-btn color="green darken-1" text @click="clickSubmit">
                 <v-icon dark>mdi-check</v-icon>Fertigstellen
               </v-btn>
             </v-card-actions>
@@ -300,6 +301,16 @@ export default {
       }
       this.invokeFunction(this.parameterComplete.invoke, this.form.parameters[this.parameterComplete.id], "Abschluss");
       this.invokeFunction(this.parameterComplete.invoke, this.form.parameters[this.parameterComplete.id], "Unterbrechung");
+    },
+    clickSubmit: function() {
+      EventBus.$emit('parameterSubmit', 2);
+    },
+    clickOpen: function(end) {
+      let event = 2;
+      if(end){
+        event = 1;
+      }
+      EventBus.$emit('parameterEndOpen', event);
     },
     submit: function() {
       let self = this;

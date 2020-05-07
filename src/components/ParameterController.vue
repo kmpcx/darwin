@@ -1,8 +1,13 @@
 <template>
   <v-card tile>
     <v-card-title
+      v-if="start"
       class="table-title"
     >Start-Parameter für {{taskInfo.Name}} in {{taskInfo.ScopeName}}</v-card-title>
+    <v-card-title
+      v-else
+      class="table-title"
+    >End-Parameter festlegen</v-card-title>
     <p v-if="errors.length">
       <b>Fehler:</b>
       {{errors[0]}}
@@ -60,11 +65,16 @@ export default {
       parameterValues: {},
       parameterRemoveAll: {},
       parameterCount: 0,
-      parameterVisible: []
+      parameterVisible: [],
+      parameterComplete: {},
+      orderId: null
     };
   },
   props: {
     taskId: {
+      required: true
+    },
+    orderEntryId: {
       required: true
     },
     start: {
@@ -73,14 +83,44 @@ export default {
     }
   },
   mounted() {
-    this.getParameters();
-    this.getTaskInfo();
-    EventBus.$on("parameterSubmit", event => {
+    if(this.start){
+      this.getParameters();
+      this.getTaskInfo();
+    } else {
+      this.getOrderEntry();
+    }
+    
+    EventBus.$on("parameterSubmitStart", orderId => {
+      this.orderId = OrderId;
       this.submit();
+    });
+    EventBus.$on("parameterEndOpen", event => {
+      if (event === 1) {
+        //Open with "Abschluss"
+        this.setComplete(true);
+      } else if (event === 2) {
+        //Open with "Unterbrechung"
+        this.setComplete(false);
+      }
     });
   },
   destroyed() {},
   methods: {
+    getOrderEntry() {
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/order/getEntry", {
+          orderEntryId: this.orderEntryId
+        })
+        .then(function(response) {
+          this.taskId = response.data.TaskId;
+          self.getTaskInfo();
+          self.getParameters();
+        })
+        .catch(function(error) {
+          alert("Error: " + error);
+        });
+    },
     getTaskInfo() {
       let self = this;
       this.axios
@@ -96,10 +136,14 @@ export default {
     },
     getParameters() {
       let self = this;
+      let timeString = "isStart";
+      if (!this.start) {
+        timeString = "isEnd";
+      }
       this.axios
         .post(process.env.VUE_APP_API + "/task/getAttributes", {
           taskId: this.taskId,
-          time: "isStart"
+          time: timeString
         })
         .then(function(response) {
           self.parameters = response.data;
@@ -113,6 +157,9 @@ export default {
     },
     checkParameters() {
       this.parameters.forEach((element, index) => {
+        if (!this.start && element.name.includes("Unterbrechung")) {
+          this.parameterComplete = element;
+        }
         if (element.root === 1) {
           this.parameterShownObj[element.id] = [0];
           this.parameterCount++;
@@ -211,7 +258,10 @@ export default {
         }
       } else {
         list.push(parameterId);
-        if (list.length === 1 && !this.parameterVisible.includes(parseInt(invoke, 10))) {
+        if (
+          list.length === 1 &&
+          !this.parameterVisible.includes(parseInt(invoke, 10))
+        ) {
           if (false || this.parameterType[invoke] === "checkbox") {
             this.form.parameters[invoke] = [];
           } else {
@@ -241,6 +291,24 @@ export default {
           });
         }
       }
+    },
+    setComplete: function(complete) {
+      this.processComplete = complete;
+      if (complete) {
+        this.form.parameters[this.parameterComplete.id] = "Abschluss";
+      } else {
+        this.form.parameters[this.parameterComplete.id] = "Unterbrechung";
+      }
+      this.invokeFunction(
+        this.parameterComplete.invoke,
+        this.form.parameters[this.parameterComplete.id],
+        "Abschluss"
+      );
+      this.invokeFunction(
+        this.parameterComplete.invoke,
+        this.form.parameters[this.parameterComplete.id],
+        "Unterbrechung"
+      );
     },
     submit: function() {
       this.errors = [];
@@ -272,16 +340,31 @@ export default {
     },
     sendSubmit: function() {
       let self = this;
-      this.axios
-        .post(process.env.VUE_APP_API + "/order/startTask", {
-          taskId: this.taskId,
-          orderId: this.order.OrderId,
+      let startString = "/order/startTask";
+      let sendObj = {
+        taskId: this.taskId,
+        orderId: this.order.OrderId,
+        parameters: this.parameters,
+        form: this.form,
+        userId: this.$store.getters.getUserId
+      };
+      if (!this.start) {
+        startString = "/order/stopTask";
+        sendObj = {
+          orderEntryId: this.orderEntryId,
           parameters: this.parameters,
           form: this.form,
-          userId: this.$store.getters.getUserId
-        })
+          complete: this.processComplete
+        };
+      }
+      this.axios
+        .post(process.env.VUE_APP_API + startString, sendObj)
         .then(function(response) {
-          self.$router.push("/processRunning/" + response.data.insertId);
+          let forwardString = "/processRunning/" + response.data.insertId;
+          if (!this.start) {
+            forwardString = "/processStopped/" + self.orderEntryId;
+          }
+          self.$router.push(forwardString);
         })
         .catch(function(error) {
           alert("Error: " + error);

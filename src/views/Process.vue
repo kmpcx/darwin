@@ -7,9 +7,7 @@
       <v-row>
         <v-col cols="8">
           <div>
-            <br />
-            <parameter-controller start=true :taskId="taskId" ></parameter-controller>
-            <br />
+            <parameter-controller start=true :taskId="taskId" orderEntryId=null ></parameter-controller>
           </div>
         </v-col>
         <v-col cols="4">
@@ -37,9 +35,23 @@ export default {
   },
   data: () => ({
     taskInfo: {},
+    order: {},
   }),
 
   methods: {
+    getOrder() {
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/order/get", {
+          businessId: this.businessId
+        })
+        .then(function(response) {
+          self.order = response.data;
+        })
+        .catch(function(error) {
+          alert("Error: " + error);
+        });
+    },
     getTaskInfo() {
       let self = this;
       this.axios
@@ -54,11 +66,11 @@ export default {
         });
     },
     click() {
-      EventBus.$emit('parameterSubmit', 1);
+      EventBus.$emit('parameterSubmitStart', this.order.OrderId);
     },
   },
   beforeMount() {
-    // this.getOrder();
+    this.getOrder();
     this.getTaskInfo();
   }
 };
