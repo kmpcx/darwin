@@ -77,30 +77,6 @@ export default {
 </script>
 
 <style scoped>
-.order-info {
-  text-align: left;
-  /* background-color: forestgreen; */
-  padding-left: 16px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  margin: 0px;
-}
-
-.order-parameter-group {
-  text-align: left;
-  /* background-color: yellow; */
-  padding-top: 0px;
-  padding-bottom: 0px;
-}
-
-.order-parameter-item {
-  text-align: left;
-  /* background-color: pink; */
-  padding-left: 15px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  margin: 0px;
-}
 
 .btn-outter-left {
   height: 50px;

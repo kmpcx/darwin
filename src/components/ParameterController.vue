@@ -378,6 +378,15 @@ export default {
 </script>
 
 <style scoped>
+.order-info {
+  text-align: left;
+  /* background-color: forestgreen; */
+  padding-left: 16px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin: 0px;
+}
+
 .order-parameter-group {
   text-align: left;
   /* background-color: yellow; */
