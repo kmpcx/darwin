@@ -91,7 +91,7 @@ export default {
     }
     
     EventBus.$on("parameterSubmitStart", orderId => {
-      this.orderId = OrderId;
+      this.orderId = orderId;
       this.submit();
     });
     EventBus.$on("parameterEndOpen", event => {
@@ -118,7 +118,7 @@ export default {
           self.getParameters();
         })
         .catch(function(error) {
-          alert("Error: " + error);
+          console.log("Error: " + error);
         });
     },
     getTaskInfo() {
@@ -343,12 +343,12 @@ export default {
       let startString = "/order/startTask";
       let sendObj = {
         taskId: this.taskId,
-        orderId: this.order.OrderId,
+        orderId: this.orderId,
         parameters: this.parameters,
         form: this.form,
         userId: this.$store.getters.getUserId
       };
-      if (!this.start) {
+      if (!self.start) {
         startString = "/order/stopTask";
         sendObj = {
           orderEntryId: this.orderEntryId,
@@ -361,13 +361,14 @@ export default {
         .post(process.env.VUE_APP_API + startString, sendObj)
         .then(function(response) {
           let forwardString = "/processRunning/" + response.data.insertId;
-          if (!this.start) {
+          if (!self.start) {
             forwardString = "/processStopped/" + self.orderEntryId;
           }
+          console.log(forwardString);
           self.$router.push(forwardString);
         })
         .catch(function(error) {
-          alert("Error: " + error);
+          console.log("Error: " + error);
         });
     }
   }
