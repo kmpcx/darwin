@@ -7,7 +7,7 @@
       <v-row>
         <v-col cols="8">
           <div>
-            <parameter-controller start=true :taskId="taskId" orderEntryId=null ></parameter-controller>
+            <parameter-controller :start=true :taskId="taskId" ></parameter-controller>
           </div>
         </v-col>
         <v-col cols="4">

@@ -72,10 +72,10 @@ export default {
   },
   props: {
     taskId: {
-      required: true
+      required: false
     },
     orderEntryId: {
-      required: true
+      required: false
     },
     start: {
       required: false,
@@ -113,7 +113,7 @@ export default {
           orderEntryId: this.orderEntryId
         })
         .then(function(response) {
-          this.taskId = response.data.TaskId;
+          self.taskId = response.data.TaskId;
           self.getTaskInfo();
           self.getParameters();
         })
@@ -142,7 +142,7 @@ export default {
       }
       this.axios
         .post(process.env.VUE_APP_API + "/task/getAttributes", {
-          taskId: this.taskId,
+          // taskId: self.taskId,
           time: timeString
         })
         .then(function(response) {
@@ -341,14 +341,16 @@ export default {
     sendSubmit: function() {
       let self = this;
       let startString = "/order/startTask";
-      let sendObj = {
-        taskId: this.taskId,
-        orderId: this.orderId,
-        parameters: this.parameters,
-        form: this.form,
-        userId: this.$store.getters.getUserId
-      };
-      if (!self.start) {
+      let sendObj = {};
+      if(self.start){
+        sendObj = {
+          taskId: this.taskId,
+          orderId: this.orderId,
+          parameters: this.parameters,
+          form: this.form,
+          userId: this.$store.getters.getUserId
+        }
+      } else {
         startString = "/order/stopTask";
         sendObj = {
           orderEntryId: this.orderEntryId,

@@ -83,7 +83,7 @@
           </template>
           <v-card>
             <v-card-title class="headline">Aktivität fertigstellen</v-card-title>
-            <parameter-controller start=false taskId="null" :orderEntryId="orderEntryId"></parameter-controller>
+            <parameter-controller :start=(false) :orderEntryId="orderEntryId"></parameter-controller>
             <!-- <v-card tile>
               <v-card-title class="table-title">Parameter zum Beenden festlegen</v-card-title>
               <p v-if="errors.length">
@@ -149,6 +149,7 @@
 </template>
 
 <script>
+import { EventBus } from '../event-bus.js';
 export default {
   props: {
     orderEntryId: {
@@ -157,55 +158,15 @@ export default {
   },
   data: () => ({
     businessId: "",
-    parameters: [],
-    errors: [],
-    form: { parameters: {} },
     orderEntry: {},
     completeDialog: false,
     stopDialog: false,
     startDate: new Date(),
     orderEntryAttributes: [],
     taskInfo: {},
-    parameterShown: {},
-    parameterType: {},
-    parameterCount: 0,
-    processComplete: false,
-    parameterComplete: {}
   }),
   computed: {},
   methods: {
-    invokeFunction(invokeList, group, value) {
-      console.log("Invoke");
-      if(invokeList){
-        let invokes = invokeList.split(";");
-      if (invokes != "") {
-        if (group !== null && group.includes(value)) {
-          invokes.forEach((invoke, index) => {
-            this.parameterShown[invoke]++;
-            if (this.parameterShown[invoke] === 1) {
-              if (this.parameterType[invoke] === "checkbox") {
-                this.form.parameters[invoke] = [];
-              } else {
-                this.form.parameters[invoke] = "";
-              }
-              this.parameterCount++;
-            }
-          });
-        } else {
-          invokes.forEach((invoke, index) => {
-            this.parameterShown[invoke]--;
-            if (this.parameterShown[invoke] === 0) {
-              delete this.form.parameters[invoke];
-              this.parameterCount--;
-            }
-          });
-        }
-      }
-      }
-      this.parameterShown = Object.assign({}, this.parameterShown, {
-        tmp: true
-      });
-    },
     getOrderEntry() {
       let self = this;
       this.axios
@@ -216,7 +177,6 @@ export default {
           self.orderEntry = response.data;
           self.startDate = new Date(response.data.StartTime);
           self.getTaskInfo(response.data.TaskId);
-          self.getParameters(response.data.TaskId);
           if (response.data.EndTime) {
             self.$router.push("/processStopped/" + self.orderEntryId);
           }
@@ -238,47 +198,6 @@ export default {
           console.log("Error: " + error);
         });
     },
-    getParameters(taskId) {
-      console.log(this.taskInfo);
-      let self = this;
-      this.axios
-        .post(process.env.VUE_APP_API + "/task/getAttributes", {
-          taskId: taskId,
-          time: "isEnd"
-        })
-        .then(function(response) {
-          self.parameters = response.data;
-          if (response.data.length > 0) {
-            self.checkParameters();
-          }
-        })
-        .catch(function(error) {
-          console.log("Error: " + error);
-        });
-    },
-    checkParameters() {
-      this.parameters.forEach((element, index) => {
-        if (element.name.includes("Unterbrechung")) {
-          this.parameterComplete = element;
-        }
-        if (element.root === 1) {
-          this.parameterShown[element.id] = 1;
-          this.parameterCount++;
-
-          if (element.type === "int") {
-            this.form.parameters[element.id] = element.values;
-          } else if (element.type === "checkbox") {
-            this.form.parameters[element.id] = [];
-          } else {
-            this.form.parameters[element.id] = "";
-          }
-        } else {
-          this.parameterShown[element.id] = 0;
-        }
-
-        this.parameterType[element.id] = element.type;
-      });
-    },
     getTaskInfo(taskId) {
       let self = this;
       this.axios
@@ -292,18 +211,8 @@ export default {
           console.log("Error: " + error);
         });
     },
-    setComplete: function(complete) {
-      this.processComplete = complete;
-      if (complete) {
-        this.form.parameters[this.parameterComplete.id] = "Abschluss";
-      } else {
-        this.form.parameters[this.parameterComplete.id] = "Unterbrechung";
-      }
-      this.invokeFunction(this.parameterComplete.invoke, this.form.parameters[this.parameterComplete.id], "Abschluss");
-      this.invokeFunction(this.parameterComplete.invoke, this.form.parameters[this.parameterComplete.id], "Unterbrechung");
-    },
     clickSubmit: function() {
-      EventBus.$emit('parameterSubmit', 2);
+      EventBus.$emit('parameterSubmitEnd', 2);
     },
     clickOpen: function(end) {
       let event = 2;
@@ -312,50 +221,6 @@ export default {
       }
       EventBus.$emit('parameterEndOpen', event);
     },
-    submit: function() {
-      let self = this;
-      this.errors = [];
-      if (this.parameterCount === 0) {
-        this.sendSubmit();
-      } else {
-        var index = 0;
-        for (let parameter in this.form.parameters) {
-          index++;
-          if (this.form.parameters[parameter] === "") {
-            error = true;
-          } else if (
-            Array.isArray(this.form.parameters[parameter]) &&
-            this.form.parameters[parameter].length === 0
-          ) {
-            error = true;
-          }
-          console.log(error);
-          if (this.parameterCount === index) {
-            if (error) {
-              this.errors.push("Bitte prüfen sie die Start-Parameter.");
-            } else {
-              this.sendSubmit();
-            }
-          }
-        }
-      }
-    },
-    sendSubmit: function() {
-      let self = this;
-      this.axios
-        .post(process.env.VUE_APP_API + "/order/stopTask", {
-          orderEntryId: this.orderEntryId,
-          parameters: this.parameters,
-          form: this.form,
-          complete: this.processComplete
-        })
-        .then(function(response) {
-          self.$router.push("/processStopped/" + self.orderEntryId);
-        })
-        .catch(function(error) {
-          alert("Error: " + error);
-        });
-    }
   },
   beforeMount() {
     this.getEntryAttributes();
