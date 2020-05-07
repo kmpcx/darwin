@@ -206,11 +206,14 @@ router.post('/getAttributes', (req, res) => {
                         result.data.forEach(element => {
                             let parameter = { id: element.TaskAttributeId, name: element.Name, type: element.Type, root: element.Root, default: element.Default }
                             if (element.Type === 'int') {
-                                parameter.values = element.Default;
+                                parameter.values = [{ value: element.Default, invoke: element.ValInvoke, id: element.ValIds }];
                             } else if (element.ValValues){
                                 var values = element.ValValues.split(",");
                                 var names =  element.ValNames.split(",");
-                                var invoke = element.ValInvoke.split(",");
+                                var invoke;
+                                if(element.ValInvoke !== null){
+                                    invoke = element.ValInvoke.split(",");
+                                }
                                 var ids = element.ValIds.split(",");
                                 var keyVal = [];
                                 for (var i = 0; i < values.length; i++) {

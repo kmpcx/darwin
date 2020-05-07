@@ -212,13 +212,14 @@ export default {
         });
     },
     clickSubmit: function() {
-      EventBus.$emit('parameterSubmitEnd', 2);
+      EventBus.$emit('parameterSubmitEnd', 1);
     },
     clickOpen: function(end) {
       let event = 2;
       if(end){
         event = 1;
       }
+      console.log("Event: ", event)
       EventBus.$emit('parameterEndOpen', event);
     },
   },

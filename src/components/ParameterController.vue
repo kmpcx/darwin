@@ -66,8 +66,10 @@ export default {
       parameterRemoveAll: {},
       parameterCount: 0,
       parameterVisible: [],
-      parameterComplete: {},
-      orderId: null
+      orderId: null,
+      tmpTaskId: null,
+      processComplete: false,
+      parameterComplete: {}
     };
   },
   props: {
@@ -83,6 +85,7 @@ export default {
     }
   },
   mounted() {
+    this.tmpTaskId = this.taskId;
     if(this.start){
       this.getParameters();
       this.getTaskInfo();
@@ -94,7 +97,11 @@ export default {
       this.orderId = orderId;
       this.submit();
     });
+    EventBus.$on("parameterSubmitEnd", event => {
+      this.submit();
+    });
     EventBus.$on("parameterEndOpen", event => {
+      console.log("parameterEndOpen: ", event)
       if (event === 1) {
         //Open with "Abschluss"
         this.setComplete(true);
@@ -113,7 +120,7 @@ export default {
           orderEntryId: this.orderEntryId
         })
         .then(function(response) {
-          self.taskId = response.data.TaskId;
+          self.tmpTaskId = response.data.TaskId;
           self.getTaskInfo();
           self.getParameters();
         })
@@ -125,7 +132,7 @@ export default {
       let self = this;
       this.axios
         .post(process.env.VUE_APP_API + "/task/getInfo", {
-          taskId: this.taskId
+          taskId: this.tmpTaskId
         })
         .then(function(response) {
           self.taskInfo = response.data;
@@ -142,7 +149,7 @@ export default {
       }
       this.axios
         .post(process.env.VUE_APP_API + "/task/getAttributes", {
-          // taskId: self.taskId,
+          taskId: self.tmpTaskId,
           time: timeString
         })
         .then(function(response) {
@@ -166,7 +173,7 @@ export default {
           this.parameterVisible.push(element.id);
 
           if (element.type === "int") {
-            this.form.parameters[element.id] = element.values;
+            this.form.parameters[element.id] = element.values[0].value;
           } else if (element.type === "checkbox") {
             this.form.parameters[element.id] = [];
           } else {
@@ -177,7 +184,10 @@ export default {
         }
         this.parameterRemoveAll[element.id] = [];
         element.values.forEach((value, index) => {
-          let invokes = value.invoke.split(";");
+          let invokes = [];
+          if(value.invoke !== null && value.invoke !== undefined){
+            invokes = value.invoke.split(";");
+          }
           this.parameterValues[value.id] = {
             name: value.name,
             value: value.value,
@@ -293,6 +303,7 @@ export default {
       }
     },
     setComplete: function(complete) {
+      console.log("setComplete")
       this.processComplete = complete;
       if (complete) {
         this.form.parameters[this.parameterComplete.id] = "Abschluss";
