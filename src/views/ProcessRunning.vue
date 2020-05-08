@@ -163,7 +163,7 @@ export default {
     stopDialog: false,
     startDate: new Date(),
     orderEntryAttributes: [],
-    taskInfo: {},
+    taskInfo: {}
   }),
   computed: {},
   methods: {
@@ -219,15 +219,15 @@ export default {
       if(end){
         event = 1;
       }
-      console.log("Event: ", event)
-      EventBus.$emit('parameterEndOpen', event);
+      setTimeout(() => EventBus.$emit('parameterEndOpen', event), 200);
     },
   },
   beforeMount() {
     this.getEntryAttributes();
     this.getOrderEntry();
   },
-  created() {}
+  created() {
+  }
 };
 </script>
 

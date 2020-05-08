@@ -99,7 +99,6 @@ export default {
       this.submit();
     });
     EventBus.$on("parameterEndOpen", event => {
-      console.log("parameterEndOpen: ", event);
       if (event === 1) {
         //Open with "Abschluss"
         this.setComplete(true);
