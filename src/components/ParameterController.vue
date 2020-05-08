@@ -4,14 +4,12 @@
       v-if="start"
       class="table-title"
     >Start-Parameter für {{taskInfo.Name}} in {{taskInfo.ScopeName}}</v-card-title>
-    <v-card-title
-      v-else
-      class="table-title"
-    >End-Parameter festlegen</v-card-title>
+    <v-card-title v-else class="table-title">End-Parameter festlegen</v-card-title>
     <p v-if="errors.length">
       <b>Fehler:</b>
       {{errors[0]}}
     </p>
+    Parameter Count: {{parameterCount}}
     <v-card-subtitle class="order-info" v-for="(item, i) in parameters" :key="i">
       <div v-if="parameterShownObj[item.id].length > 0">
         <v-container class="order-parameter-group" row v-if="item.type === 'radio'">
@@ -86,13 +84,13 @@ export default {
   },
   mounted() {
     this.tmpTaskId = this.taskId;
-    if(this.start){
+    if (this.start) {
       this.getParameters();
       this.getTaskInfo();
     } else {
       this.getOrderEntry();
     }
-    
+
     EventBus.$on("parameterSubmitStart", orderId => {
       this.orderId = orderId;
       this.submit();
@@ -101,7 +99,7 @@ export default {
       this.submit();
     });
     EventBus.$on("parameterEndOpen", event => {
-      console.log("parameterEndOpen: ", event)
+      console.log("parameterEndOpen: ", event);
       if (event === 1) {
         //Open with "Abschluss"
         this.setComplete(true);
@@ -185,7 +183,7 @@ export default {
         this.parameterRemoveAll[element.id] = [];
         element.values.forEach((value, index) => {
           let invokes = [];
-          if(value.invoke !== null && value.invoke !== undefined){
+          if (value.invoke !== null && value.invoke !== undefined) {
             invokes = value.invoke.split(";");
           }
           this.parameterValues[value.id] = {
@@ -303,23 +301,15 @@ export default {
       }
     },
     setComplete: function(complete) {
-      console.log("setComplete")
+      console.log(this.parameterComplete);
       this.processComplete = complete;
       if (complete) {
         this.form.parameters[this.parameterComplete.id] = "Abschluss";
+        this.invokeFunction(this.parameterComplete.id, this.parameterComplete.values[0].id, true)
       } else {
         this.form.parameters[this.parameterComplete.id] = "Unterbrechung";
+        this.invokeFunction(this.parameterComplete.id, this.parameterComplete.values[1].id, true)
       }
-      this.invokeFunction(
-        this.parameterComplete.invoke,
-        this.form.parameters[this.parameterComplete.id],
-        "Abschluss"
-      );
-      this.invokeFunction(
-        this.parameterComplete.invoke,
-        this.form.parameters[this.parameterComplete.id],
-        "Unterbrechung"
-      );
     },
     submit: function() {
       this.errors = [];
@@ -353,14 +343,14 @@ export default {
       let self = this;
       let startString = "/order/startTask";
       let sendObj = {};
-      if(self.start){
+      if (self.start) {
         sendObj = {
           taskId: this.taskId,
           orderId: this.orderId,
           parameters: this.parameters,
           form: this.form,
           userId: this.$store.getters.getUserId
-        }
+        };
       } else {
         startString = "/order/stopTask";
         sendObj = {
