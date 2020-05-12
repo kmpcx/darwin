@@ -233,6 +233,69 @@ router.post('/getAttributes', (req, res) => {
     });
 })
 
+router.post('/getTaskAttributes', (req, res) => {
+    secure.verify(req.headers.authorization, function (sec) {
+        if (sec.auth) {
+            // let selectQuery = "SELECT * FROM TaskAttribute WHERE TaskId = ? and ?? = '1'";
+            let selectQuery = "SELECT ta.TaskAttributeId, ta.Name, ta.Type, ta.Root, ta.Default, ta.SortingNumber, ta.IsStart, ta.IsEnd, GROUP_CONCAT(tav.Value) as ValValues, GROUP_CONCAT(tav.Name) as ValNames, GROUP_CONCAT(tav.Invoke) as ValInvoke, GROUP_CONCAT(tav.TaskAttributeValueId) as ValIds FROM TaskAttribute as ta, TaskAttributeValue as tav WHERE ta.TaskId = ? AND (ta.TaskAttributeId = tav.TaskAttributeId or WHERE ta.TaskAttributeId NOT IN ( SELECT TaskAttributeId FROM TaskAttributeValue)) GROUP BY ta.TaskAttributeId"
+            let query = mysql.format(selectQuery, [req.body.taskId]);
+            DB.handle_db(query, (result) => {
+                if (result.error) {
+                    return res.status(500).send('Error on the server.')
+                } else {
+                    if (!result.data[0]) {
+                        res.status(200).send({})
+                    } else {
+                        let parameters = []
+                        result.data.forEach(element => {
+                            let parameter = { TaskAttributeId: element.TaskAttributeId, Name: element.Name, Type: element.Type, Root: element.Root, Default: element.Default, SortingNumber: element.SortingNumber, IsStart: element.IsStart, IsEnd: element.IsEnd, valNames: element.ValNames }
+                            if (element.Type === 'int') {
+                                parameter.values = [{ value: element.Default, invoke: element.ValInvoke, id: element.ValIds }];
+                            } else if (element.ValValues){
+                                var values = element.ValValues.split(",");
+                                var names =  element.ValNames.split(",");
+                                var invoke;
+                                if(element.ValInvoke !== null){
+                                    invoke = element.ValInvoke.split(",");
+                                }
+                                var ids = element.ValIds.split(",");
+                                var keyVal = [];
+                                for (var i = 0; i < values.length; i++) {
+                                    keyVal.push({ Name: names[i], Value: values[i], Invoke: invoke[i], TaskAttributeValueId: ids[i] });
+                                }
+                                parameter.values = keyVal;
+                            }
+                            parameters.push(parameter)
+                        });
+                        res.status(200).send(parameters)
+                    }
+                }
+            })
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
+})
+
+router.post('/editAttributeValue', function (req, res) {
+    secure.verify(req.headers.authorization, function (sec) {
+        if (sec.auth) {
+            let updateQuery = 'UPDATE TaskAttributeValue SET ? WHERE TaskAttributeValueId = ?';
+            let query = mysql.format(updateQuery, [req.body.taskAttributeValue, req.body.taskAttributeValueId]);
+
+            DB.handle_db(query, (result) => {
+                if (result.error) {
+                    return res.status(500).send('There was a problem updating the Task Attribute.')
+                } else {
+                    res.status(200).send(result.data)
+                }
+            });
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
+});
+
 
 // ---------- Task Attribute Entries
 

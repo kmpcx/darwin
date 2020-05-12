@@ -219,7 +219,7 @@ export default {
       if(end){
         event = 1;
       }
-      setTimeout(() => EventBus.$emit('parameterEndOpen', event), 200);
+      setTimeout(() => EventBus.$emit('parameterEndOpen', event), 300);
     },
   },
   beforeMount() {

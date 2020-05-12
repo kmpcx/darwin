@@ -10,6 +10,7 @@
       {{errors[0]}}
     </p>
     Parameter Count: {{parameterCount}}
+    Form: {{form.parameters}}
     <v-card-subtitle class="order-info" v-for="(item, i) in parameters" :key="i">
       <div v-if="parameterShownObj[item.id].length > 0">
         <v-container class="order-parameter-group" row v-if="item.type === 'radio'">
