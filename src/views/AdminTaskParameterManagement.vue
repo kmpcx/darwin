@@ -31,29 +31,54 @@
         no-data-text="Keine Daten vorhanden."
       >
         <template v-slot:expanded-item="{ headers, item }">
-          <thead>
-            <tr>
-              <th class="text-left">Name</th>
-              <th class="text-left">Value</th>
-              <th class="text-left">Aufruf (Invoke)</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(value, index) in item.values" :key="value.id">
-              <td>{{ value.Name }}</td>
-              <td>{{ value.Value }}</td>
-              <td>{{ value.Invoke }}</td>
-              <td>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <v-icon class="mr-2" @click="editValue(item, value, index)" v-on="on">mdi-playlist-edit</v-icon>
-                  </template>
-                  <span>Wert bearbeiten</span>
-                </v-tooltip>
-              </td>
-            </tr>
-          </tbody>
+          <div v-if="item.Type !== 'int'">
+            <thead>
+              <tr>
+                <th class="text-left">Name</th>
+                <th class="text-left">Value</th>
+                <th class="text-left">Aufruf (Invoke)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(value, index) in item.values" :key="value.id">
+                <td>{{ value.Name }}</td>
+                <td>{{ value.Value }}</td>
+                <td>{{ value.Invoke }}</td>
+                <td>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ onValue }">
+                      <v-icon
+                        class="mr-2"
+                        @click="editValue(item, value, index)"
+                        v-on="onValue"
+                      >mdi-playlist-edit</v-icon>
+                    </template>
+                    <span>Option bearbeiten</span>
+                  </v-tooltip>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ onValue }">
+                      <v-icon class="mr-2" @click="addValue(item)" v-on="onValue">mdi-playlist-plus</v-icon>
+                    </template>
+                    <span>Option hinzufügen</span>
+                  </v-tooltip>
+                </td>
+              </tr>
+            </tbody>
+            <!-- <template v-slot:activator="{ on }">
+              <v-icon class="mr-2" @click="editItem(item)" v-on="on">mdi-pencil-outline</v-icon>
+            </template>-->
+            <!-- <template v-slot:activator="{ on }">
+                <v-btn color="primary" dark class="mb-2" v-on="on">Neue Option</v-btn>
+            </template>-->
+          </div>
         </template>
         <template v-slot:top>
           <v-toolbar flat color="white">
@@ -109,7 +134,7 @@
               </template>-->
               <v-card>
                 <v-card-title>
-                  <span class="headline">{{ formTitle }}</span>
+                  <span class="headline">{{ formTitleValue }}</span>
                 </v-card-title>
 
                 <v-card-text>
@@ -122,12 +147,16 @@
                         <v-text-field v-model="editedValueItem.Value" label="Value"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedValueItem.Invoke" label='Aufruf (Invoke) ";" als trenner'></v-text-field>
+                        <v-text-field
+                          v-model="editedValueItem.Invoke"
+                          label="Aufruf/Invoke ( ; als trenner)"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
                       </v-col>
                     </v-row>
                   </v-container>
                 </v-card-text>
-
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" text @click="close">Abbrechen</v-btn>
@@ -139,8 +168,8 @@
         </template>
         <template v-slot:item.action="{ item }">
           <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-icon class="mr-2" @click="editItem(item)" v-on="on">mdi-pencil-outline</v-icon>
+            <template v-slot:activator="{ onValue }">
+              <v-icon class="mr-2" @click="editItem(item)" v-on="onValue">mdi-pencil-outline</v-icon>
             </template>
             <span>Bearbeiten</span>
           </v-tooltip>
@@ -170,7 +199,7 @@ export default {
         sortable: true,
         value: "Name"
       },
-      { text: "Parameetr ID", value: "TaskAttributeId" },
+      { text: "Parameter ID", value: "TaskAttributeId" },
       { text: "Type", value: "Type" },
       { text: "Sortier Nummer", value: "SortingNumber" },
       { text: "Standard", value: "Default" },
@@ -199,12 +228,14 @@ export default {
       Name: "",
       Value: "",
       Invoke: "",
+      taskAttributeId: ""
     },
     defaultEditedValueItem: {
       TaskAttributeValueId: "",
       Name: "",
       Value: "",
       Invoke: "",
+      TaskAttributeId: ""
     },
     defaultItem: {
       TaskAttributeId: "",
@@ -220,6 +251,9 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Neuer Parameter" : "Parameter anpassen";
+    },
+    formTitleValue() {
+      return this.editedValueIndex === -1 ? "Neue Option" : "Option anpassen";
     }
   },
   watch: {
@@ -268,10 +302,16 @@ export default {
     },
     editValue(item, taskAttributeValue, index) {
       this.editedIndex = this.attributes.indexOf(item);
-      console.log(index);
       this.editedValueIndex = index;
       this.editedItem = Object.assign({}, item);
-      this.editedValueItem = Object.assign({}, taskAttributeValue)
+      this.editedValueItem = Object.assign({}, taskAttributeValue);
+      this.dialogValue = true;
+    },
+    addValue(item) {
+      this.editedIndex = this.attributes.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.editedValueItem.TaskAttributeId = item.TaskAttributeId;
+      console.log("addValue: ", this.editedValueItem.TaskAttributeId);
       this.dialogValue = true;
     },
     // deleteItem(item) {
@@ -300,6 +340,7 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedValueItem = Object.assign({}, this.defaultEditedValueItem);
         this.editedIndex = -1;
+        this.editedValueIndex = -1;
       }, 300);
     },
     closeValues() {
@@ -339,8 +380,21 @@ export default {
           taskAttribute: attribute
         })
         .then(function(response) {
-          attribute.TaskAttributeId = response.TaskAttributeId;
+          attribute.TaskAttributeId = response.data.insertId;
           self.attributes.push(attribute);
+
+          //Add default Value
+          let defaultValue = { taskAttributeId: response.data.insertId };
+          if (attribute.Type === "int") {
+            defaultValue.Name = "int";
+          } else {
+            defaultValue.Name = "Option 1";
+            defaultValue.Value = "Option 1";
+          }
+          self.createAttributeValue(
+            defaultValue,
+            self.attributes.indexOf(attribute)
+          );
         })
         .catch(function(error) {
           console.log(error);
@@ -348,7 +402,7 @@ export default {
         });
     },
     saveValue() {
-      if (this.editedIndex > -1 && this.editedValueIndex > -1) {
+      if (this.editedValueIndex > -1) {
         let self = this;
         this.axios
           .post(process.env.VUE_APP_API + "/task/editAttributeValue", {
@@ -356,44 +410,43 @@ export default {
             taskAttributeValue: this.editedValueItem
           })
           .then(function(response) {
-            Object.assign(self.attributes[self.editedIndex].values[self.editedValueIndex], self.editedValueItem);
+            Object.assign(
+              self.attributes[self.editedIndex].values[self.editedValueIndex],
+              self.editedValueItem
+            );
           })
           .catch(function(error) {
             console.log(error);
             alert("Value konnte nicht bearbeitet werden.");
           });
       } else {
-        // this.createUser(this.editedItem);
+        this.createAttributeValue(this.editedValueItem, this.editedIndex);
       }
-      this.close();
+      this.closeValues();
     },
-    formatMoney(number, decPlaces, decSep, thouSep) {
-      (decPlaces = isNaN((decPlaces = Math.abs(decPlaces))) ? 2 : decPlaces),
-        (decSep = typeof decSep === "undefined" ? "." : decSep);
-      thouSep = typeof thouSep === "undefined" ? "," : thouSep;
-      var sign = number < 0 ? "-" : "";
-      var i = String(
-        parseInt((number = Math.abs(Number(number) || 0).toFixed(decPlaces)))
-      );
-      var j = (j = i.length) > 3 ? j % 3 : 0;
-
-      return (
-        sign +
-        (j ? i.substr(0, j) + thouSep : "") +
-        i.substr(j).replace(/(\decSep{3})(?=\decSep)/g, "$1" + thouSep) +
-        (decPlaces
-          ? decSep +
-            Math.abs(number - i)
-              .toFixed(decPlaces)
-              .slice(2)
-          : "")
-      );
+    createAttributeValue(attributeValue, indexAttribute) {
+      let self = this;
+      this.axios
+        .post(process.env.VUE_APP_API + "/task/addAttributeValue", {
+          taskAttributeValue: attributeValue
+        })
+        .then(function(response) {
+          attributeValue.TaskAttributeValueId = response.data.insertId;
+          if (!self.attributes[indexAttribute].values) {
+            self.attributes[indexAttribute].values = [];
+          }
+          self.attributes[indexAttribute].values.push(attributeValue);
+        })
+        .catch(function(error) {
+          console.log(error);
+          alert("Parameter konnte nicht erstellt werden.");
+        });
     }
   },
   beforeMount() {
     this.getTask();
     this.getTaskAttributes();
-    this.close()
+    this.close();
   }
 };
 </script>

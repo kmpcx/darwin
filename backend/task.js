@@ -216,8 +216,13 @@ router.post('/getAttributes', (req, res) => {
                                 }
                                 var ids = element.ValIds.split(",");
                                 var keyVal = [];
+
                                 for (var i = 0; i < values.length; i++) {
-                                    keyVal.push({ name: names[i], value: values[i], invoke: invoke[i], id: ids[i] });
+                                    let obj = { name: names[i], value: values[i], id: ids[i] };
+                                    if(element.ValInvoke !== null){
+                                        obj.invoke = invoke[i]
+                                    }
+                                    keyVal.push(obj);
                                 }
                                 parameter.values = keyVal;
                             }
@@ -237,7 +242,7 @@ router.post('/getTaskAttributes', (req, res) => {
     secure.verify(req.headers.authorization, function (sec) {
         if (sec.auth) {
             // let selectQuery = "SELECT * FROM TaskAttribute WHERE TaskId = ? and ?? = '1'";
-            let selectQuery = "SELECT ta.TaskAttributeId, ta.Name, ta.Type, ta.Root, ta.Default, ta.SortingNumber, ta.IsStart, ta.IsEnd, GROUP_CONCAT(tav.Value) as ValValues, GROUP_CONCAT(tav.Name) as ValNames, GROUP_CONCAT(tav.Invoke) as ValInvoke, GROUP_CONCAT(tav.TaskAttributeValueId) as ValIds FROM TaskAttribute as ta, TaskAttributeValue as tav WHERE ta.TaskId = ? AND (ta.TaskAttributeId = tav.TaskAttributeId or WHERE ta.TaskAttributeId NOT IN ( SELECT TaskAttributeId FROM TaskAttributeValue)) GROUP BY ta.TaskAttributeId"
+            let selectQuery = "SELECT ta.TaskAttributeId, ta.Name, ta.Type, ta.Root, ta.Default, ta.SortingNumber, ta.IsStart, ta.IsEnd, GROUP_CONCAT(tav.Value) as ValValues, GROUP_CONCAT(tav.Name) as ValNames, GROUP_CONCAT(tav.Invoke) as ValInvoke, GROUP_CONCAT(tav.TaskAttributeValueId) as ValIds FROM TaskAttribute as ta, TaskAttributeValue as tav WHERE ta.TaskId = ? AND (ta.TaskAttributeId = tav.TaskAttributeId ) GROUP BY ta.TaskAttributeId" //or WHERE ta.TaskAttributeId NOT IN ( SELECT TaskAttributeId FROM TaskAttributeValue)
             let query = mysql.format(selectQuery, [req.body.taskId]);
             DB.handle_db(query, (result) => {
                 if (result.error) {
@@ -254,14 +259,18 @@ router.post('/getTaskAttributes', (req, res) => {
                             } else if (element.ValValues){
                                 var values = element.ValValues.split(",");
                                 var names =  element.ValNames.split(",");
-                                var invoke;
+                                var invoke = [];
                                 if(element.ValInvoke !== null){
                                     invoke = element.ValInvoke.split(",");
                                 }
                                 var ids = element.ValIds.split(",");
                                 var keyVal = [];
                                 for (var i = 0; i < values.length; i++) {
-                                    keyVal.push({ Name: names[i], Value: values[i], Invoke: invoke[i], TaskAttributeValueId: ids[i] });
+                                    let obj = { Name: names[i], Value: values[i], TaskAttributeValueId: ids[i] };
+                                    if(element.ValInvoke !== null){
+                                        obj.Invoke = invoke[i]
+                                    }
+                                    keyVal.push(obj);
                                 }
                                 parameter.values = keyVal;
                             }
@@ -276,6 +285,25 @@ router.post('/getTaskAttributes', (req, res) => {
         }
     });
 })
+
+router.post('/addAttributeValue', function (req, res) {
+    secure.verify(req.headers.authorization, function (sec) {
+        if (sec.auth) {
+            let insertQuery = 'INSERT INTO TaskAttributeValue SET ?'
+            let query = mysql.format(insertQuery, req.body.taskAttributeValue);
+
+            DB.handle_db(query, (result) => {
+                if (result.error) {
+                    return res.status(500).send('There was a problem creating the Task Attribute.')
+                } else {
+                    res.status(200).send(result.data)
+                }
+            });
+        } else {
+            return res.status(401).send(sec.err)
+        }
+    });
+});
 
 router.post('/editAttributeValue', function (req, res) {
     secure.verify(req.headers.authorization, function (sec) {
