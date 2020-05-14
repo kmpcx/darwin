@@ -59,7 +59,7 @@
                 large
                 color="#8BC34A"
                 v-on="on"
-                @click="clickOpen(true)"
+                @click="clickOpen(1)"
               >
                 <v-icon dark>mdi-check</v-icon>Abschluss
               </v-btn>
@@ -73,9 +73,23 @@
                 height="70"
                 dark
                 large
+                color="#DC143C"
+                v-on="on"
+                @click="clickOpen(2)"
+              >
+                <v-icon dark>mdi-stop</v-icon>Abbruch
+              </v-btn>
+              <br />
+              <br />
+              <v-btn
+                tile
+                width="120"
+                height="70"
+                dark
+                large
                 color="#BDBDBD"
                 v-on="on"
-                @click="clickOpen(false)"
+                @click="clickOpen(3)"
               >
                 <v-icon dark>mdi-pause</v-icon>Pause
               </v-btn>
@@ -84,51 +98,6 @@
           <v-card>
             <v-card-title class="headline">Aktivität fertigstellen</v-card-title>
             <parameter-controller :start=(false) :orderEntryId="orderEntryId"></parameter-controller>
-            <!-- <v-card tile>
-              <v-card-title class="table-title">Parameter zum Beenden festlegen</v-card-title>
-              <p v-if="errors.length">
-                <b>Fehler:</b>
-                {{errors[0]}}
-              </p>
-              <p>
-                <v-card-subtitle class="order-info" v-for="(item, i) in parameters" :key="i">
-                  <div v-if="parameterShown[item.id] > 0">
-                    <v-container class="order-parameter-group" row v-if="item.type === 'radio'">
-                      {{item.name}}
-                      <v-checkbox
-                        class="order-parameter-item"
-                        v-for="(value, j) in item.values"
-                        :key="j"
-                        v-model="form.parameters[item.id]"
-                        :label="value.name"
-                        :value="value.value"
-                        v-on:change="invokeFunction(value.invoke, form.parameters[item.id], value.value)"
-                      ></v-checkbox>
-                    </v-container>
-                    <v-container class="order-parameter-group" row v-if="item.type === 'checkbox'">
-                      {{item.name}}
-                      <v-checkbox
-                        class="order-parameter-item"
-                        v-for="(value, j) in item.values"
-                        :key="j"
-                        v-model="form.parameters[item.id]"
-                        :label="value.name"
-                        :value="value.value"
-                        v-on:change="invokeFunction(value.invoke, form.parameters[item.id], value.value)"
-                      ></v-checkbox>
-                    </v-container>
-                    <v-text-field
-                      dense
-                      v-else-if="item.type === 'int'"
-                      v-model="form.parameters[item.id]"
-                      :label="item.name"
-                      hide-details
-                      type="number"
-                    />
-                  </div>
-                </v-card-subtitle>
-              </p>
-            </v-card> -->
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="green darken-1" text @click="completeDialog = false">
@@ -214,11 +183,7 @@ export default {
     clickSubmit: function() {
       EventBus.$emit('parameterSubmitEnd', 1);
     },
-    clickOpen: function(end) {
-      let event = 2;
-      if(end){
-        event = 1;
-      }
+    clickOpen: function(event) {
       setTimeout(() => EventBus.$emit('parameterEndOpen', event), 300);
     },
   },
