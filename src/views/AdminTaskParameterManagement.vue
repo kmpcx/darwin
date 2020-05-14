@@ -354,6 +354,8 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         let self = this;
+        delete this.editedItem.valNames;
+        delete this.editedItem.values;
         this.axios
           .post(process.env.VUE_APP_API + "/task/editAttribute", {
             taskAttributeId: this.editedItem.TaskAttributeId,
