@@ -23,7 +23,7 @@
                 :value="value.value"
                 v-on:change="invokeFunction(item.id, value.id, true)"
               ></v-checkbox>
-              </v-col>
+              </v-col> 
             </v-container>
             <v-container class="order-parameter-group" row v-if="item.type === 'checkbox'">
               <v-col cols="12">{{item.name}}</v-col>
