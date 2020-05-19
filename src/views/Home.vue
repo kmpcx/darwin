@@ -6,9 +6,9 @@
       <v-row>
         <v-col cols="8">
           <div>
-            <v-card tile height="300">
+            <v-card tile height="270">
               <div class="table-title">Meine laufenden Aktivitäten</div>
-              <v-simple-table fixed-header height="260">
+              <v-simple-table fixed-header height="230">
                 <template v-slot:default>
                   <thead>
                     <tr>
@@ -32,9 +32,9 @@
               </v-simple-table>
             </v-card>
             <br />
-            <v-card tile height="300">
+            <v-card tile height="270">
               <div class="table-title">Meine letzten Aufträge</div>
-              <v-simple-table fixed-header height="260">
+              <v-simple-table fixed-header height="230">
                 <template v-slot:default>
                   <thead>
                     <tr>
@@ -59,30 +59,30 @@
         </v-col>
         <v-col cols="4">
           <div>
-            <v-card tile color="black" dark height="300" :to="{ path: '/order/'}">
+            <v-card tile color="black" dark height="270" :to="{ path: '/order/'}">
               <v-img
                 class="white--text align-end"
-                height="300"
+                height="270"
                 src="../assets/img/img_av.jpg"
               >
                 <div>
                   <div>
-                    <v-icon size="220">mdi-qrcode</v-icon>
+                    <v-icon size="200">mdi-qrcode</v-icon>
                     <v-card-title class="headline justify-center">Auftragsauswahl</v-card-title>
                   </div>
                 </div>
               </v-img>
             </v-card>
             <br />
-            <v-card tile dark color="black" height="300" :to="{ path: '/selectionScope/1'}">
+            <v-card tile dark color="black" height="270" :to="{ path: '/selectionScope/1'}">
               <v-img
                 class="white--text align-end"
-                height="300"
+                height="270"
                 src="../assets/img/img_sonstiges.jpg"
               >
                 <div>
                   <div>
-                    <v-icon size="220">mdi-broom</v-icon>
+                    <v-icon size="200">mdi-broom</v-icon>
                     <v-card-title class="headline justify-center">Allgemeine Aktivitäten</v-card-title>
                   </div>
                 </div>

@@ -5,7 +5,7 @@
       <v-row>
         <v-col cols="7">
           <div>
-            <v-card>
+            <v-card tile height="600">
               <v-card-title>
                 Auftragsauswahl
                 <v-spacer></v-spacer>
@@ -21,6 +21,7 @@
                 :headers="headers"
                 :items="items"
                 :items-per-page="itemsPerPage"
+                height="460"
                 no-results-text="Keine passenden Einträge gefunden."
                 no-data-text="Keine Daten vorhanden."
                 :search="search"
@@ -51,7 +52,7 @@ export default {
     search: "",
     page: 1,
     pageCount: 0,
-    itemsPerPage: 6,
+    itemsPerPage: 8,
     items: [],
     headers: [
       {

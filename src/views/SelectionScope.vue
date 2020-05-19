@@ -10,15 +10,15 @@
       <v-card-title class="table-title">Auswahl der Veredelungsart</v-card-title>
       <v-container>
         <v-row dense>
-          <v-col v-for="(item, i) in items" :key="i" cols="4">
+          <v-col v-for="(item, i) in items" :key="i" cols="3">
             <v-card
               tile
               :color="item.ColorBackground"
               dark
-              max-height="180"
+              max-height="220"
               :to="{ path: '/selectionTask/' + $route.params.businessId + '/' + item.ScopeId }"
             >
-            <v-img class="white--text align-end" height="180" :src="item.ImageLoaded"> 
+            <v-img class="white--text align-end" height="220" :src="item.ImageLoaded"> 
               <div>
                 <div>
                   <!-- <v-icon size="40">{{item.Icon}}</v-icon> -->
