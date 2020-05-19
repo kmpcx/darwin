@@ -27,19 +27,15 @@
         no-results-text="Keine passenden Einträge gefunden."
         no-data-text="Keine Daten vorhanden."
       >
-        <template v-slot:item.ScopeId="{ item }">
-          {{scopes[item.ScopeId]}}
-        </template>
-        <template
-          v-slot:item.Cost="{ item }"
-        >{{formatMoney(item.Cost, 2, ",", ".")}} €</template>
+        <template v-slot:item.ScopeId="{ item }">{{scopes[item.ScopeId]}}</template>
+        <template v-slot:item.Cost="{ item }">{{formatMoney(item.Cost, 2, ",", ".")}} €</template>
         <template v-slot:top>
           <v-toolbar flat color="white">
             <v-spacer></v-spacer>
             <v-dialog v-model="dialog" max-width="50%">
               <!-- <template v-slot:activator="{ on }">
                 <v-btn color="primary" dark class="mb-2" v-on="on">Neuer Benutzer</v-btn>
-              </template> -->
+              </template>-->
               <v-card>
                 <v-card-title>
                   <span class="headline">{{ formTitle }}</span>
@@ -58,10 +54,19 @@
                         <v-text-field v-model="editedItem.ScopeId" label="Veredelungsart"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.Cost" type="decimal" suffix="€" label="Kosten"></v-text-field>
+                        <v-text-field
+                          v-model="editedItem.Cost"
+                          type="decimal"
+                          suffix="€"
+                          label="Kosten"
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="editedItem.SortingNumber" type="decimal" label="Sortier Nummer"></v-text-field>
+                        <v-text-field
+                          v-model="editedItem.SortingNumber"
+                          type="decimal"
+                          label="Sortier Nummer"
+                        ></v-text-field>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -77,7 +82,19 @@
           </v-toolbar>
         </template>
         <template v-slot:item.action="{ item }">
-          <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil-outline</v-icon>
+          
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-icon class="mr-2" @click="editItem(item)" v-on="on">mdi-pencil-outline</v-icon>
+            </template>
+            <span>Bearbeiten</span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-icon class="mr-2" @click="editParameter(item)" v-on="on">mdi-playlist-edit</v-icon>
+            </template>
+            <span>Parameter bearbeiten</span>
+          </v-tooltip>
           <!-- <v-icon small @click="deleteItem(item)">mdi-delete</v-icon> -->
         </template>
       </v-data-table>
@@ -150,10 +167,10 @@ export default {
         .then(function(response) {
           // self.scopes = response.data;
           // response.data.forEach(element => );
-          response.data.forEach(function(element, idx, array){
-            self.scopes[element.ScopeId] = element.Name
-            if (idx === array.length - 1){ 
-                 self.getTasks();
+          response.data.forEach(function(element, idx, array) {
+            self.scopes[element.ScopeId] = element.Name;
+            if (idx === array.length - 1) {
+              self.getTasks();
             }
           });
         })
@@ -164,9 +181,12 @@ export default {
     editItem(item) {
       this.editedIndex = this.tasks.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      console.log(this.editedItem.Cost.toString().replace(".", ","))
+      console.log(this.editedItem.Cost.toString().replace(".", ","));
       this.editedItem.Cost = this.editedItem.Cost.toString().replace(".", ",");
       this.dialog = true;
+    },
+    editParameter(item) {
+      this.$router.push("/admin/task/parameter/" + item.TaskId);
     },
     // deleteItem(item) {
     //   const index = this.users.indexOf(item);
@@ -195,7 +215,7 @@ export default {
       }, 300);
     },
     save() {
-      this.editedItem.Cost = parseFloat(this.editedItem.Cost.replace(",", "."))
+      this.editedItem.Cost = parseFloat(this.editedItem.Cost.replace(",", "."));
       if (this.editedIndex > -1) {
         let self = this;
         this.axios
@@ -256,7 +276,6 @@ export default {
     }
   },
   beforeMount() {
-    
     this.getScopes();
   }
 };

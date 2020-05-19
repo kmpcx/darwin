@@ -127,6 +127,17 @@ const router = new Router({
       }
     },
     {
+      path: "/admin/task/parameter/:taskId",
+      name: "taskParameterManagement",
+      meta: { layout: "no-sidebar" },
+      component: () => import("@/views/AdminTaskParameterManagement.vue"),
+      meta: { 
+        requiresAuth: true,
+        requiresAdmin: true
+      },
+      props: true
+    },
+    {
       path: "/admin/report/order",
       name: "reportOrder",
       meta: { layout: "no-sidebar" },

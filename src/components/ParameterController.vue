@@ -77,7 +77,7 @@ export default {
       parameterVisible: [],
       orderId: null,
       tmpTaskId: null,
-      processComplete: false,
+      processComplete: 0,
       parameterComplete: {}
     };
   },
@@ -110,14 +110,7 @@ export default {
       this.submit();
     });
     EventBus.$on("parameterEndOpen", event => {
-      console.log("parameterEndOpen: ", event);
-      if (event === 1) {
-        //Open with "Abschluss"
-        this.setComplete(true);
-      } else if (event === 2) {
-        //Open with "Unterbrechung"
-        this.setComplete(false);
-      }
+      this.setComplete(event);
     });
   },
   destroyed() {},
@@ -312,23 +305,18 @@ export default {
       }
     },
     setComplete: function(complete) {
-      console.log("setComplete");
+      console.log(this.parameterComplete);
       this.processComplete = complete;
-      if (complete) {
+      if (complete === 1) {
         this.form.parameters[this.parameterComplete.id] = "Abschluss";
-      } else {
-        this.form.parameters[this.parameterComplete.id] = "Unterbrechung";
+        this.invokeFunction(this.parameterComplete.id, this.parameterComplete.values[0].id, true)
+      } else if (complete === 2) {
+        this.form.parameters[this.parameterComplete.id] = "Abbruch";
+        this.invokeFunction(this.parameterComplete.id, this.parameterComplete.values[1].id, true)
+      } else if (complete === 3) {
+        this.form.parameters[this.parameterComplete.id] = "Pause";
+        this.invokeFunction(this.parameterComplete.id, this.parameterComplete.values[1].id, true)
       }
-      this.invokeFunction(
-        this.parameterComplete.invoke,
-        this.form.parameters[this.parameterComplete.id],
-        "Abschluss"
-      );
-      this.invokeFunction(
-        this.parameterComplete.invoke,
-        this.form.parameters[this.parameterComplete.id],
-        "Unterbrechung"
-      );
     },
     submit: function() {
       this.errors = [];
