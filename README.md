@@ -18,7 +18,6 @@ No matter whether on a tablet, smartphone or laptop.
     - [Application](#application)
     - [Database](#database)
 - [License](#license)
-- [Links](#links)
 
 ## Technologies
 
