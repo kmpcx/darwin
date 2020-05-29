@@ -19,7 +19,7 @@ const app = express()
 // app.use(allowCrossDomain)
 
 app.use(cors());
-// app.use(cors({origin: 'https://***REMOVED***.kmpc.de'}));
+// app.use(cors({origin: 'https://eskon.kmpc.de'}));
 
 app.use('/api/auth', authentication);
 app.use('/api/scope', scope);
